@@ -25,5 +25,8 @@
     "typescript": "5.1.6",
     "viem": "^1.4.1",
     "wagmi": "^1.3.9"
+  },
+  "devDependencies": {
+    "@total-typescript/ts-reset": "^0.4.2"
   }
 }
