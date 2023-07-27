@@ -25,13 +25,13 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_APP_ID ?? "";
 
 const { wallets } = getDefaultWallets({
-  appName: "RainbowKit demo",
+  appName: "OSnap Safe App",
   projectId,
   chains,
 });
 
 const demoAppInfo = {
-  appName: "Rainbowkit Demo",
+  appName: "OSnap Safe App",
 };
 
 const connectors = connectorsForWallets([
