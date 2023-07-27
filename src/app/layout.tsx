@@ -1,6 +1,6 @@
-import './globals.css'
-import '@rainbow-me/rainbowkit/styles.css';
-import { Providers } from './providers';
+import "./globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
+import { Providers } from "./providers";
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
