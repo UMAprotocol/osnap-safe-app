@@ -6,9 +6,7 @@ import {
   getDefaultWallets,
 } from '@rainbow-me/rainbowkit';
 import {
-  argentWallet,
-  ledgerWallet,
-  trustWallet,
+  safeWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { useEffect, useState } from 'react';
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
@@ -47,17 +45,18 @@ const demoAppInfo = {
 const connectors = connectorsForWallets([
   ...wallets,
   {
-    groupName: 'Other',
+    groupName: 'Gnosis Safe',
     wallets: [
-      argentWallet({ projectId, chains }),
-      trustWallet({ projectId, chains }),
-      ledgerWallet({ projectId, chains }),
+            safeWallet({ chains,
+        allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
+        debug: false,
+      }),
     ],
   },
 ]);
 
 const wagmiConfig = createConfig({
-  autoConnect: true,
+  autoConnect: false,
   connectors,
   publicClient,
   webSocketPublicClient,
