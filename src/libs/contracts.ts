@@ -8,7 +8,7 @@ export interface ContractData {
   deployBlockNumber?: number;
   subgraph?: string;
   version?: string;
-  abi: unknown;
+  abi?: unknown;
 }
 // contract addresses pulled from https://github.com/UMAprotocol/protocol/tree/master/packages/core/networks
 export const contractDataList: ContractData[] = [
