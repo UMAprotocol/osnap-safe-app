@@ -1,3 +1,4 @@
+import { Icon } from "@/components/Icon";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 function Page() {
@@ -10,6 +11,7 @@ function Page() {
       }}
     >
       <ConnectButton />
+      <Icon name="osnap-logo" />
     </div>
   );
 }
