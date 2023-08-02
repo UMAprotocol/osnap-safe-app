@@ -1,19 +1,9 @@
 import { Icon } from "@/components/Icon";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-function Page() {
+export default function Page() {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "flex-end",
-        padding: 12,
-      }}
-    >
-      <ConnectButton />
-      <Icon name="osnap-logo" />
-    </div>
+    <main className="w-screen h-screen grid place-items-center">
+      <Icon name="osnap-logo" className="w-[50vw] aspect-[10/3]" />
+    </main>
   );
 }
-
-export default Page;
