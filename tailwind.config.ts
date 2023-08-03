@@ -7,6 +7,8 @@ module.exports = {
   ],
   theme: {
     colors: {
+      black: "hsl(var(--color-black) / <alpha-value>)",
+      white: "hsl(var(--color-white) / <alpha-value>)",
       "gray-25": "hsl(var(--color-gray-25) / <alpha-value>)",
       "gray-50": "hsl(var(--color-gray-50) / <alpha-value>)",
       "gray-100": "hsl(var(--color-gray-100) / <alpha-value>)",
