@@ -1,4 +1,5 @@
 import { MouseEvent, ReactNode, useRef } from "react";
+import { Icon } from ".";
 
 export function useModal() {
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -44,7 +45,19 @@ export function Modal({
   }
 
   return (
-    <dialog ref={modalRef} onClick={onClick} {...dialogProps}>
+    <dialog
+      ref={modalRef}
+      onClick={onClick}
+      {...dialogProps}
+      className="relative"
+    >
+      <button
+        onClick={closeModal}
+        className="p-2 absolute right-0 top-0 hover:opacity-50 transition"
+        aria-label="Close modal"
+      >
+        <Icon name="x" className="w-3 h-3"></Icon>
+      </button>
       {children}
     </dialog>
   );
