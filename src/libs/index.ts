@@ -1,3 +1,3 @@
-export * as contracts from "./contracts";
-export * as ogUtils from "./ogUtils";
-export * as ethersUtils from "./ethersUtils";
+export * from "./contracts";
+export * from "./ogUtils";
+export * from "./ethersUtils";

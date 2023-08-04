@@ -9,12 +9,6 @@ export function publicClientToProvider(publicClient: PublicClient) {
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
-  if (transport.type === "fallback")
-    return new providers.FallbackProvider(
-      (transport.transports as ReturnType<HttpTransport>[]).map(
-        ({ value }) => new providers.JsonRpcProvider(value?.url, network),
-      ),
-    );
   return new providers.JsonRpcProvider(transport.url as string, network);
 }
 export function walletClientToSigner(walletClient: WalletClient) {

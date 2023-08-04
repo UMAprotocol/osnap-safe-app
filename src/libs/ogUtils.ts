@@ -25,11 +25,11 @@ export const parseUnits = ethers.utils.parseUnits;
 export const formatUnits = ethers.utils.formatUnits;
 
 export function defaultRules(params: {
-  snapshotUrl: string;
-  votingQuorum: string;
-  votingPeriodHours: string;
+  snapshotSpaceUrl: string;
+  quorum: string;
+  challengePeriodText: string;
 }) {
-  return `I assert that this transaction proposal is valid according to the following rules: Proposals approved on Snapshot, as verified at ${params.snapshotUrl}, are valid as long as there is a minimum quorum of ${params.votingQuorum} and a minimum voting period of ${params.votingPeriodHours} hours and it does not appear that the Snapshot voting system is being exploited or is otherwise unavailable. The quorum and voting period are minimum requirements for a proposal to be valid. Quorum and voting period values set for a specific proposal in Snapshot should be used if they are more strict than the rules parameter. The explanation included with the on-chain proposal must be the unique IPFS identifier for the specific Snapshot proposal that was approved or a unique identifier for a proposal in an alternative voting system approved by DAO social consensus if Snapshot is being exploited or is otherwise unavailable.`;
+  return `I assert that this transaction proposal is valid according to the following rules: Proposals approved on Snapshot, as verified at ${params.snapshotSpaceUrl}, are valid as long as there is a minimum quorum of ${params.quorum} and a minimum voting period of ${params.challengePeriodText} and it does not appear that the Snapshot voting system is being exploited or is otherwise unavailable. The quorum and voting period are minimum requirements for a proposal to be valid. Quorum and voting period values set for a specific proposal in Snapshot should be used if they are more strict than the rules parameter. The explanation included with the on-chain proposal must be the unique IPFS identifier for the specific Snapshot proposal that was approved or a unique identifier for a proposal in an alternative voting system approved by DAO social consensus if Snapshot is being exploited or is otherwise unavailable.`;
 }
 
 export function enableModule(safeAddress: string, module: string) {
@@ -38,40 +38,46 @@ export function enableModule(safeAddress: string, module: string) {
   ]);
 }
 
-export interface OptimisticGovernorModuleParams {
+export interface OgDeploymentTxsParams {
+  provider: JsonRpcProvider;
+  chainId: number;
   executor: string;
-  owner: string;
   collateral: string;
   bond: string;
-  rules: string;
   identifier: string;
   liveness: string;
+  snapshotSpaceUrl: string;
+  quorum: string;
+  challengePeriodText: string;
 }
-export function deployOptimisticGovernorModule(
-  provider: JsonRpcProvider,
-  safeAddress: string,
-  chainId: number,
-  args: OptimisticGovernorModuleParams,
-) {
-  const { executor, collateral, bond, rules, identifier, liveness } = args;
-
-  // only continue if we are within safe app environment
-  if (executor !== safeAddress)
-    throw new Error(`Executor address: ${executor} must match ${safeAddress}`);
+export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
+  const {
+    provider,
+    chainId,
+    executor,
+    collateral,
+    bond,
+    identifier,
+    liveness,
+    snapshotSpaceUrl,
+    quorum,
+    challengePeriodText,
+  } = params;
 
   // make sure we have the collateral defined in contracts
-  const { decimals } = findContract({ network: chainId, address: collateral });
+  const { decimals } = findContract({ chainId, address: collateral });
   if (decimals === undefined)
     throw new Error(`Decimals missing for token address: ${collateral}`);
 
   const ogContract = findContract({
     name: "OptimisticGovernor",
-    network: chainId,
+    chainId,
   });
   if (ogContract.abi === undefined)
     throw new Error(`Unable to find abi for Optimistic Governor`);
 
-  const scaledBond = parseUnits(bond, decimals).toString();
+  const bondWei = parseUnits(bond, decimals).toString();
+  const rules = defaultRules({ snapshotSpaceUrl, quorum, challengePeriodText });
 
   const {
     transaction: daoModuleDeploymentTx,
@@ -81,7 +87,7 @@ export function deployOptimisticGovernorModule(
     ogContract.abi,
     {
       types: ["address", "address", "uint256", "string", "bytes32", "uint64"],
-      values: [executor, collateral, scaledBond, rules, identifier, liveness],
+      values: [executor, collateral, bondWei, rules, identifier, liveness],
     },
     provider,
     chainId,
@@ -94,7 +100,7 @@ export function deployOptimisticGovernorModule(
     },
   ];
   const enableDaoModuleTransaction = enableModule(
-    safeAddress,
+    executor,
     daoModuleExpectedAddress,
   );
   daoModuleTransactions.push(enableDaoModuleTransaction);
