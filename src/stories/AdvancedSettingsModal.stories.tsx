@@ -1,16 +1,16 @@
 import {
-  ConfigureOsnapModal,
-  useConfigureOsnapModal,
-} from "@/components/ConfigureOsnapModal";
+  AdvancedSettingsModal,
+  useAdvancedSettingsModal,
+} from "@/components/AdvancedSettingsModal";
 import { Meta, StoryObj } from "@storybook/react";
 import { useEffect } from "react";
 
 const meta = {
-  component: ConfigureOsnapModal,
+  component: AdvancedSettingsModal,
   parameters: {
     layout: "fullscreen",
   },
-} satisfies Meta<typeof ConfigureOsnapModal>;
+} satisfies Meta<typeof AdvancedSettingsModal>;
 
 export default meta;
 
@@ -19,7 +19,7 @@ type Story = StoryObj<Args>;
 
 const Template: Story = {
   render: function Wrapper(args) {
-    const modalProps = useConfigureOsnapModal();
+    const modalProps = useAdvancedSettingsModal();
     useEffect(() => {
       modalProps.showModal();
     }, []);
@@ -41,7 +41,7 @@ const Template: Story = {
         >
           Configure oSnap
         </button>
-        <ConfigureOsnapModal {...modalProps} {...args} />
+        <AdvancedSettingsModal {...modalProps} {...args} />
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Adipisci vel
         porro ea, illo molestiae, voluptates dolorem provident eius unde
         similique voluptatem tempore aspernatur obcaecati numquam officiis qui
