@@ -51,14 +51,14 @@ export function Modal({
       ref={modalRef}
       onClick={onClick}
       {...dialogProps}
-      className="relative"
+      className="relative rounded-2xl p-6"
     >
       <button
         onClick={closeModal}
-        className="p-2 absolute right-0 top-0 hover:opacity-50 transition"
+        className="p-3 absolute right-1 top-1 hover:opacity-50 transition"
         aria-label="Close modal"
       >
-        <Icon name="x" className="w-4 h-4"></Icon>
+        <Icon name="x" className="w-5 h-5"></Icon>
       </button>
       {children}
     </dialog>
