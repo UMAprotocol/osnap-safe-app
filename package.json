@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "chromatic --project-token=chpt_e83ccfd5157f67a"
   },
   "dependencies": {
     "@rainbow-me/rainbowkit": "^1.0.7",
@@ -16,6 +17,7 @@
     "@storybook/addon-interactions": "^7.2.0",
     "@storybook/addon-links": "^7.2.0",
     "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/addon-styling": "^1.3.5",
     "@storybook/blocks": "^7.2.0",
     "@storybook/nextjs": "^7.2.0",
     "@storybook/react": "^7.2.0",
