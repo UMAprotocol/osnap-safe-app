@@ -21,8 +21,8 @@ type Story = StoryObj<typeof meta>;
 
 const Template: Story = {
   args: {
-    safeName: "HartDAO Arb Safe",
-    safeUrl: "https://snapshot.org/spaces/hartdaoarbsafe",
+    spaceName: "HartDAO Arb Safe",
+    spaceUrl: "https://snapshot.org/spaces/hartdaoarbsafe",
     status: "inactive",
     errors: [],
   },
@@ -49,5 +49,14 @@ export const Error: Story = {
   args: {
     ...Template.args,
     errors: ["Something went wrong when doing something", "Error 2"],
+  },
+}
+
+export const NoSpace: Story = {
+  ...Template,
+  args: {
+    ...Template.args,
+    spaceName: undefined,
+    spaceUrl: undefined,
   },
 }
