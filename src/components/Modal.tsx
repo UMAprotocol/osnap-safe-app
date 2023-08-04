@@ -51,7 +51,7 @@ export function Modal({
       ref={modalRef}
       onClick={onClick}
       {...dialogProps}
-      className="relative rounded-2xl p-6"
+      className="relative rounded-2xl p-6  shadow-[0px_4px_56px_0px_rgba(0,0,0,0.25)]"
     >
       <button
         onClick={closeModal}
