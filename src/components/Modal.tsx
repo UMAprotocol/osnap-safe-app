@@ -19,7 +19,9 @@ export function useModal() {
   return { modalRef, showModal, closeModal };
 }
 
-type Props = { children: ReactNode } & ReturnType<typeof useModal>;
+export type ModalProps = ReturnType<typeof useModal>;
+
+type Props = { children: ReactNode } & ModalProps;
 
 export function Modal({
   children,
@@ -56,7 +58,7 @@ export function Modal({
         className="p-2 absolute right-0 top-0 hover:opacity-50 transition"
         aria-label="Close modal"
       >
-        <Icon name="x" className="w-3 h-3"></Icon>
+        <Icon name="x" className="w-4 h-4"></Icon>
       </button>
       {children}
     </dialog>

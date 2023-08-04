@@ -19,6 +19,7 @@
   ],
   "rules": {
     "prettier/prettier": "warn",
+    "@typescript-eslint/consistent-type-definitions": ["type"],
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
