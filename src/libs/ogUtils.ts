@@ -6,7 +6,7 @@ import { abi as SafeAbi } from "@gnosis.pm/safe-deployments/dist/assets/v1.3.0/g
 import { findContract } from "./contracts";
 
 type JsonRpcProvider = ethers.providers.JsonRpcProvider;
-import { deployAndSetUpModule, KnownContracts } from "@gnosis.pm/zodiac";
+import { deployAndSetUpCustomModule } from "@gnosis.pm/zodiac";
 
 export const buildTransaction = (
   iface: Interface,
@@ -64,16 +64,21 @@ export function deployOptimisticGovernorModule(
   if (decimals === undefined)
     throw new Error(`Decimals missing for token address: ${collateral}`);
 
-  const scaledBond = parseUnits(bond, decimals).toString();
+  const ogContract = findContract({
+    name: "OptimisticGovernor",
+    network: chainId,
+  });
+  if (ogContract.abi === undefined)
+    throw new Error(`Unable to find abi for Optimistic Governor`);
 
-  // this is a string name like "optimisticGovernor"
-  const type = KnownContracts.OPTIMISTIC_GOVERNOR;
+  const scaledBond = parseUnits(bond, decimals).toString();
 
   const {
     transaction: daoModuleDeploymentTx,
     expectedModuleAddress: daoModuleExpectedAddress,
-  } = deployAndSetUpModule(
-    type,
+  } = deployAndSetUpCustomModule(
+    ogContract.address,
+    ogContract.abi,
     {
       types: ["address", "address", "uint256", "string", "bytes32", "uint64"],
       values: [executor, collateral, scaledBond, rules, identifier, liveness],

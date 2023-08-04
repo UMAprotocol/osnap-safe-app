@@ -19,7 +19,9 @@ export interface ContractData {
   deployBlockNumber?: number;
   subgraph?: string;
   version?: string;
-  abi?: unknown;
+  // anys required by call into external library
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  abi?: any[] | readonly any[];
   decimals?: number;
 }
 // contract addresses pulled from https://github.com/UMAprotocol/protocol/tree/master/packages/core/networks
