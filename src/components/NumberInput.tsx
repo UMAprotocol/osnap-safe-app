@@ -8,7 +8,7 @@ import {
 import { useImmer } from "use-immer";
 type Props = {
   label: ReactNode;
-  onChange?: () => void;
+  onChange?: (value: string) => void;
   id?: string;
   placeholder?: string;
 };
@@ -24,8 +24,9 @@ export function useNumberInput(props: Props) {
   const { onChange: onChangeProp } = props;
   const onChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
-      onChangeProp?.();
-      setValue(event.target.value);
+      const value = event.target.value;
+      onChangeProp?.(value);
+      setValue(value);
     },
     [onChangeProp],
   );

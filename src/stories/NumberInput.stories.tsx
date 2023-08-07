@@ -10,7 +10,7 @@ export default meta;
 
 type Args = {
   label: ReactNode;
-  onChange?: () => void;
+  onChange?: (value: string) => void;
   errors?: string[];
   id?: string;
   placeholder?: string;
@@ -98,5 +98,17 @@ export const WithErrors: Story = {
   args: {
     label: "With errors",
     errors: ["A longer text example of an error that happened", "Error 2"],
+  },
+};
+
+export const WithChangeHandler: Story = {
+  ...Template,
+  args: {
+    label: "With change handler",
+    onChange: (value) => {
+      if (value === "2") {
+        alert("You entered 2!");
+      }
+    },
   },
 };
