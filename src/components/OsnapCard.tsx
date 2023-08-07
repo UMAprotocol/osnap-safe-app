@@ -13,7 +13,7 @@ export function OsnapCard(props: Props) {
 
   const noSpaceCardContent = (
     <div className="border-b border-gray-200 px-6 py-5 text-gray-600">
-      <h2 className="font-semibold mb-2 text-lg text-black">
+      <h2 className="mb-2 text-lg font-semibold text-black">
         Connect to Snapshot Space
       </h2>
       <p className="mb-2">
@@ -30,7 +30,7 @@ export function OsnapCard(props: Props) {
   );
 
   const hasSpaceCardContent = (
-    <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+    <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
       <p className="justify-self-start font-semibold">{props.spaceName}</p>
       <div className="flex gap-4">
         <ActiveIndicator status={props.status} />{" "}
@@ -38,7 +38,7 @@ export function OsnapCard(props: Props) {
           onClick={showAdvancedSettingsModal}
           aria-label="Show advanced settings"
         >
-          <Icon name="settings" className="w-5 h-5" />
+          <Icon name="settings" className="h-5 w-5" />
         </button>
       </div>
     </div>
@@ -64,15 +64,15 @@ export function OsnapCard(props: Props) {
   }
 
   return (
-    <div className="max-w-[560px] p-12 rounded-[32px] bg-white">
-      <Icon name="osnap-logo" className="w-[153px] h-[60px] mb-5 mx-auto" />
-      <h1 className="text-xl text-gray-600 text-center mb-10">
+    <div className="max-w-[560px] rounded-[32px] bg-white p-12">
+      <Icon name="osnap-logo" className="mx-auto mb-5 h-[60px] w-[153px]" />
+      <h1 className="mb-10 text-center text-xl text-gray-600">
         Propel your DAO into the future with instant, secure and trustless
         execution.
       </h1>
-      <div className="border border-gray-200 rounded-xl">
+      <div className="rounded-xl border border-gray-200">
         {cardContent}
-        <div className="px-6 py-4 bg-gray-50 rounded-b-xl">
+        <div className="rounded-b-xl bg-gray-50 px-6 py-4">
           <CardLink
             href={
               hasSpace && props.spaceUrl
@@ -85,14 +85,16 @@ export function OsnapCard(props: Props) {
       {hasSpace && (
         <button
           onClick={props.status === "active" ? deactivateOsnap : activateOsnap}
-          className={`mb-3 mt-6 font-semibold  w-full py-3 px-5 rounded-lg shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] ${buttonStyles}`}
+          className={`mb-3 mt-6 w-full  rounded-lg px-5 py-3 font-semibold shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] ${buttonStyles}`}
         >
           {props.status === "active" ? "Deactivate" : "Activate"} oSnap
         </button>
       )}
       <div>
         {props.errors.map((error) => (
-          <p className="text-error-500 text-center">{error}</p>
+          <p key={error} className="text-center text-error-500">
+            {error}
+          </p>
         ))}
       </div>
     </div>
@@ -106,7 +108,7 @@ function CardLink(props: { href: string }) {
       target="_blank"
       className="flex justify-between text-gray-600"
     >
-      {props.href} <Icon name="external-link" className="w-5 h-5 text-black" />
+      {props.href} <Icon name="external-link" className="h-5 w-5 text-black" />
     </Link>
   );
 }
@@ -117,10 +119,10 @@ function ActiveIndicator(props: { status: "active" | "inactive" }) {
   const styles = props.status === "active" ? activeStyles : inactiveStyles;
   return (
     <div
-      className={`flex items-center justify-center gap-2 px-4 py-1 w-fit border rounded-full ${styles}`}
+      className={`flex w-fit items-center justify-center gap-2 rounded-full border px-4 py-1 ${styles}`}
     >
       <div
-        className={`w-2 h-2 rounded-full ${
+        className={`h-2 w-2 rounded-full ${
           props.status === "active" ? "bg-success-500" : "bg-gray-500"
         }`}
       />

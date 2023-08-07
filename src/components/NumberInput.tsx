@@ -74,7 +74,7 @@ export function NumberInput(props: NumberInputProps) {
     <div>
       <label
         htmlFor={props.id}
-        className={`font-semibold block mb-1 ${labelStyle}`}
+        className={`mb-1 block font-semibold ${labelStyle}`}
       >
         {props.label}
       </label>
@@ -86,7 +86,7 @@ export function NumberInput(props: NumberInputProps) {
         placeholder={`E.g. “${props.placeholder}”`}
         step={1e18}
         min={0}
-        className={`px-3 py-2 rounded-lg shadow-xs border w-full max-w-[400px] ${inputStyle}`}
+        className={`h-11 w-full max-w-[400px] rounded-lg border px-3 py-2 shadow-xs ${inputStyle}`}
       />
     </div>
   );

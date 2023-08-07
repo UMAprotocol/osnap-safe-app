@@ -40,8 +40,8 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
   return (
     <Modal {...props}>
       <div className="max-w-[520px]">
-        <h1 className="font-semibold text-lg mb-4">Advanced settings</h1>
-        <p className="text-sm text-warning-700  rounded-lg bg-warning-50 border px-3 py-2 mb-6">
+        <h1 className="mb-4 text-lg font-semibold">Advanced settings</h1>
+        <p className="mb-6 rounded-lg  border bg-warning-50 px-3 py-2 text-sm text-warning-700">
           Note that these are advanced settings that should be adjusted with
           caution.
         </p>
@@ -52,8 +52,8 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
 }
 
 const Heading = (props: { children: React.ReactNode }) => (
-  <h2 className="font-semibold flex gap-1 items-center">
+  <h2 className="flex items-center gap-1 font-semibold">
     {props.children}
-    <Icon name="help" className="text-gray-400 w-4 h-4 inline" />
+    <Icon name="help" className="inline h-4 w-4 text-gray-400" />
   </h2>
 );

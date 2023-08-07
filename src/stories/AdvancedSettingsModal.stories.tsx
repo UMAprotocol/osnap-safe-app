@@ -22,6 +22,7 @@ const Template: Story = {
     const modalProps = useAdvancedSettingsModal();
     useEffect(() => {
       modalProps.showModal();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
