@@ -1,11 +1,12 @@
 import {
+  useCallback,
   useId,
   useMemo,
   useState,
   type ChangeEventHandler,
   type ReactNode,
 } from "react";
-import { useImmer } from "use-immer";
+
 type Props = {
   label: ReactNode;
   onChange?: (value: string) => void;
@@ -13,13 +14,11 @@ type Props = {
   placeholder?: string;
 };
 
-import { useCallback } from "react";
 export function useNumberInput(props: Props) {
   const [value, setValue] = useState("");
-  const [errors, setErrors] = useImmer(new Set<string>());
   const reactId = useId();
   const id = props.id ?? reactId;
-  const placeholder = props.placeholder ?? "Enter a value";
+  const placeholder = props.placeholder ?? "1000";
 
   const { onChange: onChangeProp } = props;
   const onChange: ChangeEventHandler<HTMLInputElement> = useCallback(
@@ -31,30 +30,6 @@ export function useNumberInput(props: Props) {
     [onChangeProp],
   );
 
-  const addError = useCallback(
-    (error: string) => {
-      setErrors((errors) => {
-        errors.add(error);
-      });
-    },
-    [setErrors],
-  );
-
-  const removeError = useCallback(
-    (error: string) => {
-      setErrors((errors) => {
-        errors.delete(error);
-      });
-    },
-    [setErrors],
-  );
-
-  const clearErrors = useCallback(() => {
-    setErrors((errors) => {
-      errors.clear();
-    });
-  }, [setErrors]);
-
   return useMemo(
     () => ({
       ...props,
@@ -62,22 +37,8 @@ export function useNumberInput(props: Props) {
       onChange,
       id,
       placeholder,
-      errors: Array.from(errors),
-      addError,
-      removeError,
-      clearErrors,
     }),
-    [
-      value,
-      props,
-      id,
-      placeholder,
-      errors,
-      addError,
-      clearErrors,
-      removeError,
-      onChange,
-    ],
+    [value, props, id, placeholder, onChange],
   );
 }
 
@@ -86,19 +47,17 @@ export type NumberInputProps = ReturnType<typeof useNumberInput>;
 export function NumberInput(props: NumberInputProps) {
   return (
     <div>
-      <label htmlFor={props.id}>{props.label}</label>
+      <label htmlFor={props.id} className="font-semibold block mb-1">
+        {props.label}
+      </label>
       <input
         type="number"
         id={props.id}
         value={props.value}
         onChange={props.onChange}
-        placeholder={props.placeholder}
+        placeholder={`E.g. “${props.placeholder}”`}
+        className="px-3 py-2 rounded-lg shadow-xs border border-gray-300 bg-white text-gray-500"
       />
-      {props.errors.map((error) => (
-        <p className="text-error-500" key={error}>
-          {error}
-        </p>
-      ))}
     </div>
   );
 }

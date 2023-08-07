@@ -1,7 +1,34 @@
 import { Icon } from "@/components";
+import { useCallback } from "react";
+import { useImmer } from "use-immer";
 import { Modal, useModal } from "./Modal";
 
 export function useAdvancedSettingsModal() {
+  const [errors, setErrors] = useImmer(new Set<string>());
+
+  const addError = useCallback(
+    (error: string) => {
+      setErrors((errors) => {
+        errors.add(error);
+      });
+    },
+    [setErrors],
+  );
+
+  const removeError = useCallback(
+    (error: string) => {
+      setErrors((errors) => {
+        errors.delete(error);
+      });
+    },
+    [setErrors],
+  );
+
+  const clearErrors = useCallback(() => {
+    setErrors((errors) => {
+      errors.clear();
+    });
+  }, [setErrors]);
   return useModal();
 }
 
