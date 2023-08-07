@@ -11,8 +11,8 @@ const meta = {
       <div className="w-screen h-screen grid place-items-center bg-gray-50">
         <Story />
       </div>
-    )
-  ]
+    ),
+  ],
 } satisfies Meta<typeof OsnapCard>;
 
 export default meta;
@@ -26,7 +26,7 @@ const Template: Story = {
     status: "inactive",
     errors: [],
   },
-}
+};
 
 export const Inactive = {
   ...Template,
@@ -34,7 +34,7 @@ export const Inactive = {
     ...Template.args,
     status: "inactive",
   },
-}
+};
 
 export const Active: Story = {
   ...Template,
@@ -42,7 +42,7 @@ export const Active: Story = {
     ...Template.args,
     status: "active",
   },
-}
+};
 
 export const Error: Story = {
   ...Template,
@@ -50,7 +50,7 @@ export const Error: Story = {
     ...Template.args,
     errors: ["Something went wrong when doing something", "Error 2"],
   },
-}
+};
 
 export const NoSpace: Story = {
   ...Template,
@@ -59,4 +59,4 @@ export const NoSpace: Story = {
     spaceName: undefined,
     spaceUrl: undefined,
   },
-}
+};

@@ -1,7 +1,7 @@
 import * as abis from "./abis";
 import filter from "lodash/filter";
 // to potentially cut down on event ranges we query, hard code some deploy blocks for contracts
-export interface ContractData {
+export type ContractData = {
   network: string;
   name: string;
   address?: string;
@@ -9,7 +9,7 @@ export interface ContractData {
   subgraph?: string;
   version?: string;
   abi: unknown;
-}
+};
 // contract addresses pulled from https://github.com/UMAprotocol/protocol/tree/master/packages/core/networks
 export const contractDataList: ContractData[] = [
   // Keep in mind, OG addresses are not the module addresses for each individual space, these addresses typically

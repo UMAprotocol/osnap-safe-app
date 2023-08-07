@@ -21,7 +21,10 @@ export function OsnapCard(props: Props) {
         on the Snapshot website.
       </p>
       <p>
-        Read more about the full setup process <Link href="todo" className="text-primary-500 hover:underline">here.</Link>
+        Read more about the full setup process{" "}
+        <Link href="todo" className="text-primary-500 hover:underline">
+          here.
+        </Link>
       </p>
     </div>
   );
