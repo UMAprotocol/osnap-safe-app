@@ -11,7 +11,7 @@ export default meta;
 type Args = {
   label: ReactNode;
   onChange?: (value: string) => void;
-  errors?: string[];
+  required?: boolean;
   id?: string;
   placeholder?: string;
 };
@@ -42,6 +42,14 @@ export const Default: Story = {
   ...Template,
   args: {
     label: "Default",
+  },
+};
+
+export const Required: Story = {
+  ...Template,
+  args: {
+    label: "Required",
+    required: true,
   },
 };
 
