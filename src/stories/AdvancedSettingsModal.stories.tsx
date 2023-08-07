@@ -104,16 +104,6 @@ const Template: Story = {
   },
 };
 
-export const Activate: Story = {
+export const Default: Story = {
   ...Template,
-  args: {
-    action: "activate",
-  },
-};
-
-export const Deactivate: Story = {
-  ...Template,
-  args: {
-    action: "deactivate",
-  },
 };
