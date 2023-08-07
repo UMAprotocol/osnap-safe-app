@@ -11,7 +11,7 @@ type Props = {
   items: DropdownItem[];
   selected: DropdownItem | undefined;
   onSelect: (item: DropdownItem) => void;
-  label: ReactNode;
+  label?: ReactNode;
   disabled?: boolean;
   id?: string;
 };
@@ -20,9 +20,11 @@ export function RadioDropdown(props: Props) {
   const id = props.id ?? reactId;
   return (
     <div>
-      <label htmlFor={props.id} className={`mb-1 block font-semibold`}>
-        {props.label}
-      </label>
+      {!!props.label && (
+        <label htmlFor={props.id} className="mb-1 block font-semibold">
+          {props.label}
+        </label>
+      )}
       <DropdownMenu.Root modal={false}>
         <DropdownMenu.Trigger
           id={id}

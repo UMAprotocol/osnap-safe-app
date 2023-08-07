@@ -56,3 +56,11 @@ export const Disabled = {
     disabled: true,
   },
 };
+
+export const WithoutLabel: Story = {
+  ...Template,
+  args: {
+    ...Template.args,
+    label: undefined,
+  },
+};
