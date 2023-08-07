@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   getTokenAddress,
   publicClientToProvider,
-  defaultRules,
   oSnapIdentifier,
-  OgDeploymentTxsParams,
   ogDeploymentTxs,
 } from "../libs";
 import { useNetwork, usePublicClient, useAccount } from "wagmi";
@@ -12,46 +10,46 @@ import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
 const appsSdk = new SafeAppsSDK();
 
 export interface Config {
-  snapshotSpaceUrl: string; // full snapshot space url
-  collateralCurrency: "USDC" | "WETH"; // must add more tokens to support more collaterals
-  bondAmount: string; // bond in decimals like 3500.99 usdc
-  challengePeriodText: string; // 48 hours, 30 minutes, etc
-  challengePeriodSeconds: string; // Period text in seconds
-  quorum: string; // voting quorum
+  snapshotSpaceUrl: string | undefined; // full snapshot space url
+  collateralCurrency: "USDC" | "WETH" | undefined; // must add more tokens to support more collaterals
+  bondAmount: string | undefined; // bond in decimals like 3500.99 usdc
+  challengePeriodText: string | undefined; // 48 hours, 30 minutes, etc
+  challengePeriodSeconds: string | undefined; // Period text in seconds
+  quorum: string | undefined; // voting quorum
 }
-export function useOgDeployer(config: Partial<Config>) {
+export function useOgDeployer(defaultConfig: Config) {
   const { chain } = useNetwork();
   const { address } = useAccount();
   const publicClient = usePublicClient();
-  const [snapshotSpaceUrl, setSnapshotSpaceUrl] = useState(
-    config.snapshotSpaceUrl,
-  );
-  const [bondAmount, setBondAmount] = useState(config.bondAmount);
-  const [collateralCurrency, setCollateralCurrency] = useState(
-    config.collateralCurrency,
-  );
-  const [challengePeriodText, setChallengePeriodText] = useState(
-    config.challengePeriodText,
-  );
-  const [challengePeriodSeconds, setChallengePeriodSeconds] = useState(
-    config.challengePeriodSeconds,
-  );
-  const [quorum, setQuorum] = useState(config.quorum);
+  const [config, setConfig] = useState({ ...defaultConfig });
 
-  let deploy: undefined | (() => void) = undefined;
-  if (
-    address &&
-    bondAmount &&
-    snapshotSpaceUrl &&
-    quorum &&
-    challengePeriodText &&
-    challengePeriodSeconds &&
-    chain?.id &&
-    collateralCurrency
-  ) {
+  const deploy = useMemo(() => {
+    const {
+      bondAmount,
+      snapshotSpaceUrl,
+      quorum,
+      challengePeriodText,
+      challengePeriodSeconds,
+      collateralCurrency,
+    } = config;
+    if (
+      bondAmount === undefined ||
+      snapshotSpaceUrl === undefined ||
+      quorum === undefined ||
+      challengePeriodText === undefined ||
+      challengePeriodSeconds === undefined ||
+      collateralCurrency === undefined ||
+      address === undefined ||
+      chain?.id === undefined
+    ) {
+      // no deploy function if any of these are undefined
+      return undefined;
+    }
+
     const collateral = getTokenAddress(chain.id, collateralCurrency);
     const provider = publicClientToProvider(publicClient);
-    deploy = () => {
+
+    return () => {
       const txs = ogDeploymentTxs({
         provider,
         chainId: chain.id,
@@ -75,20 +73,10 @@ export function useOgDeployer(config: Partial<Config>) {
           console.error("deployment error", err);
         });
     };
-  }
+  }, [config]);
   return {
-    snapshotSpaceUrl,
-    setSnapshotSpaceUrl,
-    bondAmount,
-    setBondAmount,
-    collateralCurrency,
-    setCollateralCurrency,
-    challengePeriodText,
-    setChallengePeriodText,
-    challengePeriodSeconds,
-    setChallengePeriodSeconds,
-    quorum,
-    setQuorum,
+    config,
+    setConfig,
     deploy,
   };
 }
