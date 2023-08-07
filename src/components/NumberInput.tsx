@@ -8,6 +8,7 @@ import {
 import { useImmer } from "use-immer";
 type Props = {
   label: ReactNode;
+  onChange?: () => void;
   id?: string;
   placeholder?: string;
 };
@@ -19,11 +20,14 @@ export function useNumberInput(props: Props) {
   const reactId = useId();
   const id = props.id ?? reactId;
   const placeholder = props.placeholder ?? "Enter a value";
+
+  const { onChange: onChangeProp } = props;
   const onChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
+      onChangeProp?.();
       setValue(event.target.value);
     },
-    [],
+    [onChangeProp],
   );
 
   const addError = useCallback(
@@ -44,7 +48,7 @@ export function useNumberInput(props: Props) {
     [setErrors],
   );
 
-  const clearError = useCallback(() => {
+  const clearErrors = useCallback(() => {
     setErrors((errors) => {
       errors.clear();
     });
@@ -60,7 +64,7 @@ export function useNumberInput(props: Props) {
       errors: Array.from(errors),
       addError,
       removeError,
-      clearError,
+      clearErrors,
     }),
     [
       value,
@@ -69,7 +73,7 @@ export function useNumberInput(props: Props) {
       placeholder,
       errors,
       addError,
-      clearError,
+      clearErrors,
       removeError,
       onChange,
     ],
