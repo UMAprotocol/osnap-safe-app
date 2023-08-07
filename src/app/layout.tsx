@@ -1,6 +1,9 @@
 import "@rainbow-me/rainbowkit/styles.css";
 import "./globals.css";
 import { Providers } from "./providers";
+import { enableMapSet } from "immer";
+
+enableMapSet();
 
 export default function RootLayout({
   children,

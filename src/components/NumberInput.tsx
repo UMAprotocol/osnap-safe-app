@@ -5,21 +5,50 @@ import {
   type ChangeEventHandler,
   type ReactNode,
 } from "react";
+import { useImmer } from "use-immer";
 type Props = {
   label: ReactNode;
   id?: string;
   placeholder?: string;
 };
 
+import { useCallback } from "react";
 export function useNumberInput(props: Props) {
   const [value, setValue] = useState("");
-  const [errors, setErrors] = useState(new Set<string>());
+  const [errors, setErrors] = useImmer(new Set<string>());
   const reactId = useId();
   const id = props.id ?? reactId;
   const placeholder = props.placeholder ?? "Enter a value";
-  const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setValue(event.target.value);
-  };
+  const onChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (event) => {
+      setValue(event.target.value);
+    },
+    [],
+  );
+
+  const addError = useCallback(
+    (error: string) => {
+      setErrors((errors) => {
+        errors.add(error);
+      });
+    },
+    [setErrors],
+  );
+
+  const removeError = useCallback(
+    (error: string) => {
+      setErrors((errors) => {
+        errors.delete(error);
+      });
+    },
+    [setErrors],
+  );
+
+  const clearError = useCallback(() => {
+    setErrors((errors) => {
+      errors.clear();
+    });
+  }, [setErrors]);
 
   return useMemo(
     () => ({
@@ -28,8 +57,22 @@ export function useNumberInput(props: Props) {
       onChange,
       id,
       placeholder,
+      errors: Array.from(errors),
+      addError,
+      removeError,
+      clearError,
     }),
-    [value],
+    [
+      value,
+      props,
+      id,
+      placeholder,
+      errors,
+      addError,
+      clearError,
+      removeError,
+      onChange,
+    ],
   );
 }
 
@@ -46,6 +89,11 @@ export function NumberInput(props: NumberInputProps) {
         onChange={props.onChange}
         placeholder={props.placeholder}
       />
+      {props.errors.map((error) => (
+        <p className="text-error-500" key={error}>
+          {error}
+        </p>
+      ))}
     </div>
   );
 }
