@@ -86,7 +86,7 @@ export function NumberInput(props: NumberInputProps) {
         placeholder={`E.g. “${props.placeholder}”`}
         step={1e18}
         min={0}
-        className={`px-3 py-2 rounded-lg shadow-xs border ${inputStyle}`}
+        className={`px-3 py-2 rounded-lg shadow-xs border w-full max-w-[400px] ${inputStyle}`}
       />
     </div>
   );

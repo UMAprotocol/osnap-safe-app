@@ -14,6 +14,7 @@ type Args = {
   required?: boolean;
   id?: string;
   placeholder?: string;
+  validate?: (value: string) => boolean;
 };
 
 type Story = StoryObj<Args>;
@@ -94,6 +95,19 @@ export const WithChangeHandler: Story = {
       if (value === "2") {
         alert("You entered 2!");
       }
+    },
+  },
+};
+
+export const WithCustomValidator: Story = {
+  ...Template,
+  args: {
+    label: "With custom validator",
+    validate: (value) => {
+      if (value === "2") {
+        return false;
+      }
+      return true;
     },
   },
 };
