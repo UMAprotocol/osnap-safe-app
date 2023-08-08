@@ -9,14 +9,14 @@ import { useNetwork, usePublicClient, useAccount } from "wagmi";
 import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
 const appsSdk = new SafeAppsSDK();
 
-export interface Config {
+export type Config = {
   snapshotSpaceUrl: string | undefined; // full snapshot space url
   collateralCurrency: "USDC" | "WETH" | undefined; // must add more tokens to support more collaterals
   bondAmount: string | undefined; // bond in decimals like 3500.99 usdc
   challengePeriodText: string | undefined; // 48 hours, 30 minutes, etc
   challengePeriodSeconds: string | undefined; // Period text in seconds
   quorum: string | undefined; // voting quorum
-}
+};
 export function useOgDeployer(defaultConfig: Config) {
   const { chain } = useNetwork();
   const { address } = useAccount();

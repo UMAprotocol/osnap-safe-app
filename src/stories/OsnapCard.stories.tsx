@@ -8,7 +8,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="w-screen h-screen grid place-items-center bg-gray-50">
+      <div className="grid h-screen w-screen place-items-center bg-gray-50">
         <Story />
       </div>
     ),

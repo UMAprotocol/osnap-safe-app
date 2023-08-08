@@ -11,7 +11,7 @@ import {
 } from "@wagmi/chains";
 
 // to potentially cut down on event ranges we query, hard code some deploy blocks for contracts
-export interface ContractData {
+export type ContractData = {
   chainId: number;
   name: string;
   address: string;
@@ -22,7 +22,7 @@ export interface ContractData {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi?: any[] | readonly any[];
   decimals?: number;
-}
+};
 
 export const oSnapIdentifier =
   "0x4153534552545f54525554480000000000000000000000000000000000000000";
