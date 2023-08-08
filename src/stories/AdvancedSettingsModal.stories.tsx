@@ -14,7 +14,9 @@ const meta = {
 
 export default meta;
 
-type Args = { action: "activate" | "deactivate" };
+interface Args {
+  action: "activate" | "deactivate";
+}
 type Story = StoryObj<Args>;
 
 const Template: Story = {
