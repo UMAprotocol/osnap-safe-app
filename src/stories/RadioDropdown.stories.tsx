@@ -1,4 +1,4 @@
-import { RadioDropdown, type DropdownItem } from "@/components/RadioDropdown";
+import { RadioDropdown } from "@/components/RadioDropdown";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 
@@ -21,9 +21,7 @@ const Template: Story = {
     items: mockItems,
   },
   render: function Wrapper(args) {
-    const [selected, setSelected] = useState<DropdownItem | undefined>(
-      args.selected,
-    );
+    const [selected, setSelected] = useState(args.selected);
 
     return (
       <RadioDropdown {...args} selected={selected} onSelect={setSelected} />
