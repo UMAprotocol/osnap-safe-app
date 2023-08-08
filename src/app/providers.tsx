@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { arbitrum, goerli, mainnet, optimism, polygon } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
+import { SafeAutoConnect } from "../hooks/useSafeAutoConnect";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -63,7 +64,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
-        {mounted && children}
+        <SafeAutoConnect>{mounted && children}</SafeAutoConnect>
       </RainbowKitProvider>
     </WagmiConfig>
   );
