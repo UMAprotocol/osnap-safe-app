@@ -95,6 +95,63 @@ export const contractDataList: ContractData[] = [
       "https://api.thegraph.com/subgraphs/name/umaprotocol/avalanche-optimistic-governor",
     abi: abis.OptimisticGovernor,
   },
+  // optimistic oracle v3
+  {
+    // mainnet https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/mainnet.json
+    chainId: mainnet.id,
+    name: "OptimisticOracleV3",
+    address: "0xfb55F43fB9F48F63f9269DB7Dde3BbBe1ebDC0dE",
+    deployBlockNumber: 16636058,
+    abi: abis.OptimisticOracleV3,
+  },
+  {
+    //goerli https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/goerli.json
+    chainId: goerli.id,
+    name: "OptimisticOracleV3",
+    address: "0x9923D42eF695B5dd9911D05Ac944d4cAca3c4EAB",
+    deployBlockNumber: 8497481,
+    abi: abis.OptimisticOracleV3,
+  },
+  {
+    // optimism https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/optimism.json
+    chainId: optimism.id,
+    name: "OptimisticOracleV3",
+    address: "0x072819Bb43B50E7A251c64411e7aA362ce82803B",
+    abi: abis.OptimisticOracleV3,
+    deployBlockNumber: 74537234,
+  },
+  {
+    // gnosis https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/gnosis.json
+    chainId: gnosis.id,
+    name: "OptimisticOracleV3",
+    abi: abis.OptimisticOracleV3,
+    address: "0x22A9AaAC9c3184f68C7B7C95b1300C4B1D2fB95C",
+    deployBlockNumber: 27087150,
+  },
+  {
+    // polygon https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/polygon.json
+    chainId: polygon.id,
+    name: "OptimisticOracleV3",
+    address: "0x5953f2538F613E05bAED8A5AeFa8e6622467AD3D",
+    abi: abis.OptimisticOracleV3,
+    deployBlockNumber: 39331673,
+  },
+  {
+    // arbitrum https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/arbitrum.json
+    chainId: arbitrum.id,
+    name: "OptimisticOracleV3",
+    address: "0xa6147867264374F324524E30C02C331cF28aa879",
+    abi: abis.OptimisticOracleV3,
+    deployBlockNumber: 61236565,
+  },
+  {
+    // avalanche https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/avalanche.json
+    chainId: avalanche.id,
+    name: "OptimisticOracleV3",
+    address: "0xa4199d73ae206d49c966cF16c58436851f87d47F",
+    abi: abis.OptimisticOracleV3,
+    deployBlockNumber: 27816737,
+  },
   {
     chainId: mainnet.id,
     name: "USDC",
