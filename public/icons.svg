@@ -47,12 +47,43 @@
       id="settings"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="black"
+      stroke="currentcolor"
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round">
       <path
         d="M3 8L15 8M15 8C15 9.65686 16.3431 11 18 11C19.6569 11 21 9.65685 21 8C21 6.34315 19.6569 5 18 5C16.3431 5 15 6.34315 15 8ZM9 16L21 16M9 16C9 17.6569 7.65685 19 6 19C4.34315 19 3 17.6569 3 16C3 14.3431 4.34315 13 6 13C7.65685 13 9 14.3431 9 16Z" />
     </symbol>
+    <symbol
+      id="help"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentcolor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+      <path
+        d="M9.09 9C9.3251 8.33167 9.78915 7.76811 10.4 7.40913C11.0108 7.05016 11.7289 6.91894 12.4272 7.03871C13.1255 7.15849 13.7588 7.52152 14.2151 8.06353C14.6713 8.60553 14.9211 9.29152 14.92 10C14.92 12 11.92 13 11.92 13M12 17H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" />
+    </symbol>
+    <symbol
+      id="chevron-down"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentcolor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+      <path d="M6 9L12 15L18 9" />
+    </symbol>
+    <svg
+      id="chevron-up"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentcolor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+      <path d="M18 15L12 9L6 15" />
+    </svg>
   </defs>
 </svg>

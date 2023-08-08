@@ -1,6 +1,9 @@
 import "@rainbow-me/rainbowkit/styles.css";
 import "./globals.css";
 import { Providers } from "./providers";
+import { enableMapSet } from "immer";
+
+enableMapSet();
 
 export default function RootLayout({
   children,
@@ -10,7 +13,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className="bg-gray-50 bg-no-repeat bg-top"
+        className="bg-gray-50 bg-top bg-no-repeat"
         style={{
           backgroundImage: "url('/background.svg')",
         }}

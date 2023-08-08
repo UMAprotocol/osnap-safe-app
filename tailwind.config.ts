@@ -68,7 +68,11 @@ module.exports = {
       "success-800": "hsl(var(--color-success-800) / <alpha-value>)",
       "success-900": "hsl(var(--color-success-900) / <alpha-value>)",
     },
-    extend: {},
+    extend: {
+      boxShadow: {
+        xs: "0px 1px 2px 0px rgba(50, 50, 50, 0.05)",
+      },
+    },
   },
   plugins: [],
 } satisfies Config;

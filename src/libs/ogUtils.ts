@@ -38,7 +38,7 @@ export function enableModule(safeAddress: string, module: string) {
   ]);
 }
 
-export interface OgDeploymentTxsParams {
+export type OgDeploymentTxsParams = {
   provider: JsonRpcProvider;
   chainId: number;
   executor: string;
@@ -49,7 +49,7 @@ export interface OgDeploymentTxsParams {
   snapshotSpaceUrl: string;
   quorum: string;
   challengePeriodText: string;
-}
+};
 export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
   const {
     provider,

@@ -1,29 +1,32 @@
 import {
-  ConfigureOsnapModal,
-  useConfigureOsnapModal,
-} from "@/components/ConfigureOsnapModal";
+  AdvancedSettingsModal,
+  useAdvancedSettingsModal,
+} from "@/components/AdvancedSettingsModal";
 import { Meta, StoryObj } from "@storybook/react";
 import { useEffect } from "react";
 
 const meta = {
-  component: ConfigureOsnapModal,
+  component: AdvancedSettingsModal,
   parameters: {
     layout: "fullscreen",
   },
-} satisfies Meta<typeof ConfigureOsnapModal>;
+} satisfies Meta<typeof AdvancedSettingsModal>;
 
 export default meta;
 
-interface Args {
+type Args = {
   action: "activate" | "deactivate";
-}
+};
 type Story = StoryObj<Args>;
 
 const Template: Story = {
   render: function Wrapper(args) {
-    const modalProps = useConfigureOsnapModal();
+    const modalProps = useAdvancedSettingsModal({
+      snapshotSpaceUrl: "https://snapshot.org/spaces/url",
+    });
     useEffect(() => {
       modalProps.showModal();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -43,7 +46,7 @@ const Template: Story = {
         >
           Configure oSnap
         </button>
-        <ConfigureOsnapModal {...modalProps} {...args} />
+        <AdvancedSettingsModal {...modalProps} {...args} />
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Adipisci vel
         porro ea, illo molestiae, voluptates dolorem provident eius unde
         similique voluptatem tempore aspernatur obcaecati numquam officiis qui
@@ -106,16 +109,6 @@ const Template: Story = {
   },
 };
 
-export const Activate: Story = {
+export const Default: Story = {
   ...Template,
-  args: {
-    action: "activate",
-  },
-};
-
-export const Deactivate: Story = {
-  ...Template,
-  args: {
-    action: "deactivate",
-  },
 };

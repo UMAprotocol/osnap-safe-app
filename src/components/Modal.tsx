@@ -32,13 +32,14 @@ export function Modal({
 }: Props) {
   function onClick(event: MouseEvent) {
     if (!modalRef.current) return;
-    if (!isClickOnModalContent(event)) closeModal();
+    if (isClickOnBackdrop(event)) closeModal();
   }
 
-  function isClickOnModalContent(event: MouseEvent) {
+  function isClickOnBackdrop(event: MouseEvent) {
     if (!modalRef.current) return false;
+    if (event.target !== modalRef.current) return false;
     const boundingRect = modalRef.current.getBoundingClientRect();
-    return (
+    return !(
       event.clientX < boundingRect.right &&
       event.clientX > boundingRect.left &&
       event.clientY > boundingRect.top &&
@@ -51,14 +52,14 @@ export function Modal({
       ref={modalRef}
       onClick={onClick}
       {...dialogProps}
-      className="relative rounded-2xl p-6  shadow-[0px_4px_56px_0px_rgba(0,0,0,0.25)]"
+      className="relative rounded-2xl p-6 shadow-xs"
     >
       <button
         onClick={closeModal}
-        className="p-3 absolute right-1 top-1 hover:opacity-50 transition"
+        className="absolute right-1 top-1 p-3 transition hover:opacity-50"
         aria-label="Close modal"
       >
-        <Icon name="x" className="w-5 h-5"></Icon>
+        <Icon name="x" className="h-5 w-5"></Icon>
       </button>
       {children}
     </dialog>
