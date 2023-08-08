@@ -32,13 +32,14 @@ export function Modal({
 }: Props) {
   function onClick(event: MouseEvent) {
     if (!modalRef.current) return;
-    if (!isClickOnModalContent(event)) closeModal();
+    if (isClickOnBackdrop(event)) closeModal();
   }
 
-  function isClickOnModalContent(event: MouseEvent) {
+  function isClickOnBackdrop(event: MouseEvent) {
     if (!modalRef.current) return false;
+    if (event.target !== modalRef.current) return false;
     const boundingRect = modalRef.current.getBoundingClientRect();
-    return (
+    return !(
       event.clientX < boundingRect.right &&
       event.clientX > boundingRect.left &&
       event.clientY > boundingRect.top &&
