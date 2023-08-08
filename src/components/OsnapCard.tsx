@@ -1,15 +1,33 @@
+"use client";
+
+import { Icon } from "@/components";
+import { challengePeriods } from "@/constants/challengePeriods";
+import { currencies } from "@/constants/currencies";
+import { Config, useOgDeployer } from "@/hooks/useOgDeployer";
 import Link from "next/link";
-import { Icon } from ".";
+import { useSearchParams } from "next/navigation";
 
-type Props = {
-  spaceName: string | undefined;
-  spaceUrl: string | undefined;
-  status: "active" | "inactive";
-  errors: string[];
-};
+export function OsnapCard() {
+  const defaultConfig: Config = {
+    snapshotSpaceUrl: undefined,
+    collateralCurrency: currencies[0],
+    bondAmount: "1000",
+    challengePeriodSeconds: challengePeriods[0].seconds,
+    challengePeriodText: challengePeriods[0].text,
+    quorum: "5",
+  };
 
-export function OsnapCard(props: Props) {
-  const hasSpace = !!props.spaceName && !!props.spaceUrl;
+  const status = "active";
+  const errors = [] as string[];
+
+  const ogDeployerConfig = useOgDeployer(defaultConfig);
+
+  const searchParams = useSearchParams();
+
+  const spaceName = searchParams.get("spaceName");
+  const spaceUrl = searchParams.get("spaceUrl");
+
+  const hasSpace = !!spaceName && !!spaceUrl;
 
   const noSpaceCardContent = (
     <div className="border-b border-gray-200 px-6 py-5 text-gray-600">
@@ -31,9 +49,9 @@ export function OsnapCard(props: Props) {
 
   const hasSpaceCardContent = (
     <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
-      <p className="justify-self-start font-semibold">{props.spaceName}</p>
+      <p className="justify-self-start font-semibold">{spaceName}</p>
       <div className="flex gap-4">
-        <ActiveIndicator status={props.status} />{" "}
+        <ActiveIndicator status={status} />{" "}
         <button
           onClick={showAdvancedSettingsModal}
           aria-label="Show advanced settings"
@@ -49,7 +67,7 @@ export function OsnapCard(props: Props) {
   const inactiveButtonStyles = "bg-gray-950 text-white";
   const activeButtonStyles = "bg-gray-200 text-gray-700 border border-gray-200";
   const buttonStyles =
-    props.status === "active" ? activeButtonStyles : inactiveButtonStyles;
+    status === "active" ? activeButtonStyles : inactiveButtonStyles;
 
   function showAdvancedSettingsModal() {
     alert("advanced settings modal to be implemented");
@@ -75,23 +93,21 @@ export function OsnapCard(props: Props) {
         <div className="rounded-b-xl bg-gray-50 px-6 py-4">
           <CardLink
             href={
-              hasSpace && props.spaceUrl
-                ? props.spaceUrl
-                : "https://snapshot.org/spaces"
+              hasSpace && spaceUrl ? spaceUrl : "https://snapshot.org/spaces"
             }
           />
         </div>
       </div>
       {hasSpace && (
         <button
-          onClick={props.status === "active" ? deactivateOsnap : activateOsnap}
+          onClick={status === "active" ? deactivateOsnap : activateOsnap}
           className={`mb-3 mt-6 w-full  rounded-lg px-5 py-3 font-semibold shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] ${buttonStyles}`}
         >
-          {props.status === "active" ? "Deactivate" : "Activate"} oSnap
+          {status === "active" ? "Deactivate" : "Activate"} oSnap
         </button>
       )}
       <div>
-        {props.errors.map((error) => (
+        {errors.map((error) => (
           <p key={error} className="text-center text-error-500">
             {error}
           </p>

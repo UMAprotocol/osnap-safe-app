@@ -1,4 +1,6 @@
 import { Icon } from "@/components";
+import { challengePeriods } from "@/constants/challengePeriods";
+import { currencies } from "@/constants/currencies";
 import { FormEventHandler, useState } from "react";
 import { Modal, useModal } from "./Modal";
 import { NumberInput, useNumberInput } from "./NumberInput";
@@ -20,39 +22,15 @@ export type AdvancedSettingsModalProps = ReturnType<
   typeof useAdvancedSettingsModal
 >;
 
-const currencyOptions = [
-  {
-    label: "USDC",
-    value: "USDC",
-  },
-  {
-    label: "WETH",
-    value: "WETH",
-  },
-];
+const currencyOptions = currencies.map((currency) => ({
+  label: currency,
+  value: currency,
+}));
 
-const second = 1;
-const minute = 60 * second;
-const hour = 60 * minute;
-
-const challengePeriodOptions = [
-  {
-    label: "2 hours",
-    value: 2 * hour,
-  },
-  {
-    label: "8 hours",
-    value: 8 * hour,
-  },
-  {
-    label: "24 hours",
-    value: 24 * hour,
-  },
-  {
-    label: "48 hours",
-    value: 48 * hour,
-  },
-];
+const challengePeriodOptions = challengePeriods.map((period) => ({
+  label: period.text,
+  value: period.seconds,
+}));
 
 export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
   const [challengePeriod, setChallengePeriod] = useState(

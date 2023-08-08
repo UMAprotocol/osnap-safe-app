@@ -2,22 +2,26 @@ import { Icon } from "@/components";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ReactNode, useId } from "react";
 
-export type DropdownItem<TValue extends string | number> = {
-  label: string;
+export type DropdownItem<
+  TValue extends string | number,
+  TLabel extends string,
+> = {
   value: TValue;
+  label: TLabel;
 };
 
-type Props<TValue extends string | number> = {
-  items: DropdownItem<TValue>[];
-  selected: DropdownItem<TValue> | undefined;
-  onSelect: (item: DropdownItem<TValue>) => void;
+type Props<TValue extends string | number, TLabel extends string> = {
+  items: DropdownItem<TValue, TLabel>[];
+  selected: DropdownItem<TValue, TLabel> | undefined;
+  onSelect: (item: DropdownItem<TValue, TLabel>) => void;
   label?: ReactNode;
   disabled?: boolean;
   id?: string;
 };
-export function RadioDropdown<TValue extends string | number>(
-  props: Props<TValue>,
-) {
+export function RadioDropdown<
+  TValue extends string | number,
+  TLabel extends string,
+>(props: Props<TValue, TLabel>) {
   const reactId = useId();
   const id = props.id ?? reactId;
   return (

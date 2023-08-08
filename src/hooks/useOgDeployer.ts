@@ -1,27 +1,33 @@
-import { useState, useMemo } from "react";
+import {
+  ChallengePeriodSeconds,
+  ChallengePeriodText,
+} from "@/constants/challengePeriods";
+import { Currency } from "@/constants/currencies";
+import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
+import { useMemo } from "react";
+import { useImmer } from "use-immer";
+import { useAccount, useNetwork, usePublicClient } from "wagmi";
 import {
   getTokenAddress,
-  publicClientToProvider,
   oSnapIdentifier,
   ogDeploymentTxs,
+  publicClientToProvider,
 } from "../libs";
-import { useNetwork, usePublicClient, useAccount } from "wagmi";
-import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
 const appsSdk = new SafeAppsSDK();
 
 export type Config = {
   snapshotSpaceUrl: string | undefined; // full snapshot space url
-  collateralCurrency: "USDC" | "WETH" | undefined; // must add more tokens to support more collaterals
+  collateralCurrency: Currency | undefined; // must add more tokens to support more collaterals
   bondAmount: string | undefined; // bond in decimals like 3500.99 usdc
-  challengePeriodText: string | undefined; // 48 hours, 30 minutes, etc
-  challengePeriodSeconds: string | undefined; // Period text in seconds
+  challengePeriodText: ChallengePeriodText | undefined; // 48 hours, 30 minutes, etc
+  challengePeriodSeconds: ChallengePeriodSeconds | undefined; // Period text in seconds
   quorum: string | undefined; // voting quorum
 };
 export function useOgDeployer(defaultConfig: Config) {
   const { chain } = useNetwork();
   const { address } = useAccount();
   const publicClient = usePublicClient();
-  const [config, setConfig] = useState({ ...defaultConfig });
+  const [config, setConfig] = useImmer(defaultConfig);
 
   const deploy = useMemo(() => {
     const {
