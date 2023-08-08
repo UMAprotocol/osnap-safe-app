@@ -7,13 +7,15 @@ import {
   type ReactNode,
 } from "react";
 
-export type Props = {
+type Props = {
   label: ReactNode;
   onChange?: (value: string) => void;
   id?: string;
   placeholder?: string;
   required?: boolean;
   validate?: (value: string) => boolean;
+  isWholeNumber?: boolean;
+  min?: number;
 };
 
 export function useNumberInput(props: Props) {
@@ -24,6 +26,8 @@ export function useNumberInput(props: Props) {
   const id = props.id ?? reactId;
   const placeholder = props.placeholder ?? "1000";
   const valid = isValid();
+  const step = props.isWholeNumber ? 1 : 1e18;
+  const min = props.min ?? 0;
 
   const { onChange: onChangeProp } = props;
   const onChange: ChangeEventHandler<HTMLInputElement> = useCallback(
@@ -51,15 +55,17 @@ export function useNumberInput(props: Props) {
       ...props,
       value,
       onChange,
+      step,
       valid,
       id,
       placeholder,
+      min,
     }),
-    [props, value, onChange, valid, id, placeholder],
+    [props, value, onChange, step, valid, id, placeholder, min],
   );
 }
 
-export type NumberInputProps = ReturnType<typeof useNumberInput>;
+type NumberInputProps = ReturnType<typeof useNumberInput>;
 
 export function NumberInput(props: NumberInputProps) {
   const validLabelStyle = "text-black";
@@ -84,9 +90,9 @@ export function NumberInput(props: NumberInputProps) {
         value={props.value}
         onChange={props.onChange}
         placeholder={`E.g. “${props.placeholder}”`}
-        step={1e18}
-        min={0}
-        className={`h-11 w-full max-w-[400px] rounded-lg border px-3 py-2 shadow-xs ${inputStyle}`}
+        step={props.step}
+        min={props.min}
+        className={`h-11 w-full rounded-lg border px-3 py-2 shadow-xs ${inputStyle}`}
       />
     </div>
   );

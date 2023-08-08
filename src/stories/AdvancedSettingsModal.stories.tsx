@@ -19,7 +19,9 @@ type Story = StoryObj<Args>;
 
 const Template: Story = {
   render: function Wrapper(args) {
-    const modalProps = useAdvancedSettingsModal();
+    const modalProps = useAdvancedSettingsModal({
+      snapshotSpaceUrl: "https://snapshot.org/spaces/url",
+    });
     useEffect(() => {
       modalProps.showModal();
       // eslint-disable-next-line react-hooks/exhaustive-deps
