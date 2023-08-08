@@ -1,5 +1,5 @@
 import { Icon } from "@/components";
-import { useState } from "react";
+import { FormEventHandler, useState } from "react";
 import { Modal, useModal } from "./Modal";
 import { NumberInput, useNumberInput } from "./NumberInput";
 import { RadioDropdown } from "./RadioDropdown";
@@ -69,9 +69,14 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     placeholder: "5",
   });
 
+  const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    alert("Update these values in the parent component on submit");
+  };
+
   return (
     <Modal {...props}>
-      <div className="max-w-[520px]">
+      <div className="max-w-[520px] p-6">
         <h1 className="mb-4 text-lg font-semibold">Advanced settings</h1>
         <p className="mb-6 rounded-lg  border bg-warning-50 px-3 py-2 text-sm text-warning-700">
           Note that these are advanced settings that should be adjusted with
@@ -81,7 +86,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
         <p className="mb-6 rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-500 shadow-xs">
           {props.snapshotSpaceUrl}
         </p>
-        <form action="">
+        <form action="" method="dialog" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 gap-x-6 gap-y-7 md:grid-cols-2">
             <RadioDropdown
               label="Currency"
@@ -98,6 +103,12 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
             />
             <NumberInput {...quorumInputProps} />
           </div>
+          <button
+            type="submit"
+            className="mt-6 grid w-full place-items-center rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:brightness-200"
+          >
+            Save
+          </button>
         </form>
       </div>
     </Modal>
