@@ -1,6 +1,5 @@
 import { type PublicClient, type WalletClient } from "wagmi";
 import { providers } from "ethers";
-import { type HttpTransport } from "viem";
 
 export function publicClientToProvider(publicClient: PublicClient) {
   const { chain, transport } = publicClient;

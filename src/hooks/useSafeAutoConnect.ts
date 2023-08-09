@@ -1,5 +1,5 @@
 "use client";
-import { useConnect, useAccount } from "wagmi";
+import { useConnect } from "wagmi";
 import React, { useEffect } from "react";
 
 const AUTOCONNECTED_CONNECTOR_IDS = ["safe"];
