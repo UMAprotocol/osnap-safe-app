@@ -9,6 +9,7 @@ import {
 
 type Props = {
   label: ReactNode;
+  initialValue?: string;
   onChange?: (value: string) => void;
   id?: string;
   placeholder?: string;
@@ -19,7 +20,7 @@ type Props = {
 };
 
 export function useNumberInput(props: Props) {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(props.initialValue ?? "");
   const [dirty, setDirty] = useState(false);
 
   const reactId = useId();

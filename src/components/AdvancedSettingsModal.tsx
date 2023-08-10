@@ -53,16 +53,21 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
   );
   const bondInputProps = useNumberInput({
     label: "Bond amount",
+    initialValue: props.config.bondAmount,
+    required: true,
   });
   const quorumInputProps = useNumberInput({
     label: "Voting Quorum",
+    initialValue: props.config.quorum,
     isWholeNumber: true,
     min: 1,
     placeholder: "5",
+    required: true,
   });
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
+    if (!bondInputProps.valid || !quorumInputProps.valid) return;
     props.setConfig((draft) => {
       draft.challengePeriod = challengePeriod;
       draft.collateralCurrency = collateralCurrency.value;
@@ -106,7 +111,8 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
           <button
             type="submit"
             formMethod="dialog"
-            className="mt-6 grid w-full place-items-center rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:brightness-200"
+            disabled={!bondInputProps.valid || !quorumInputProps.valid}
+            className="mt-6 grid w-full place-items-center rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:brightness-200 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:brightness-100"
           >
             Save
           </button>
