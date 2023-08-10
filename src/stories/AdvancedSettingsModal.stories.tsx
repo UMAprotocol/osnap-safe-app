@@ -24,7 +24,7 @@ const meta = {
 export default meta;
 
 type Args = {
-  snapshotSpaceUrl: string;
+  spaceUrl: string;
 };
 type Story = StoryObj<Args>;
 
@@ -35,7 +35,7 @@ const Template: Story = {
       ...ogDeployerConfig,
       config: {
         ...ogDeployerConfig.config,
-        snapshotSpaceUrl: args.snapshotSpaceUrl,
+        spaceUrl: args.spaceUrl,
       },
     });
     useEffect(() => {
@@ -126,6 +126,6 @@ const Template: Story = {
 export const Default: Story = {
   ...Template,
   args: {
-    snapshotSpaceUrl: "https://snapshot.org/#/oSnap.eth",
+    spaceUrl: "https://snapshot.org/#/oSnap.eth",
   },
 };

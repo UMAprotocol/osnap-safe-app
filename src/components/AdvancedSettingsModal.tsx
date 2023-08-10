@@ -89,7 +89,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
         </p>
         <Heading>Snapshot Space URL</Heading>
         <p className="mb-6 rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-500 shadow-xs">
-          {props.config.snapshotSpaceUrl}
+          {props.config.spaceUrl}
         </p>
         <form action="" method="dialog" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 gap-x-6 gap-y-7 md:grid-cols-2">
