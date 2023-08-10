@@ -1,13 +1,21 @@
 import { Icon } from "@/components";
-import { challengePeriods } from "@/constants/challengePeriods";
+import {
+  ChallengePeriod,
+  ChallengePeriodSeconds,
+  ChallengePeriodText,
+  challengePeriods,
+} from "@/constants/challengePeriods";
 import { currencies } from "@/constants/currencies";
+import { Config } from "@/types/config";
 import { FormEventHandler, useState } from "react";
+import { Updater, useImmer } from "use-immer";
 import { Modal, useModal } from "./Modal";
 import { NumberInput, useNumberInput } from "./NumberInput";
-import { RadioDropdown } from "./RadioDropdown";
+import { DropdownItem, RadioDropdown } from "./RadioDropdown";
 
 type Props = {
-  snapshotSpaceUrl: string;
+  config: Config;
+  setConfig: Updater<Config>;
 };
 
 export function useAdvancedSettingsModal(props: Props) {
@@ -27,16 +35,37 @@ const currencyOptions = currencies.map((currency) => ({
   value: currency,
 }));
 
-const challengePeriodOptions = challengePeriods.map((period) => ({
-  label: period.text,
-  value: period.seconds,
-}));
+const challengePeriodOptions = challengePeriods.map(
+  challengePeriodToDropdownOption,
+);
+
+function challengePeriodToDropdownOption(
+  challengePeriod: ChallengePeriod | undefined,
+) {
+  if (!challengePeriod) challengePeriod = challengePeriods[0];
+
+  return {
+    label: challengePeriod.text,
+    value: challengePeriod.seconds,
+  };
+}
+
+function challengePeriodFromDropdownOption(
+  item: DropdownItem<ChallengePeriodSeconds, ChallengePeriodText>,
+) {
+  return {
+    seconds: item.value,
+    text: item.label,
+  } as ChallengePeriod;
+}
 
 export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
-  const [challengePeriod, setChallengePeriod] = useState(
-    challengePeriodOptions[0],
+  const [challengePeriod, setChallengePeriod] = useImmer(
+    props.config.challengePeriod,
   );
-  const [currency, setCurrency] = useState(currencyOptions[0]);
+  const [collateralCurrency, setCollateralCurrency] = useState(
+    currencyOptions[0],
+  );
   const bondInputProps = useNumberInput({
     label: "Bond amount",
   });
@@ -49,7 +78,12 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    alert("Update these values in the parent component on submit");
+    props.setConfig((draft) => {
+      draft.challengePeriod = challengePeriod;
+      draft.collateralCurrency = collateralCurrency.value;
+      draft.bondAmount = bondInputProps.value;
+      draft.quorum = quorumInputProps.value;
+    });
   };
 
   return (
@@ -62,22 +96,24 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
         </p>
         <Heading>Snapshot Space URL</Heading>
         <p className="mb-6 rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-500 shadow-xs">
-          {props.snapshotSpaceUrl}
+          {props.config.snapshotSpaceUrl}
         </p>
         <form action="" method="dialog" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 gap-x-6 gap-y-7 md:grid-cols-2">
             <RadioDropdown
               label="Currency"
               items={currencyOptions}
-              selected={currency}
-              onSelect={setCurrency}
+              selected={collateralCurrency}
+              onSelect={setCollateralCurrency}
             />
             <NumberInput {...bondInputProps} />
             <RadioDropdown
               label="Challenge period"
               items={challengePeriodOptions}
-              selected={challengePeriod}
-              onSelect={setChallengePeriod}
+              selected={challengePeriodToDropdownOption(challengePeriod)}
+              onSelect={(item) => {
+                setChallengePeriod(challengePeriodFromDropdownOption(item));
+              }}
             />
             <NumberInput {...quorumInputProps} />
           </div>

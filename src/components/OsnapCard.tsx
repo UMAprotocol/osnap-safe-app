@@ -1,31 +1,24 @@
 "use client";
 
 import { Icon } from "@/components";
-import { challengePeriods } from "@/constants/challengePeriods";
-import { currencies } from "@/constants/currencies";
-import { Config, useOgDeployer } from "@/hooks/useOgDeployer";
+import { useOgDeployer } from "@/hooks/useOgDeployer";
+import { Status } from "@/types/config";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import {
+  AdvancedSettingsModal,
+  useAdvancedSettingsModal,
+} from "./AdvancedSettingsModal";
 
 export function OsnapCard() {
-  const defaultConfig: Config = {
-    snapshotSpaceUrl: undefined,
-    collateralCurrency: currencies[0],
-    bondAmount: "1000",
-    challengePeriodSeconds: challengePeriods[0].seconds,
-    challengePeriodText: challengePeriods[0].text,
-    quorum: "5",
-  };
-
-  const status = "active";
+  const searchParams = useSearchParams();
+  const spaceName = searchParams.get("spaceName") ?? undefined;
+  const spaceUrl = searchParams.get("spaceUrl") ?? undefined;
+  const status = searchParams.get("status") ?? undefined;
   const errors = [] as string[];
 
-  const ogDeployerConfig = useOgDeployer(defaultConfig);
-
-  const searchParams = useSearchParams();
-
-  const spaceName = searchParams.get("spaceName");
-  const spaceUrl = searchParams.get("spaceUrl");
+  const ogDeployerConfig = useOgDeployer();
+  const advancedSettingsModalProps = useAdvancedSettingsModal(ogDeployerConfig);
 
   const hasSpace = !!spaceName && !!spaceUrl;
 
@@ -51,7 +44,7 @@ export function OsnapCard() {
     <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
       <p className="justify-self-start font-semibold">{spaceName}</p>
       <div className="flex gap-4">
-        <ActiveIndicator status={status} />{" "}
+        <ActiveIndicator status={status as Status} />{" "}
         <button
           onClick={showAdvancedSettingsModal}
           aria-label="Show advanced settings"
@@ -59,6 +52,7 @@ export function OsnapCard() {
           <Icon name="settings" className="h-5 w-5" />
         </button>
       </div>
+      <AdvancedSettingsModal {...advancedSettingsModalProps} />
     </div>
   );
 
