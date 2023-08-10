@@ -83,7 +83,7 @@ export function useOgDeployer() {
           console.error("deployment error", err);
         });
     };
-  }, [address, chain?.id, config, publicClient]);
+  }, [config, address, chain?.id, publicClient]);
   return {
     config,
     setConfig,
