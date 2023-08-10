@@ -1,15 +1,21 @@
+"use client";
+
+import { Icon } from "@/components";
+import { useOgDeployer } from "@/hooks/useOgDeployer";
 import Link from "next/link";
-import { Icon } from ".";
+import {
+  AdvancedSettingsModal,
+  useAdvancedSettingsModal,
+} from "./AdvancedSettingsModal";
 
-type Props = {
-  spaceName: string | undefined;
-  spaceUrl: string | undefined;
-  status: "active" | "inactive";
-  errors: string[];
-};
-
-export function OsnapCard(props: Props) {
-  const hasSpace = !!props.spaceName && !!props.spaceUrl;
+export function OsnapCard() {
+  const ogDeployerProps = useOgDeployer();
+  const advancedSettingsModalProps = useAdvancedSettingsModal(ogDeployerProps);
+  const spaceName = ogDeployerProps.config.snapshotSpaceName;
+  const spaceUrl = ogDeployerProps.config.snapshotSpaceUrl;
+  const activationStatus = ogDeployerProps.config.osnapActivationStatus;
+  const errors = ogDeployerProps.config.errors;
+  const hasSpace = !!spaceName && !!spaceUrl;
 
   const noSpaceCardContent = (
     <div className="border-b border-gray-200 px-6 py-5 text-gray-600">
@@ -31,9 +37,9 @@ export function OsnapCard(props: Props) {
 
   const hasSpaceCardContent = (
     <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
-      <p className="justify-self-start font-semibold">{props.spaceName}</p>
+      <p className="justify-self-start font-semibold">{spaceName}</p>
       <div className="flex gap-4">
-        <ActiveIndicator status={props.status} />{" "}
+        <ActiveIndicator status={activationStatus} />{" "}
         <button
           onClick={showAdvancedSettingsModal}
           aria-label="Show advanced settings"
@@ -41,6 +47,7 @@ export function OsnapCard(props: Props) {
           <Icon name="settings" className="h-5 w-5" />
         </button>
       </div>
+      <AdvancedSettingsModal {...advancedSettingsModalProps} />
     </div>
   );
 
@@ -49,14 +56,15 @@ export function OsnapCard(props: Props) {
   const inactiveButtonStyles = "bg-gray-950 text-white";
   const activeButtonStyles = "bg-gray-200 text-gray-700 border border-gray-200";
   const buttonStyles =
-    props.status === "active" ? activeButtonStyles : inactiveButtonStyles;
+    activationStatus === "active" ? activeButtonStyles : inactiveButtonStyles;
 
   function showAdvancedSettingsModal() {
-    alert("advanced settings modal to be implemented");
+    advancedSettingsModalProps.showModal();
   }
 
   function activateOsnap() {
-    alert("activate oSnap");
+    alert("activate oSnap\n\nsee console for config results");
+    console.log(ogDeployerProps.config);
   }
 
   function deactivateOsnap() {
@@ -75,23 +83,23 @@ export function OsnapCard(props: Props) {
         <div className="rounded-b-xl bg-gray-50 px-6 py-4">
           <CardLink
             href={
-              hasSpace && props.spaceUrl
-                ? props.spaceUrl
-                : "https://snapshot.org/spaces"
+              hasSpace && spaceUrl ? spaceUrl : "https://snapshot.org/spaces"
             }
           />
         </div>
       </div>
       {hasSpace && (
         <button
-          onClick={props.status === "active" ? deactivateOsnap : activateOsnap}
+          onClick={
+            activationStatus === "active" ? deactivateOsnap : activateOsnap
+          }
           className={`mb-3 mt-6 w-full  rounded-lg px-5 py-3 font-semibold shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] ${buttonStyles}`}
         >
-          {props.status === "active" ? "Deactivate" : "Activate"} oSnap
+          {activationStatus === "active" ? "Deactivate" : "Activate"} oSnap
         </button>
       )}
       <div>
-        {props.errors.map((error) => (
+        {errors.map((error) => (
           <p key={error} className="text-center text-error-500">
             {error}
           </p>

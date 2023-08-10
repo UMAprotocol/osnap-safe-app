@@ -1,12 +1,33 @@
-import { Icon } from "@/components";
-import { FormEventHandler, useState } from "react";
-import { Modal, useModal } from "./Modal";
-import { NumberInput, useNumberInput } from "./NumberInput";
-import { RadioDropdown } from "./RadioDropdown";
+"use client";
+
+import {
+  Icon,
+  Modal,
+  NumberInput,
+  RadioDropdown,
+  useModal,
+  useNumberInput,
+  type DropdownItem,
+} from "@/components";
+import {
+  ChallengePeriod,
+  ChallengePeriodSeconds,
+  ChallengePeriodText,
+  challengePeriods,
+  currencies,
+} from "@/constants";
+import { type OgDeployerConfig } from "@/types";
+import { useState, type FormEventHandler } from "react";
+import { useImmer, type Updater } from "use-immer";
 
 type Props = {
-  snapshotSpaceUrl: string;
+  config: OgDeployerConfig;
+  setConfig: Updater<OgDeployerConfig>;
 };
+
+export type AdvancedSettingsModalProps = ReturnType<
+  typeof useAdvancedSettingsModal
+>;
 
 export function useAdvancedSettingsModal(props: Props) {
   const modalProps = useModal();
@@ -16,62 +37,46 @@ export function useAdvancedSettingsModal(props: Props) {
   };
 }
 
-export type AdvancedSettingsModalProps = ReturnType<
-  typeof useAdvancedSettingsModal
->;
+const currencyOptions = currencies.map((currency) => ({
+  label: currency,
+  value: currency,
+}));
 
-const currencyOptions = [
-  {
-    label: "USDC",
-    value: "USDC",
-  },
-  {
-    label: "WETH",
-    value: "WETH",
-  },
-];
-
-const second = 1;
-const minute = 60 * second;
-const hour = 60 * minute;
-
-const challengePeriodOptions = [
-  {
-    label: "2 hours",
-    value: 2 * hour,
-  },
-  {
-    label: "8 hours",
-    value: 8 * hour,
-  },
-  {
-    label: "24 hours",
-    value: 24 * hour,
-  },
-  {
-    label: "48 hours",
-    value: 48 * hour,
-  },
-];
+const challengePeriodOptions = challengePeriods.map(
+  challengePeriodToDropdownOption,
+);
 
 export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
-  const [challengePeriod, setChallengePeriod] = useState(
-    challengePeriodOptions[0],
+  const [challengePeriod, setChallengePeriod] = useImmer(
+    props.config.challengePeriod,
   );
-  const [currency, setCurrency] = useState(currencyOptions[0]);
+  const [collateralCurrency, setCollateralCurrency] = useState(
+    currencyOptions[0],
+  );
   const bondInputProps = useNumberInput({
     label: "Bond amount",
+    initialValue: props.config.bondAmount,
+    required: true,
   });
   const quorumInputProps = useNumberInput({
     label: "Voting Quorum",
+    initialValue: props.config.quorum,
     isWholeNumber: true,
     min: 1,
     placeholder: "5",
+    required: true,
   });
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    alert("Update these values in the parent component on submit");
+    if (!bondInputProps.valid || !quorumInputProps.valid) return;
+    props.setConfig((draft) => {
+      draft.challengePeriod = challengePeriod;
+      draft.collateralCurrency = collateralCurrency.value;
+      draft.bondAmount = bondInputProps.value;
+      draft.quorum = quorumInputProps.value;
+    });
+    props.closeModal();
   };
 
   return (
@@ -84,28 +89,32 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
         </p>
         <Heading>Snapshot Space URL</Heading>
         <p className="mb-6 rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-500 shadow-xs">
-          {props.snapshotSpaceUrl}
+          {props.config.snapshotSpaceUrl}
         </p>
         <form action="" method="dialog" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 gap-x-6 gap-y-7 md:grid-cols-2">
             <RadioDropdown
               label="Currency"
               items={currencyOptions}
-              selected={currency}
-              onSelect={setCurrency}
+              selected={collateralCurrency}
+              onSelect={setCollateralCurrency}
             />
             <NumberInput {...bondInputProps} />
             <RadioDropdown
               label="Challenge period"
               items={challengePeriodOptions}
-              selected={challengePeriod}
-              onSelect={setChallengePeriod}
+              selected={challengePeriodToDropdownOption(challengePeriod)}
+              onSelect={(item) => {
+                setChallengePeriod(challengePeriodFromDropdownOption(item));
+              }}
             />
             <NumberInput {...quorumInputProps} />
           </div>
           <button
             type="submit"
-            className="mt-6 grid w-full place-items-center rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:brightness-200"
+            formMethod="dialog"
+            disabled={!bondInputProps.valid || !quorumInputProps.valid}
+            className="mt-6 grid w-full place-items-center rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:brightness-200 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:brightness-100"
           >
             Save
           </button>
@@ -121,3 +130,23 @@ const Heading = (props: { children: React.ReactNode }) => (
     <Icon name="help" className="inline h-4 w-4 text-gray-400" />
   </h2>
 );
+
+function challengePeriodToDropdownOption(
+  challengePeriod: ChallengePeriod | undefined,
+) {
+  if (!challengePeriod) challengePeriod = challengePeriods[0];
+
+  return {
+    label: challengePeriod.text,
+    value: challengePeriod.seconds,
+  };
+}
+
+function challengePeriodFromDropdownOption(
+  item: DropdownItem<ChallengePeriodSeconds, ChallengePeriodText>,
+) {
+  return {
+    seconds: item.value,
+    text: item.label,
+  } as ChallengePeriod;
+}

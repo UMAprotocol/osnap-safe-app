@@ -1,55 +1,65 @@
-import { useState, useMemo } from "react";
+import { challengePeriods, currencies } from "@/constants";
+import type { OgDeployerConfig, OsnapActivationStatus } from "@/types";
+import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
+import { useImmer } from "use-immer";
+import { useAccount, useNetwork, usePublicClient } from "wagmi";
 import {
   getTokenAddress,
-  publicClientToProvider,
   oSnapIdentifier,
   ogDeploymentTxs,
+  publicClientToProvider,
 } from "../libs";
-import { useNetwork, usePublicClient, useAccount } from "wagmi";
-import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
 const appsSdk = new SafeAppsSDK();
 
-export type Config = {
-  snapshotSpaceUrl: string | undefined; // full snapshot space url
-  collateralCurrency: "USDC" | "WETH" | undefined; // must add more tokens to support more collaterals
-  bondAmount: string | undefined; // bond in decimals like 3500.99 usdc
-  challengePeriodText: string | undefined; // 48 hours, 30 minutes, etc
-  challengePeriodSeconds: string | undefined; // Period text in seconds
-  quorum: string | undefined; // voting quorum
-};
-export function useOgDeployer(defaultConfig: Config) {
+export function useOgDeployer() {
+  const searchParams = useSearchParams();
+  const snapshotSpaceName = searchParams.get("spaceName") ?? undefined;
+  const snapshotSpaceUrl = searchParams.get("spaceUrl") ?? undefined;
+  const osnapActivationStatus = (searchParams.get("status") ??
+    "inactive") as OsnapActivationStatus;
+
+  const initialConfig: OgDeployerConfig = {
+    snapshotSpaceUrl,
+    snapshotSpaceName,
+    osnapActivationStatus,
+    collateralCurrency: currencies[0],
+    bondAmount: "1000",
+    challengePeriod: challengePeriods[0],
+    quorum: "5",
+    errors: [] as string[],
+  };
+
   const { chain } = useNetwork();
   const { address } = useAccount();
   const publicClient = usePublicClient();
-  const [config, setConfig] = useState({ ...defaultConfig });
+  const [config, setConfig] = useImmer(initialConfig);
 
   const deploy = useMemo(() => {
-    const {
-      bondAmount,
-      snapshotSpaceUrl,
-      quorum,
-      challengePeriodText,
-      challengePeriodSeconds,
-      collateralCurrency,
-    } = config;
-    if (
-      bondAmount === undefined ||
-      snapshotSpaceUrl === undefined ||
-      quorum === undefined ||
-      challengePeriodText === undefined ||
-      challengePeriodSeconds === undefined ||
-      collateralCurrency === undefined ||
-      address === undefined ||
-      chain?.id === undefined
-    ) {
-      // no deploy function if any of these are undefined
-      return undefined;
-    }
-
-    const collateral = getTokenAddress(chain.id, collateralCurrency);
-    const provider = publicClientToProvider(publicClient);
-
     return () => {
+      const {
+        bondAmount,
+        snapshotSpaceUrl,
+        quorum,
+        challengePeriod,
+        collateralCurrency,
+      } = config;
+
+      if (
+        bondAmount === "" ||
+        snapshotSpaceUrl === undefined ||
+        quorum === "" ||
+        address === undefined ||
+        chain?.id === undefined
+      ) {
+        // no deploy function if any of these are undefined
+        return undefined;
+      }
+
+      const collateral = getTokenAddress(chain.id, collateralCurrency);
+      const provider = publicClientToProvider(publicClient);
+
       const txs = ogDeploymentTxs({
         provider,
         chainId: chain.id,
@@ -57,10 +67,10 @@ export function useOgDeployer(defaultConfig: Config) {
         collateral: collateral,
         bond: bondAmount,
         identifier: oSnapIdentifier,
-        liveness: challengePeriodSeconds,
+        liveness: challengePeriod.seconds,
         snapshotSpaceUrl,
         quorum,
-        challengePeriodText,
+        challengePeriodText: challengePeriod.text,
       });
 
       // TODO: see if we can use wagmi instead, probably need to use multicall here

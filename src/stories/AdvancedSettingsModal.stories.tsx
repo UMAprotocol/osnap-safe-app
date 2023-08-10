@@ -1,7 +1,9 @@
+import { Providers } from "@/app/providers";
 import {
   AdvancedSettingsModal,
   useAdvancedSettingsModal,
 } from "@/components/AdvancedSettingsModal";
+import { useOgDeployer } from "@/hooks/useOgDeployer";
 import { Meta, StoryObj } from "@storybook/react";
 import { useEffect } from "react";
 
@@ -10,19 +12,31 @@ const meta = {
   parameters: {
     layout: "fullscreen",
   },
+  decorators: [
+    (Story) => (
+      <Providers>
+        <Story />
+      </Providers>
+    ),
+  ],
 } satisfies Meta<typeof AdvancedSettingsModal>;
 
 export default meta;
 
 type Args = {
-  action: "activate" | "deactivate";
+  snapshotSpaceUrl: string;
 };
 type Story = StoryObj<Args>;
 
 const Template: Story = {
   render: function Wrapper(args) {
+    const ogDeployerConfig = useOgDeployer();
     const modalProps = useAdvancedSettingsModal({
-      snapshotSpaceUrl: "https://snapshot.org/spaces/url",
+      ...ogDeployerConfig,
+      config: {
+        ...ogDeployerConfig.config,
+        snapshotSpaceUrl: args.snapshotSpaceUrl,
+      },
     });
     useEffect(() => {
       modalProps.showModal();
@@ -111,4 +125,7 @@ const Template: Story = {
 
 export const Default: Story = {
   ...Template,
+  args: {
+    snapshotSpaceUrl: "https://snapshot.org/#/oSnap.eth",
+  },
 };
