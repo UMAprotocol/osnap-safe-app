@@ -11,10 +11,11 @@ import {
 export function OsnapCard() {
   const ogDeployerProps = useOgDeployer();
   const advancedSettingsModalProps = useAdvancedSettingsModal(ogDeployerProps);
-
-  const hasSpace =
-    !!ogDeployerProps.config.snapshotSpaceName &&
-    !!ogDeployerProps.config.snapshotSpaceUrl;
+  const spaceName = ogDeployerProps.config.snapshotSpaceName;
+  const spaceUrl = ogDeployerProps.config.snapshotSpaceUrl;
+  const activationStatus = ogDeployerProps.config.osnapActivationStatus;
+  const errors = ogDeployerProps.config.errors;
+  const hasSpace = !!spaceName && !!spaceUrl;
 
   const noSpaceCardContent = (
     <div className="border-b border-gray-200 px-6 py-5 text-gray-600">
@@ -36,13 +37,9 @@ export function OsnapCard() {
 
   const hasSpaceCardContent = (
     <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
-      <p className="justify-self-start font-semibold">
-        {ogDeployerProps.config.snapshotSpaceName}
-      </p>
+      <p className="justify-self-start font-semibold">{spaceName}</p>
       <div className="flex gap-4">
-        <ActiveIndicator
-          status={ogDeployerProps.config.osnapActivationStatus}
-        />{" "}
+        <ActiveIndicator status={activationStatus} />{" "}
         <button
           onClick={showAdvancedSettingsModal}
           aria-label="Show advanced settings"
@@ -59,7 +56,7 @@ export function OsnapCard() {
   const inactiveButtonStyles = "bg-gray-950 text-white";
   const activeButtonStyles = "bg-gray-200 text-gray-700 border border-gray-200";
   const buttonStyles =
-    status === "active" ? activeButtonStyles : inactiveButtonStyles;
+    activationStatus === "active" ? activeButtonStyles : inactiveButtonStyles;
 
   function showAdvancedSettingsModal() {
     advancedSettingsModalProps.showModal();
@@ -67,7 +64,7 @@ export function OsnapCard() {
 
   function activateOsnap() {
     alert("activate oSnap\n\nsee console for config results");
-    console.log(ogDeployerProps);
+    console.log(ogDeployerProps.config);
   }
 
   function deactivateOsnap() {
@@ -86,23 +83,23 @@ export function OsnapCard() {
         <div className="rounded-b-xl bg-gray-50 px-6 py-4">
           <CardLink
             href={
-              hasSpace && ogDeployerProps.config.snapshotSpaceUrl
-                ? ogDeployerProps.config.snapshotSpaceUrl
-                : "https://snapshot.org/spaces"
+              hasSpace && spaceUrl ? spaceUrl : "https://snapshot.org/spaces"
             }
           />
         </div>
       </div>
       {hasSpace && (
         <button
-          onClick={status === "active" ? deactivateOsnap : activateOsnap}
+          onClick={
+            activationStatus === "active" ? deactivateOsnap : activateOsnap
+          }
           className={`mb-3 mt-6 w-full  rounded-lg px-5 py-3 font-semibold shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] ${buttonStyles}`}
         >
-          {status === "active" ? "Deactivate" : "Activate"} oSnap
+          {activationStatus === "active" ? "Deactivate" : "Activate"} oSnap
         </button>
       )}
       <div>
-        {ogDeployerProps.config.errors.map((error) => (
+        {errors.map((error) => (
           <p key={error} className="text-center text-error-500">
             {error}
           </p>

@@ -1,22 +1,31 @@
-import { Icon } from "@/components";
+import {
+  Icon,
+  Modal,
+  NumberInput,
+  RadioDropdown,
+  useModal,
+  useNumberInput,
+  type DropdownItem,
+} from "@/components";
 import {
   ChallengePeriod,
   ChallengePeriodSeconds,
   ChallengePeriodText,
   challengePeriods,
-} from "@/constants/challengePeriods";
-import { currencies } from "@/constants/currencies";
-import { OgDeployerConfig } from "@/types/config";
-import { FormEventHandler, useState } from "react";
-import { Updater, useImmer } from "use-immer";
-import { Modal, useModal } from "./Modal";
-import { NumberInput, useNumberInput } from "./NumberInput";
-import { DropdownItem, RadioDropdown } from "./RadioDropdown";
+  currencies,
+} from "@/constants";
+import { type OgDeployerConfig } from "@/types";
+import { useState, type FormEventHandler } from "react";
+import { useImmer, type Updater } from "use-immer";
 
 type Props = {
   config: OgDeployerConfig;
   setConfig: Updater<OgDeployerConfig>;
 };
+
+export type AdvancedSettingsModalProps = ReturnType<
+  typeof useAdvancedSettingsModal
+>;
 
 export function useAdvancedSettingsModal(props: Props) {
   const modalProps = useModal();
@@ -26,10 +35,6 @@ export function useAdvancedSettingsModal(props: Props) {
   };
 }
 
-export type AdvancedSettingsModalProps = ReturnType<
-  typeof useAdvancedSettingsModal
->;
-
 const currencyOptions = currencies.map((currency) => ({
   label: currency,
   value: currency,
@@ -38,26 +43,6 @@ const currencyOptions = currencies.map((currency) => ({
 const challengePeriodOptions = challengePeriods.map(
   challengePeriodToDropdownOption,
 );
-
-function challengePeriodToDropdownOption(
-  challengePeriod: ChallengePeriod | undefined,
-) {
-  if (!challengePeriod) challengePeriod = challengePeriods[0];
-
-  return {
-    label: challengePeriod.text,
-    value: challengePeriod.seconds,
-  };
-}
-
-function challengePeriodFromDropdownOption(
-  item: DropdownItem<ChallengePeriodSeconds, ChallengePeriodText>,
-) {
-  return {
-    seconds: item.value,
-    text: item.label,
-  } as ChallengePeriod;
-}
 
 export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
   const [challengePeriod, setChallengePeriod] = useImmer(
@@ -137,3 +122,23 @@ const Heading = (props: { children: React.ReactNode }) => (
     <Icon name="help" className="inline h-4 w-4 text-gray-400" />
   </h2>
 );
+
+function challengePeriodToDropdownOption(
+  challengePeriod: ChallengePeriod | undefined,
+) {
+  if (!challengePeriod) challengePeriod = challengePeriods[0];
+
+  return {
+    label: challengePeriod.text,
+    value: challengePeriod.seconds,
+  };
+}
+
+function challengePeriodFromDropdownOption(
+  item: DropdownItem<ChallengePeriodSeconds, ChallengePeriodText>,
+) {
+  return {
+    seconds: item.value,
+    text: item.label,
+  } as ChallengePeriod;
+}

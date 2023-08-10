@@ -1,5 +1,5 @@
-import { MouseEvent, ReactNode, useRef } from "react";
-import { Icon } from ".";
+import { Icon } from "@/components";
+import { useRef, type MouseEvent, type ReactNode } from "react";
 
 export function useModal() {
   const modalRef = useRef<HTMLDialogElement>(null);

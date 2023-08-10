@@ -1,6 +1,6 @@
 import { Icon } from "@/components";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { ReactNode, useId } from "react";
+import { useId, type ReactNode } from "react";
 
 export type DropdownItem<
   TValue extends string | number,

@@ -1,6 +1,5 @@
-import { challengePeriods } from "@/constants/challengePeriods";
-import { currencies } from "@/constants/currencies";
-import { OgDeployerConfig, OsnapActivationStatus } from "@/types/config";
+import { challengePeriods, currencies } from "@/constants";
+import type { OgDeployerConfig, OsnapActivationStatus } from "@/types";
 import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
@@ -20,7 +19,6 @@ export function useOgDeployer() {
   const snapshotSpaceUrl = searchParams.get("spaceUrl") ?? undefined;
   const osnapActivationStatus = (searchParams.get("status") ??
     "inactive") as OsnapActivationStatus;
-  const errors = [] as string[];
 
   const initialConfig: OgDeployerConfig = {
     snapshotSpaceUrl,
@@ -30,8 +28,9 @@ export function useOgDeployer() {
     bondAmount: "1000",
     challengePeriod: challengePeriods[0],
     quorum: "5",
-    errors,
+    errors: [] as string[],
   };
+
   const { chain } = useNetwork();
   const { address } = useAccount();
   const publicClient = usePublicClient();
