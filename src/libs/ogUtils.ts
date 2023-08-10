@@ -2,7 +2,7 @@
 import { ethers } from "ethers";
 import { Interface } from "@ethersproject/abi";
 import { BaseTransaction } from "@gnosis.pm/safe-apps-sdk";
-import { abi as SafeAbi } from "@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json";
+import SafeAbi from "@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json";
 import { findContract } from "./contracts";
 
 type JsonRpcProvider = ethers.providers.JsonRpcProvider;
@@ -25,17 +25,20 @@ export const parseUnits = ethers.utils.parseUnits;
 export const formatUnits = ethers.utils.formatUnits;
 
 export function defaultRules(params: {
-  snapshotSpaceUrl: string;
+  spaceUrl: string;
   quorum: string;
   challengePeriodText: string;
 }) {
-  return `I assert that this transaction proposal is valid according to the following rules: Proposals approved on Snapshot, as verified at ${params.snapshotSpaceUrl}, are valid as long as there is a minimum quorum of ${params.quorum} and a minimum voting period of ${params.challengePeriodText} and it does not appear that the Snapshot voting system is being exploited or is otherwise unavailable. The quorum and voting period are minimum requirements for a proposal to be valid. Quorum and voting period values set for a specific proposal in Snapshot should be used if they are more strict than the rules parameter. The explanation included with the on-chain proposal must be the unique IPFS identifier for the specific Snapshot proposal that was approved or a unique identifier for a proposal in an alternative voting system approved by DAO social consensus if Snapshot is being exploited or is otherwise unavailable.`;
+  return `I assert that this transaction proposal is valid according to the following rules: Proposals approved on Snapshot, as verified at ${params.spaceUrl}, are valid as long as there is a minimum quorum of ${params.quorum} and a minimum voting period of ${params.challengePeriodText} and it does not appear that the Snapshot voting system is being exploited or is otherwise unavailable. The quorum and voting period are minimum requirements for a proposal to be valid. Quorum and voting period values set for a specific proposal in Snapshot should be used if they are more strict than the rules parameter. The explanation included with the on-chain proposal must be the unique IPFS identifier for the specific Snapshot proposal that was approved or a unique identifier for a proposal in an alternative voting system approved by DAO social consensus if Snapshot is being exploited or is otherwise unavailable.`;
 }
 
 export function enableModule(safeAddress: string, module: string) {
-  return buildTransaction(new Interface(SafeAbi), safeAddress, "enableModule", [
-    module,
-  ]);
+  return buildTransaction(
+    new Interface(SafeAbi.abi),
+    safeAddress,
+    "enableModule",
+    [module],
+  );
 }
 
 export type OgDeploymentTxsParams = {
@@ -46,7 +49,7 @@ export type OgDeploymentTxsParams = {
   bond: string;
   identifier: string;
   liveness: string;
-  snapshotSpaceUrl: string;
+  spaceUrl: string;
   quorum: string;
   challengePeriodText: string;
 };
@@ -59,7 +62,7 @@ export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
     bond,
     identifier,
     liveness,
-    snapshotSpaceUrl,
+    spaceUrl,
     quorum,
     challengePeriodText,
   } = params;
@@ -77,7 +80,7 @@ export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
     throw new Error(`Unable to find abi for Optimistic Governor`);
 
   const bondWei = parseUnits(bond, decimals).toString();
-  const rules = defaultRules({ snapshotSpaceUrl, quorum, challengePeriodText });
+  const rules = defaultRules({ spaceUrl, quorum, challengePeriodText });
 
   const {
     transaction: daoModuleDeploymentTx,
