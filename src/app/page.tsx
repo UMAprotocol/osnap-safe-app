@@ -1,4 +1,4 @@
-import { OsnapCard } from "@/components/OsnapCard";
+import { OsnapCard } from "@/components";
 
 export default function Page() {
   return (
