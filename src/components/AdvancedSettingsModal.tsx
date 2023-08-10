@@ -6,7 +6,7 @@ import {
   challengePeriods,
 } from "@/constants/challengePeriods";
 import { currencies } from "@/constants/currencies";
-import { Config } from "@/types/config";
+import { OgDeployerConfig } from "@/types/config";
 import { FormEventHandler, useState } from "react";
 import { Updater, useImmer } from "use-immer";
 import { Modal, useModal } from "./Modal";
@@ -14,8 +14,8 @@ import { NumberInput, useNumberInput } from "./NumberInput";
 import { DropdownItem, RadioDropdown } from "./RadioDropdown";
 
 type Props = {
-  config: Config;
-  setConfig: Updater<Config>;
+  config: OgDeployerConfig;
+  setConfig: Updater<OgDeployerConfig>;
 };
 
 export function useAdvancedSettingsModal(props: Props) {
@@ -84,6 +84,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
       draft.bondAmount = bondInputProps.value;
       draft.quorum = quorumInputProps.value;
     });
+    props.closeModal();
   };
 
   return (
@@ -119,6 +120,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
           </div>
           <button
             type="submit"
+            formMethod="dialog"
             className="mt-6 grid w-full place-items-center rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:brightness-200"
           >
             Save

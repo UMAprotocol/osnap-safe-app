@@ -1,7 +1,8 @@
 import { challengePeriods } from "@/constants/challengePeriods";
 import { currencies } from "@/constants/currencies";
-import { Config } from "@/types/config";
+import { OgDeployerConfig, OsnapActivationStatus } from "@/types/config";
 import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
+import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { useImmer } from "use-immer";
 import { useAccount, useNetwork, usePublicClient } from "wagmi";
@@ -14,17 +15,27 @@ import {
 const appsSdk = new SafeAppsSDK();
 
 export function useOgDeployer() {
-  const defaultConfig: Config = {
-    snapshotSpaceUrl: undefined,
+  const searchParams = useSearchParams();
+  const snapshotSpaceName = searchParams.get("spaceName") ?? undefined;
+  const snapshotSpaceUrl = searchParams.get("spaceUrl") ?? undefined;
+  const osnapActivationStatus = (searchParams.get("status") ??
+    "inactive") as OsnapActivationStatus;
+  const errors = [] as string[];
+
+  const initialConfig: OgDeployerConfig = {
+    snapshotSpaceUrl,
+    snapshotSpaceName,
+    osnapActivationStatus,
     collateralCurrency: currencies[0],
     bondAmount: "1000",
     challengePeriod: challengePeriods[0],
     quorum: "5",
+    errors,
   };
   const { chain } = useNetwork();
   const { address } = useAccount();
   const publicClient = usePublicClient();
-  const [config, setConfig] = useImmer(defaultConfig);
+  const [config, setConfig] = useImmer(initialConfig);
 
   const deploy = useMemo(() => {
     return () => {
@@ -37,11 +48,9 @@ export function useOgDeployer() {
       } = config;
 
       if (
-        bondAmount === undefined ||
+        bondAmount === "" ||
         snapshotSpaceUrl === undefined ||
-        quorum === undefined ||
-        challengePeriod === undefined ||
-        collateralCurrency === undefined ||
+        quorum === "" ||
         address === undefined ||
         chain?.id === undefined
       ) {
