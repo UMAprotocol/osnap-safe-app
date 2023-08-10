@@ -1,3 +1,5 @@
+"use client";
+
 import { Icon } from "@/components";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useId, type ReactNode } from "react";

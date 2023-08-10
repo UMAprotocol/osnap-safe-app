@@ -1,3 +1,5 @@
+"use client";
+
 import { Icon } from "@/components";
 import { useRef, type MouseEvent, type ReactNode } from "react";
 
