@@ -3,7 +3,6 @@
 import {
   RainbowKitProvider,
   connectorsForWallets,
-  getDefaultWallets,
 } from "@rainbow-me/rainbowkit";
 import { safeWallet } from "@rainbow-me/rainbowkit/wallets";
 import { useEffect, useState } from "react";
@@ -23,20 +22,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [publicProvider()],
 );
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_APP_ID ?? "";
-
-const { wallets } = getDefaultWallets({
-  appName: "OSnap Safe App",
-  projectId,
-  chains,
-});
-
-const demoAppInfo = {
-  appName: "OSnap Safe App",
-};
-
 const connectors = connectorsForWallets([
-  ...wallets,
   {
     groupName: "Gnosis Safe",
     wallets: [
@@ -63,7 +49,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
+      <RainbowKitProvider chains={chains}>
         <SafeAutoConnect>{mounted && children}</SafeAutoConnect>
       </RainbowKitProvider>
     </WagmiConfig>
