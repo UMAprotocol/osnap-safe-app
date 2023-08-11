@@ -17,16 +17,20 @@ export function useOsnapCard() {
   const isActive = searchParams.get("status") === "active";
 
   const { config, setConfig, deploy } = useOgDeployer({ isActive, spaceUrl });
+  // if we can deploy or osnap is active, we should assume theres a space, otherwise show landing
+  const hasSpace = !!spaceName && !!spaceUrl && (!!deploy || isActive);
   const advancedSettingsModalProps = useAdvancedSettingsModal({
     config,
     setConfig,
   });
+
   return {
     deploy,
     spaceName,
     spaceUrl,
     isActive,
     advancedSettingsModalProps,
+    hasSpace,
     // TODO: add some kind of error propogation
     errors: [],
   };
@@ -37,6 +41,7 @@ export function OsnapCard() {
     spaceName,
     spaceUrl,
     isActive,
+    hasSpace,
     advancedSettingsModalProps,
     errors,
     deploy,
@@ -106,7 +111,7 @@ export function OsnapCard() {
         {cardContent}
         <div className="rounded-b-xl bg-gray-50 px-6 py-4">
           <CardLink
-            href={deploy && spaceUrl ? spaceUrl : "https://snapshot.org/spaces"}
+            href={spaceUrl ? spaceUrl : "https://snapshot.org/spaces"}
           />
         </div>
       </div>
