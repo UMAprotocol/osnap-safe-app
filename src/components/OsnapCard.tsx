@@ -16,17 +16,14 @@ export function useOsnapCard() {
   // TODO: turn this into a query to og subgraph, placeholder for now
   const isActive = searchParams.get("status") === "active";
 
+  const { config, setConfig, deploy } = useOgDeployer({ isActive, spaceUrl });
   // if we can deploy or osnap is active, we should assume theres a space, otherwise show landing
   const hasSpace = !!spaceName && !!spaceUrl && (!!deploy || isActive);
-
-  const { config, setConfig, deploy } = useOgDeployer({ isActive, spaceUrl });
   const advancedSettingsModalProps = useAdvancedSettingsModal({
     config,
     setConfig,
   });
-  // activate: we have everything we need to deploy
-  // deactivate: we know safe has osnap enabled
-  // landing: user landed here outside normal flow, show landing page
+
   return {
     deploy,
     spaceName,
@@ -84,7 +81,7 @@ export function OsnapCard() {
     </div>
   );
 
-  const cardContent = hasSpace ? hasSpaceCardContent : noSpaceCardContent;
+  const cardContent = deploy ? hasSpaceCardContent : noSpaceCardContent;
 
   const inactiveButtonStyles = "bg-gray-950 text-white";
   const activeButtonStyles = "bg-gray-200 text-gray-700 border border-gray-200";
@@ -118,7 +115,7 @@ export function OsnapCard() {
           />
         </div>
       </div>
-      {hasSpace && (
+      {deploy && (
         <button
           onClick={isActive ? deactivateOsnap : activateOsnap}
           className={`mb-3 mt-6 w-full  rounded-lg px-5 py-3 font-semibold shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] ${buttonStyles}`}
