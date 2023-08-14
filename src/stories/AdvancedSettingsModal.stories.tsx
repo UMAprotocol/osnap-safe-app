@@ -3,7 +3,7 @@ import {
   AdvancedSettingsModal,
   useAdvancedSettingsModal,
 } from "@/components/AdvancedSettingsModal";
-import { useOgDeployer } from "@/hooks/useOgDeployer";
+import { useOgDeployer } from "@/hooks";
 import { Meta, StoryObj } from "@storybook/react";
 import { useEffect } from "react";
 

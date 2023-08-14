@@ -2,8 +2,11 @@
 
 import { useSearchParams } from "next/navigation";
 import { Icon } from "@/components";
-import { useOgDeployer } from "@/hooks/useOgDeployer";
-import { useOSnap } from "@/hooks/useOSnap";
+import {
+  useOgDeployer,
+  useOgState,
+  useOgDisabler,
+} from "@/hooks/OptimisticGovernor";
 import Link from "next/link";
 import {
   AdvancedSettingsModal,
@@ -15,10 +18,11 @@ export function useOsnapCard() {
   const spaceName = searchParams.get("spaceName") ?? undefined;
   const spaceUrl = searchParams.get("spaceUrl") ?? undefined;
 
-  const { enabled } = useOSnap();
+  const { enabled } = useOgState();
   const isActive = enabled.data ?? false;
 
-  const { config, setConfig, deploy } = useOgDeployer({ isActive, spaceUrl });
+  const { config, setConfig, deploy } = useOgDeployer({ spaceUrl });
+  const { disable } = useOgDisabler();
   // if we can deploy or osnap is active, we should assume theres a space, otherwise show landing
   const hasSpace = !!spaceName && !!spaceUrl && (!!deploy || isActive);
   const advancedSettingsModalProps = useAdvancedSettingsModal({
@@ -28,6 +32,7 @@ export function useOsnapCard() {
 
   return {
     deploy,
+    disable,
     spaceName,
     spaceUrl,
     isActive,
@@ -47,6 +52,7 @@ export function OsnapCard() {
     advancedSettingsModalProps,
     errors,
     deploy,
+    disable,
   } = useOsnapCard();
 
   const noSpaceCardContent = (
@@ -94,12 +100,11 @@ export function OsnapCard() {
   }
 
   function activateOsnap() {
-    deploy && deploy();
+    deploy?.();
   }
 
   function deactivateOsnap() {
-    // TODO: add deactivation logic
-    alert("deactivate oSnap");
+    disable?.();
   }
 
   return (
@@ -117,7 +122,7 @@ export function OsnapCard() {
           />
         </div>
       </div>
-      {deploy && (
+      {hasSpace && (
         <button
           onClick={isActive ? deactivateOsnap : activateOsnap}
           className={`mb-3 mt-6 w-full  rounded-lg px-5 py-3 font-semibold shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] ${buttonStyles}`}
