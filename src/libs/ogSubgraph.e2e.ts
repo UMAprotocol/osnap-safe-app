@@ -13,9 +13,9 @@ test("ogSubgraph", (t) => {
     t.equals(address, moduleAddress);
     t.end();
   });
-  t.test("isOsnapEnabled", async (t) => {
+  t.test("isEnabled", async (t) => {
     const client = Client(5);
-    const enabled = await client.isOSnapEnabled(testSafe);
+    const enabled = await client.isEnabled(testSafe);
     t.ok(enabled);
     t.end();
   });
