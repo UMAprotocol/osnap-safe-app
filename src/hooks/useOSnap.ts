@@ -19,7 +19,7 @@ export function useRules(params: { address: string; chainId: number }) {
     functionName: "rules",
     args: [ogContract.address as Address],
     // ensure we only run this hook if exactly one of each contract was returned
-    enabled: ogContracts.length === 1,
+    enabled: !!address && ogContracts.length === 1,
   });
 }
 
