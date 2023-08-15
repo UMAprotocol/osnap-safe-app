@@ -24,7 +24,7 @@ export function Client(chainId: number) {
     const response = await request<Response>(subgraph, gqlQuery);
     return ethers.utils.getAddress(response.safe.optimisticGovernor.id);
   }
-  async function isOSnapEnabled(safeAddress: string): Promise<boolean> {
+  async function isEnabled(safeAddress: string): Promise<boolean> {
     type Response = {
       safe: { isOptimisticGovernorEnabled: boolean };
     };
@@ -40,7 +40,7 @@ export function Client(chainId: number) {
   }
 
   return {
-    isOSnapEnabled,
+    isEnabled,
     getModuleAddress,
   };
 }

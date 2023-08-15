@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { Icon } from "@/components";
 import { useOgDeployer } from "@/hooks/useOgDeployer";
+import { useOSnap } from "@/hooks/useOSnap";
 import Link from "next/link";
 import {
   AdvancedSettingsModal,
@@ -13,8 +14,9 @@ export function useOsnapCard() {
   const searchParams = useSearchParams();
   const spaceName = searchParams.get("spaceName") ?? undefined;
   const spaceUrl = searchParams.get("spaceUrl") ?? undefined;
-  // TODO: turn this into a query to og subgraph, placeholder for now
-  const isActive = searchParams.get("status") === "active";
+
+  const { enabled } = useOSnap();
+  const isActive = enabled.data ?? false;
 
   const { config, setConfig, deploy } = useOgDeployer({ isActive, spaceUrl });
   // if we can deploy or osnap is active, we should assume theres a space, otherwise show landing
@@ -81,7 +83,7 @@ export function OsnapCard() {
     </div>
   );
 
-  const cardContent = deploy ? hasSpaceCardContent : noSpaceCardContent;
+  const cardContent = hasSpace ? hasSpaceCardContent : noSpaceCardContent;
 
   const inactiveButtonStyles = "bg-gray-950 text-white";
   const activeButtonStyles = "bg-gray-200 text-gray-700 border border-gray-200";
