@@ -8,7 +8,7 @@ export function publicClientToProvider(publicClient: PublicClient) {
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
-  return new providers.JsonRpcProvider(transport.url as string, network);
+  return new providers.StaticJsonRpcProvider(transport.url as string, network);
 }
 export function walletClientToSigner(walletClient: WalletClient) {
   const { account, chain, transport } = walletClient;

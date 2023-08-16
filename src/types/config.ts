@@ -7,5 +7,4 @@ export type OgDeployerConfig = {
   bondAmount: string; // bond in decimals like 3500.99 usdc
   challengePeriod: ChallengePeriod; // challenge period in seconds with text description
   quorum: string; // voting quorum
-  isActive: boolean; // is osnap active on space already?
 };

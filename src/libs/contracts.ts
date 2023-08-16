@@ -259,3 +259,6 @@ export function getTokenAddress(
 ): string {
   return findContract({ chainId, name }).address;
 }
+
+// https://github.com/gnosis/zodiac-safe-app/blob/0dfeac33b8e95af566c7ff7b1d77017071219599/packages/app/src/services/helpers.ts#L4C1-L4C71
+export const AddressOne = "0x0000000000000000000000000000000000000001";
