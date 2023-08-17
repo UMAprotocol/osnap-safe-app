@@ -3,9 +3,12 @@ import useSwr from "swr";
 import { useAccount, useNetwork, usePublicClient } from "wagmi";
 import { useMemo } from "react";
 import { useImmer } from "use-immer";
+import { readContract, Address } from "@wagmi/core";
+import { isAddress } from "@/libs";
 
-import { challengePeriods, currencies } from "@/constants";
+import { challengePeriods, currencies, isCurrency } from "@/constants";
 import type { OgDeployerConfig } from "@/types";
+import { findContract } from "@/libs";
 
 import { Client as SubgraphClient } from "../libs/ogSubgraph";
 import {
@@ -105,11 +108,139 @@ export function useOgState() {
     assert(address, "Requires safe address");
     return SubgraphClient(chain.id).getModuleAddress(address);
   });
+  const collateral = useSwr(
+    `/collateral/${moduleAddress.data}/${chain?.id}`,
+    async () => {
+      assert(chain?.id, "Requires chainid");
+      assert(moduleAddress.data, "Requires OG module address");
+      assert(
+        isAddress(moduleAddress.data),
+        "Module Address is not an address: " + moduleAddress.data,
+      );
+      const { abi } = findContract({
+        name: "OptimisticGovernor",
+        chainId: chain.id,
+      });
+      assert(abi, "Missing abi");
+      const collateralAddress = (await readContract({
+        address: moduleAddress.data,
+        abi,
+        functionName: "collateral",
+        args: [],
+      })) as Address;
+      const tokenInfo = findContract({
+        address: collateralAddress,
+        chainId: chain.id,
+      });
+      assert(
+        isCurrency(tokenInfo.name),
+        "Unsupported currency: " + tokenInfo.name,
+      );
+      return tokenInfo.name;
+    },
+  );
+  const liveness = useSwr(
+    `/liveness/${moduleAddress.data}/${chain?.id}`,
+    async () => {
+      assert(chain?.id, "Requires chainid");
+      assert(moduleAddress.data, "Requires OG module address");
+      assert(
+        isAddress(moduleAddress.data),
+        "Module Address is not an address: " + moduleAddress.data,
+      );
+      const { abi } = findContract({
+        name: "OptimisticGovernor",
+        chainId: chain.id,
+      });
+      assert(abi, "Missing abi");
+      const liveness: bigint = (await readContract({
+        address: moduleAddress.data,
+        abi,
+        functionName: "liveness",
+        args: [],
+      })) as bigint;
+      return liveness.toString();
+    },
+  );
+  const bond = useSwr(
+    `/bondAmount/${moduleAddress.data}/${chain?.id}`,
+    async () => {
+      assert(chain?.id, "Requires chainid");
+      assert(moduleAddress.data, "Requires OG module address");
+      assert(
+        isAddress(moduleAddress.data),
+        "Module Address is not an address: " + moduleAddress.data,
+      );
+      const { abi } = findContract({
+        name: "OptimisticGovernor",
+        chainId: chain.id,
+      });
+      assert(abi, "Missing abi");
+      const bondAmount = (await readContract({
+        address: moduleAddress.data,
+        abi,
+        functionName: "bondAmount",
+        args: [],
+      })) as bigint;
+      return bondAmount.toString();
+    },
+  );
+  const rules = useSwr(
+    `/rules/${moduleAddress.data}/${chain?.id}`,
+    async () => {
+      assert(chain?.id, "Requires chainid");
+      assert(moduleAddress.data, "Requires OG module address");
+      assert(
+        isAddress(moduleAddress.data),
+        "Module Address is not an address: " + moduleAddress.data,
+      );
+      const { abi } = findContract({
+        name: "OptimisticGovernor",
+        chainId: chain.id,
+      });
+      assert(abi, "Missing abi");
+      const rules = (await readContract({
+        address: moduleAddress.data,
+        abi,
+        functionName: "rules",
+        args: [],
+      })) as string;
+      return rules;
+    },
+  );
+  const optimisticOracleV3Address = useSwr(
+    `/optimisticOracleV3Address/${moduleAddress.data}/${chain?.id}`,
+    async () => {
+      assert(chain?.id, "Requires chainid");
+      assert(moduleAddress.data, "Requires OG module address");
+      assert(
+        isAddress(moduleAddress.data),
+        "Module Address is not an address: " + moduleAddress.data,
+      );
+      const { abi } = findContract({
+        name: "OptimisticGovernor",
+        chainId: chain.id,
+      });
+      assert(abi, "Missing abi");
+      const optimisticOracleV3 = (await readContract({
+        address: moduleAddress.data,
+        abi,
+        functionName: "optimisticOracleV3",
+        args: [],
+      })) as Address;
+      return optimisticOracleV3;
+    },
+  );
   return {
     chain,
     safeAddress: address,
     enabled,
     moduleAddress,
+    collateral,
+    liveness,
+    bond,
+    rules,
+    optimisticOracleV3Address,
   };
 }
 

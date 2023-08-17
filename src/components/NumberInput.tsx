@@ -19,6 +19,7 @@ type Props = {
   validate?: (value: string) => boolean;
   isWholeNumber?: boolean;
   min?: number;
+  disabled?: boolean | undefined;
 };
 
 export function useNumberInput(props: Props) {
@@ -31,6 +32,7 @@ export function useNumberInput(props: Props) {
   const valid = isValid();
   const step = props.isWholeNumber ? 1 : 1e18;
   const min = props.min ?? 0;
+  const disabled = props.disabled ?? false;
 
   const { onChange: onChangeProp } = props;
   const onChange: ChangeEventHandler<HTMLInputElement> = useCallback(
@@ -63,8 +65,9 @@ export function useNumberInput(props: Props) {
       id,
       placeholder,
       min,
+      disabled,
     }),
-    [props, value, onChange, step, valid, id, placeholder, min],
+    [props, value, onChange, step, valid, id, placeholder, min, disabled],
   );
 }
 
@@ -95,7 +98,8 @@ export function NumberInput(props: NumberInputProps) {
         placeholder={`E.g. “${props.placeholder}”`}
         step={props.step}
         min={props.min}
-        className={`h-11 w-full rounded-lg border px-3 py-2 shadow-xs ${inputStyle}`}
+        className={`h-11 w-full rounded-lg border px-3 py-2 shadow-xs ${inputStyle} disabled:cursor-not-allowed disabled:opacity-50`}
+        disabled={props.disabled}
       />
     </div>
   );

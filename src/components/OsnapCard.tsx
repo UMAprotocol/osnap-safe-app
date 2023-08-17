@@ -8,6 +8,7 @@ import {
   useOgDisabler,
 } from "@/hooks/OptimisticGovernor";
 import Link from "next/link";
+import { findChallengePeriod } from "@/constants";
 import {
   AdvancedSettingsModal,
   useAdvancedSettingsModal,
@@ -18,10 +19,18 @@ export function useOsnapCard() {
   const spaceName = searchParams.get("spaceName") ?? undefined;
   const spaceUrl = searchParams.get("spaceUrl") ?? undefined;
 
-  const { enabled } = useOgState();
+  const { enabled, collateral, liveness, bond } = useOgState();
   const isActive = enabled.data ?? false;
 
-  const { config, setConfig, deploy } = useOgDeployer({ spaceUrl });
+  const { config, setConfig, deploy } = useOgDeployer({
+    spaceUrl,
+    collateralCurrency: isActive ? collateral.data : undefined,
+    bondAmount: isActive ? bond.data : undefined,
+    challengePeriod:
+      isActive && liveness.data
+        ? findChallengePeriod(liveness.data)
+        : undefined,
+  });
   const { disable } = useOgDisabler();
   // if we can deploy or osnap is active, we should assume theres a space, otherwise show landing
   const hasSpace = !!spaceName && !!spaceUrl && (!!deploy || isActive);
@@ -85,7 +94,10 @@ export function OsnapCard() {
           <Icon name="settings" className="h-5 w-5" />
         </button>
       </div>
-      <AdvancedSettingsModal {...advancedSettingsModalProps} />
+      <AdvancedSettingsModal
+        {...advancedSettingsModalProps}
+        disabled={isActive}
+      />
     </div>
   );
 

@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { Interface } from "@ethersproject/abi";
 import { BaseTransaction } from "@gnosis.pm/safe-apps-sdk";
 import SafeAbi from "@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json";
-import { findContract, AddressOne } from "./contracts";
+import { findContract, AddressOne, type Address } from "./contracts";
 import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
 
 export const safeSdk = new SafeAppsSDK();
@@ -60,7 +60,7 @@ export type OgDeploymentTxsParams = {
   provider: JsonRpcProvider;
   chainId: number;
   executor: string;
-  collateral: string;
+  collateral: Address;
   bond: string;
   identifier: string;
   liveness: string;

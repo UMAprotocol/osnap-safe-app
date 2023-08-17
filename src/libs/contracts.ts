@@ -9,18 +9,24 @@ import {
   arbitrum,
   avalanche,
 } from "@wagmi/chains";
+import { type Address } from "wagmi";
+
+export { Address };
+export function isAddress(addr: string): addr is Address {
+  return addr.startsWith("0x");
+}
 
 // to potentially cut down on event ranges we query, hard code some deploy blocks for contracts
 export type ContractData = {
   chainId: number;
   name: string;
-  address: string;
+  address: Address;
   deployBlockNumber?: number;
   subgraph?: string;
   version?: string;
   // anys required by call into external library
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  abi?: any[] | readonly any[];
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  abi?: readonly {}[];
   decimals?: number;
 };
 
@@ -256,7 +262,7 @@ export function getFinderAddress(chainId: number): string {
 export function getTokenAddress(
   chainId: number,
   name: "WETH" | "USDC",
-): string {
+): Address {
   return findContract({ chainId, name }).address;
 }
 
