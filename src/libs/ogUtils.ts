@@ -2,9 +2,9 @@
 import { ethers } from "ethers";
 import { Interface } from "@ethersproject/abi";
 import { BaseTransaction } from "@gnosis.pm/safe-apps-sdk";
-import SafeAbi from "@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json";
 import { findContract, AddressOne, type Address } from "./contracts";
 import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
+import { OptimisticGovernorAbi, SafeAbi } from "./abis";
 
 export const safeSdk = new SafeAppsSDK();
 
@@ -40,7 +40,7 @@ export function disableModule(safeAddress: string, module: string) {
   const prevModule = AddressOne;
   const args = [prevModule, module];
   return buildTransaction(
-    new Interface(SafeAbi.abi),
+    new Interface(SafeAbi),
     safeAddress,
     "disableModule",
     args,
@@ -48,12 +48,9 @@ export function disableModule(safeAddress: string, module: string) {
 }
 
 export function enableModule(safeAddress: string, module: string) {
-  return buildTransaction(
-    new Interface(SafeAbi.abi),
-    safeAddress,
-    "enableModule",
-    [module],
-  );
+  return buildTransaction(new Interface(SafeAbi), safeAddress, "enableModule", [
+    module,
+  ]);
 }
 
 export type OgDeploymentTxsParams = {
@@ -91,8 +88,6 @@ export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
     name: "OptimisticGovernor",
     chainId,
   });
-  if (ogContract.abi === undefined)
-    throw new Error(`Unable to find abi for Optimistic Governor`);
 
   const bondWei = parseUnits(bond, decimals).toString();
   const rules = defaultRules({ spaceUrl, quorum, challengePeriodText });
@@ -102,7 +97,7 @@ export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
     expectedModuleAddress: daoModuleExpectedAddress,
   } = deployAndSetUpCustomModule(
     ogContract.address,
-    ogContract.abi,
+    OptimisticGovernorAbi,
     {
       types: ["address", "address", "uint256", "string", "bytes32", "uint64"],
       values: [executor, collateral, bondWei, rules, identifier, liveness],

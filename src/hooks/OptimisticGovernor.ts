@@ -3,8 +3,8 @@ import useSwr from "swr";
 import { useAccount, useNetwork, usePublicClient } from "wagmi";
 import { useMemo } from "react";
 import { useImmer } from "use-immer";
-import { readContract, Address } from "@wagmi/core";
-import { isAddress } from "@/libs";
+import { readContract } from "@wagmi/core";
+import { isAddress, OptimisticGovernorAbi } from "@/libs";
 
 import { challengePeriods, currencies, isCurrency } from "@/constants";
 import type { OgDeployerConfig } from "@/types";
@@ -117,17 +117,15 @@ export function useOgState() {
         isAddress(moduleAddress.data),
         "Module Address is not an address: " + moduleAddress.data,
       );
-      const { abi } = findContract({
-        name: "OptimisticGovernor",
-        chainId: chain.id,
-      });
-      assert(abi, "Missing abi");
-      const collateralAddress = (await readContract({
+      const collateralAddress = await readContract({
         address: moduleAddress.data,
-        abi,
+        abi: OptimisticGovernorAbi,
         functionName: "collateral",
-        args: [],
-      })) as Address;
+      });
+      assert(
+        isAddress(collateralAddress),
+        "collateralAddress not properly defined address: " + collateralAddress,
+      );
       const tokenInfo = findContract({
         address: collateralAddress,
         chainId: chain.id,
@@ -148,17 +146,11 @@ export function useOgState() {
         isAddress(moduleAddress.data),
         "Module Address is not an address: " + moduleAddress.data,
       );
-      const { abi } = findContract({
-        name: "OptimisticGovernor",
-        chainId: chain.id,
-      });
-      assert(abi, "Missing abi");
-      const liveness: bigint = (await readContract({
+      const liveness: bigint = await readContract({
         address: moduleAddress.data,
-        abi,
+        abi: OptimisticGovernorAbi,
         functionName: "liveness",
-        args: [],
-      })) as bigint;
+      });
       return liveness.toString();
     },
   );
@@ -171,17 +163,11 @@ export function useOgState() {
         isAddress(moduleAddress.data),
         "Module Address is not an address: " + moduleAddress.data,
       );
-      const { abi } = findContract({
-        name: "OptimisticGovernor",
-        chainId: chain.id,
-      });
-      assert(abi, "Missing abi");
-      const bondAmount = (await readContract({
+      const bondAmount = await readContract({
         address: moduleAddress.data,
-        abi,
+        abi: OptimisticGovernorAbi,
         functionName: "bondAmount",
-        args: [],
-      })) as bigint;
+      });
       return bondAmount.toString();
     },
   );
@@ -194,17 +180,11 @@ export function useOgState() {
         isAddress(moduleAddress.data),
         "Module Address is not an address: " + moduleAddress.data,
       );
-      const { abi } = findContract({
-        name: "OptimisticGovernor",
-        chainId: chain.id,
-      });
-      assert(abi, "Missing abi");
-      const rules = (await readContract({
+      const rules = await readContract({
         address: moduleAddress.data,
-        abi,
+        abi: OptimisticGovernorAbi,
         functionName: "rules",
-        args: [],
-      })) as string;
+      });
       return rules;
     },
   );
@@ -217,17 +197,11 @@ export function useOgState() {
         isAddress(moduleAddress.data),
         "Module Address is not an address: " + moduleAddress.data,
       );
-      const { abi } = findContract({
-        name: "OptimisticGovernor",
-        chainId: chain.id,
-      });
-      assert(abi, "Missing abi");
-      const optimisticOracleV3 = (await readContract({
+      const optimisticOracleV3 = await readContract({
         address: moduleAddress.data,
-        abi,
+        abi: OptimisticGovernorAbi,
         functionName: "optimisticOracleV3",
-        args: [],
-      })) as Address;
+      });
       return optimisticOracleV3;
     },
   );

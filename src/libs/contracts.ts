@@ -1,4 +1,3 @@
-import * as abis from "./abis";
 import filter from "lodash/filter";
 import {
   mainnet,
@@ -12,21 +11,18 @@ import {
 import { type Address } from "wagmi";
 
 export { Address };
-export function isAddress(addr: string): addr is Address {
-  return addr.startsWith("0x");
+export function isAddress(addr: unknown): addr is Address {
+  return typeof addr === "string" && addr.startsWith("0x");
 }
 
 // to potentially cut down on event ranges we query, hard code some deploy blocks for contracts
 export type ContractData = {
-  chainId: number;
   name: string;
+  chainId: number;
   address: Address;
   deployBlockNumber?: number;
   subgraph?: string;
   version?: string;
-  // anys required by call into external library
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  abi?: readonly {}[];
   decimals?: number;
 };
 
@@ -44,7 +40,6 @@ export const contractDataList: ContractData[] = [
     subgraph:
       "https://api.thegraph.com/subgraphs/name/umaprotocol/mainnet-optimistic-governor",
     deployBlockNumber: 16890621,
-    abi: abis.OptimisticGovernor,
   },
   {
     //goerli
@@ -54,7 +49,6 @@ export const contractDataList: ContractData[] = [
     deployBlockNumber: 8700589,
     subgraph:
       "https://api.thegraph.com/subgraphs/name/md0x/goerli-optimistic-governor",
-    abi: abis.OptimisticGovernor,
   },
   {
     // optimism
@@ -63,7 +57,6 @@ export const contractDataList: ContractData[] = [
     address: "0x357fe84E438B3150d2F68AB9167bdb8f881f3b9A",
     subgraph:
       "https://api.thegraph.com/subgraphs/name/umaprotocol/optimism-optimistic-governor",
-    abi: abis.OptimisticGovernor,
   },
   {
     // gnosis
@@ -71,7 +64,6 @@ export const contractDataList: ContractData[] = [
     name: "OptimisticGovernor",
     subgraph:
       "https://api.thegraph.com/subgraphs/name/umaprotocol/gnosis-optimistic-governor",
-    abi: abis.OptimisticGovernor,
     address: "0x972396Ab668cd11dc1F6321A5ae30c6A8d3759F0",
   },
   {
@@ -81,7 +73,6 @@ export const contractDataList: ContractData[] = [
     address: "0x3Cc4b597E9c3f51288c6Cd0c087DC14c3FfdD966",
     subgraph:
       "https://api.thegraph.com/subgraphs/name/umaprotocol/polygon-optimistic-governor",
-    abi: abis.OptimisticGovernor,
   },
   {
     // arbitrum
@@ -90,7 +81,6 @@ export const contractDataList: ContractData[] = [
     address: "0x30679ca4ea452d3df8a6c255a806e08810321763",
     subgraph:
       "https://api.thegraph.com/subgraphs/name/umaprotocol/arbitrum-optimistic-governor",
-    abi: abis.OptimisticGovernor,
   },
   {
     // avalanche
@@ -99,7 +89,6 @@ export const contractDataList: ContractData[] = [
     address: "0xEF8b46765ae805537053C59f826C3aD61924Db45",
     subgraph:
       "https://api.thegraph.com/subgraphs/name/umaprotocol/avalanche-optimistic-governor",
-    abi: abis.OptimisticGovernor,
   },
   // optimistic oracle v3
   {
@@ -108,7 +97,6 @@ export const contractDataList: ContractData[] = [
     name: "OptimisticOracleV3",
     address: "0xfb55F43fB9F48F63f9269DB7Dde3BbBe1ebDC0dE",
     deployBlockNumber: 16636058,
-    abi: abis.OptimisticOracleV3,
   },
   {
     //goerli https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/goerli.json
@@ -116,21 +104,18 @@ export const contractDataList: ContractData[] = [
     name: "OptimisticOracleV3",
     address: "0x9923D42eF695B5dd9911D05Ac944d4cAca3c4EAB",
     deployBlockNumber: 8497481,
-    abi: abis.OptimisticOracleV3,
   },
   {
     // optimism https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/optimism.json
     chainId: optimism.id,
     name: "OptimisticOracleV3",
     address: "0x072819Bb43B50E7A251c64411e7aA362ce82803B",
-    abi: abis.OptimisticOracleV3,
     deployBlockNumber: 74537234,
   },
   {
     // gnosis https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/gnosis.json
     chainId: gnosis.id,
     name: "OptimisticOracleV3",
-    abi: abis.OptimisticOracleV3,
     address: "0x22A9AaAC9c3184f68C7B7C95b1300C4B1D2fB95C",
     deployBlockNumber: 27087150,
   },
@@ -139,7 +124,6 @@ export const contractDataList: ContractData[] = [
     chainId: polygon.id,
     name: "OptimisticOracleV3",
     address: "0x5953f2538F613E05bAED8A5AeFa8e6622467AD3D",
-    abi: abis.OptimisticOracleV3,
     deployBlockNumber: 39331673,
   },
   {
@@ -147,7 +131,6 @@ export const contractDataList: ContractData[] = [
     chainId: arbitrum.id,
     name: "OptimisticOracleV3",
     address: "0xa6147867264374F324524E30C02C331cF28aa879",
-    abi: abis.OptimisticOracleV3,
     deployBlockNumber: 61236565,
   },
   {
@@ -155,7 +138,6 @@ export const contractDataList: ContractData[] = [
     chainId: avalanche.id,
     name: "OptimisticOracleV3",
     address: "0xa4199d73ae206d49c966cF16c58436851f87d47F",
-    abi: abis.OptimisticOracleV3,
     deployBlockNumber: 27816737,
   },
   {
