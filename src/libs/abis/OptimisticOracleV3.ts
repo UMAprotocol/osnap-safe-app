@@ -1,4 +1,4 @@
-export default [
+export const OptimisticOracleV3Abi = [
   {
     inputs: [
       {

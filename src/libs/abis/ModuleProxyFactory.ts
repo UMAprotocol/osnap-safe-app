@@ -1,4 +1,4 @@
-export default [
+export const ModuleProxyFactoryAbi = [
   {
     inputs: [],
     name: "FailedInitialization",
