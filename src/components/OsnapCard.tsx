@@ -75,7 +75,7 @@ export function OsnapCard() {
       </p>
       <p>
         Read more about the full setup process{" "}
-        <Link href="todo" className="text-primary-500 hover:underline">
+        <Link href="https://uma.xyz/osnap" className="text-primary-500 hover:underline">
           here.
         </Link>
       </p>
