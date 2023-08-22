@@ -81,14 +81,15 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
       // TODO: see if we can use wagmi instead, probably need to use multicall here
       safeSdk.txs
         .send({ txs })
-        .then((result) => {
-          console.log("deployment successful", result);
+        .then(() => {
+          // show that osnap is now enabled once tx completes
+          return enabled.mutate(true, { revalidate: false });
         })
         .catch((err) => {
           console.error("deployment error", err);
         });
     };
-  }, [config, address, chain?.id, publicClient, isActive]);
+  }, [config, address, chain?.id, publicClient, isActive, enabled]);
   return {
     config,
     setConfig,
@@ -219,7 +220,7 @@ export function useOgState() {
 }
 
 export function useOgDisabler() {
-  const { moduleAddress, safeAddress } = useOgState();
+  const { moduleAddress, safeAddress, enabled } = useOgState();
   const ogAddress = moduleAddress.data;
 
   const disable = useMemo(() => {
@@ -230,17 +231,17 @@ export function useOgDisabler() {
 
     return () => {
       const txs = [disableModule(safeAddress, ogAddress)];
-      // TODO: see if we can use wagmi instead, probably need to use multicall here
       safeSdk.txs
         .send({ txs })
-        .then((result) => {
-          console.log("disabling successful", result);
+        .then(() => {
+          // show that osnap is now disabled once tx completes
+          return enabled.mutate(false, { revalidate: false });
         })
         .catch((err) => {
           console.error("disabling error", err);
         });
     };
-  }, [safeAddress, ogAddress]);
+  }, [safeAddress, ogAddress, enabled]);
   return {
     disable,
   };
