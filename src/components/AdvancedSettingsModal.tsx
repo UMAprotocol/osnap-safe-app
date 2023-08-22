@@ -23,6 +23,7 @@ import { useImmer, type Updater } from "use-immer";
 type Props = {
   config: OgDeployerConfig;
   setConfig: Updater<OgDeployerConfig>;
+  disabled?: boolean | undefined;
 };
 
 export type AdvancedSettingsModalProps = ReturnType<
@@ -47,6 +48,7 @@ const challengePeriodOptions = challengePeriods.map(
 );
 
 export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
+  const { disabled = false } = props;
   const [challengePeriod, setChallengePeriod] = useImmer(
     props.config.challengePeriod,
   );
@@ -83,12 +85,14 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     <Modal {...props}>
       <div className="max-w-[520px] p-6">
         <h1 className="mb-4 text-lg font-semibold">Advanced settings</h1>
-        <p className="mb-6 rounded-lg  border bg-warning-50 px-3 py-2 text-sm text-warning-700">
-          Note that these are advanced settings that should be adjusted with
-          caution.
-        </p>
+        {!disabled && (
+          <p className="mb-6 rounded-lg  border bg-warning-50 px-3 py-2 text-sm text-warning-700">
+            Note that these are advanced settings that should be adjusted with
+            caution.
+          </p>
+        )}
         <Heading>Snapshot Space URL</Heading>
-        <p className="mb-6 rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-500 shadow-xs">
+        <p className="mb-6 rounded-lg border border-gray-300 bg-white px-3 py-2 opacity-50 shadow-xs">
           {props.config.spaceUrl}
         </p>
         <form action="" method="dialog" onSubmit={onSubmit}>
@@ -98,8 +102,9 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
               items={currencyOptions}
               selected={collateralCurrency}
               onSelect={setCollateralCurrency}
+              disabled
             />
-            <NumberInput {...bondInputProps} />
+            <NumberInput {...bondInputProps} disabled />
             <RadioDropdown
               label="Challenge period"
               items={challengePeriodOptions}
@@ -107,17 +112,20 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
               onSelect={(item) => {
                 setChallengePeriod(challengePeriodFromDropdownOption(item));
               }}
+              disabled
             />
-            <NumberInput {...quorumInputProps} />
+            <NumberInput {...quorumInputProps} disabled />
           </div>
-          <button
-            type="submit"
-            formMethod="dialog"
-            disabled={!bondInputProps.valid || !quorumInputProps.valid}
-            className="mt-6 grid w-full place-items-center rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:brightness-200 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:brightness-100"
-          >
-            Save
-          </button>
+          {!disabled && (
+            <button
+              type="submit"
+              formMethod="dialog"
+              disabled={!bondInputProps.valid || !quorumInputProps.valid}
+              className="mt-6 grid w-full place-items-center rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:brightness-200 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:brightness-100"
+            >
+              Save
+            </button>
+          )}
         </form>
       </div>
     </Modal>

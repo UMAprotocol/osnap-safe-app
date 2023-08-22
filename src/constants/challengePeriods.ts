@@ -21,3 +21,9 @@ export type ChallengePeriods = typeof challengePeriods;
 export type ChallengePeriod = ChallengePeriods[number];
 export type ChallengePeriodText = ChallengePeriod["text"];
 export type ChallengePeriodSeconds = ChallengePeriod["seconds"];
+
+export function findChallengePeriod(
+  seconds: string,
+): ChallengePeriod | undefined {
+  return challengePeriods.find((x) => x.seconds === seconds);
+}
