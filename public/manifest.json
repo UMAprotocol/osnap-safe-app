@@ -4,7 +4,7 @@
   "description": "oSnap is an innovative tool that seamlessly integrates with Snapshot, enabling direct on-chain execution of DAO governance decisions.",
   "icons":[
     {
-      "src": "osnap-symbol.svg",
+      "src": "osnap-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }
