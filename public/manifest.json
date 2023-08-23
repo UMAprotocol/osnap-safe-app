@@ -1,5 +1,12 @@
 {
-  "name": "OSnap Safe App",
-  "description": "A description of what your app do",
-  "iconPath": "vercel.svg"
+  "name": "oSnap",
+  "short_name": "oSnap",
+  "description": "oSnap is an innovative tool that seamlessly integrates with Snapshot, enabling direct on-chain execution of DAO governance decisions.",
+  "icons":[
+    {
+      "src": "osnap-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
 }

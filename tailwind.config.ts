@@ -69,6 +69,9 @@ module.exports = {
       "success-900": "hsl(var(--color-success-900) / <alpha-value>)",
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-halyard-display)", "sans-serif"],
+      },
       boxShadow: {
         xs: "0px 1px 2px 0px rgba(50, 50, 50, 0.05)",
       },
