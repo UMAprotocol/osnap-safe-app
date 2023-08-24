@@ -125,6 +125,16 @@
   --success-900: hsl(var(--color-success-900));
 }
 
+html {
+  /* Making sure text size is only controlled by font-size */
+  -webkit-text-size-adjust: none;
+  /* Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+  /* https://marco.org/2012/11/15/text-rendering-optimize-legibility */
+  text-rendering: optimizeSpeed;
+  font-family: var(--font-halyard-display);
+}
+
 dialog::backdrop {
   background-color: hsl(0 0% 0% / 0.8);
   backdrop-filter: blur(4px);
