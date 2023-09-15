@@ -1,7 +1,7 @@
 {
   "name": "oSnap",
   "short_name": "oSnap",
-  "description": "oSnap is an innovative tool that seamlessly integrates with Snapshot, enabling direct on-chain execution of DAO governance decisions.",
+  "description": "oSnap is a DAO tool integrating with Snapshot for on-chain governance. It decentralizes processes, ensures quick decisions, and is secured by UMA.",
   "icons":[
     {
       "src": "osnap-icon.svg",
