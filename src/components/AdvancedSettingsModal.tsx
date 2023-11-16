@@ -80,15 +80,14 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     });
     props.closeModal();
   };
-
   return (
     <Modal {...props}>
       <div className="max-w-[520px] p-6">
         <h1 className="mb-4 text-lg font-semibold">Advanced settings</h1>
         {!disabled && (
           <p className="mb-6 rounded-lg  border bg-warning-50 px-3 py-2 text-sm text-warning-700">
-            Note that these are advanced settings that should be adjusted with
-            caution.
+            Defaults are set to allow automatic proposal execution therefore
+            these settings should be adjusted with caution!
           </p>
         )}
         <Heading>Snapshot Space URL</Heading>
@@ -98,13 +97,13 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
         <form action="" method="dialog" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 gap-x-6 gap-y-7 md:grid-cols-2">
             <RadioDropdown
-              label="Currency"
+              label="Bond Currency"
               items={currencyOptions}
               selected={collateralCurrency}
               onSelect={setCollateralCurrency}
-              disabled
+              disabled={disabled}
             />
-            <NumberInput {...bondInputProps} disabled />
+            <NumberInput {...bondInputProps} disabled={disabled} />
             <RadioDropdown
               label="Challenge period"
               items={challengePeriodOptions}
@@ -112,9 +111,9 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
               onSelect={(item) => {
                 setChallengePeriod(challengePeriodFromDropdownOption(item));
               }}
-              disabled
+              disabled={disabled}
             />
-            <NumberInput {...quorumInputProps} disabled />
+            <NumberInput {...quorumInputProps} disabled={disabled} />
           </div>
           {!disabled && (
             <button
