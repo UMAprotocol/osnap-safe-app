@@ -24,7 +24,7 @@ export function ogDeployerConfigDefaults(
   config?: Partial<OgDeployerConfig>,
 ): OgDeployerConfig {
   return {
-    bondAmount: config?.bondAmount ?? "1000",
+    bondAmount: config?.bondAmount ?? "2",
     challengePeriod: config?.challengePeriod ?? challengePeriods[0],
     collateralCurrency: config?.collateralCurrency ?? currencies[0],
     quorum: config?.quorum ?? "5",

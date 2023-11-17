@@ -1,19 +1,24 @@
 export const challengePeriods = [
+  // first one is the default that will show up in dropdown
   {
-    text: "2 hours",
-    seconds: "7200",
+    text: "5 Days",
+    seconds: "432000",
   },
   {
-    text: "8 hours",
-    seconds: "28800",
+    text: "72 hours",
+    seconds: "259200",
+  },
+  {
+    text: "48 hours",
+    seconds: "172800",
   },
   {
     text: "24 hours",
     seconds: "86400",
   },
   {
-    text: "48 hours",
-    seconds: "172800",
+    text: "8 hours",
+    seconds: "28800",
   },
 ] as const;
 
