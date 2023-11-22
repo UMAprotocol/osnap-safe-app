@@ -28,6 +28,7 @@ export function ogDeployerConfigDefaults(
     challengePeriod: config?.challengePeriod ?? challengePeriods[0],
     collateralCurrency: config?.collateralCurrency ?? currencies[0],
     quorum: config?.quorum ?? "5",
+    votingPeriodHours: config?.votingPeriodHours ?? "24",
     spaceUrl: config?.spaceUrl ?? undefined,
   };
 }
@@ -44,6 +45,7 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
       bondAmount,
       spaceUrl,
       quorum,
+      votingPeriodHours,
       challengePeriod,
       collateralCurrency,
     } = config;
@@ -53,6 +55,7 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
       !bondAmount.length ||
       !spaceUrl?.length ||
       !quorum.length ||
+      !votingPeriodHours.length ||
       !collateralCurrency.length ||
       isActive ||
       address === undefined ||
@@ -76,7 +79,7 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
         liveness: challengePeriod.seconds,
         spaceUrl,
         quorum,
-        challengePeriodText: challengePeriod.text,
+        votingPeriodHours,
       });
       // TODO: see if we can use wagmi instead, probably need to use multicall here
       safeSdk.txs
