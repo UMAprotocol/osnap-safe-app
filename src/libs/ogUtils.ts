@@ -30,9 +30,9 @@ export const formatUnits = ethers.utils.formatUnits;
 export function defaultRules(params: {
   spaceUrl: string;
   quorum: string;
-  challengePeriodText: string;
+  votingPeriodHours: string;
 }) {
-  return `I assert that this transaction proposal is valid according to the following rules: Proposals approved on Snapshot, as verified at ${params.spaceUrl}, are valid as long as there is a minimum quorum of ${params.quorum} and a minimum voting period of ${params.challengePeriodText} and it does not appear that the Snapshot voting system is being exploited or is otherwise unavailable. The quorum and voting period are minimum requirements for a proposal to be valid. Quorum and voting period values set for a specific proposal in Snapshot should be used if they are more strict than the rules parameter. The explanation included with the on-chain proposal must be the unique IPFS identifier for the specific Snapshot proposal that was approved or a unique identifier for a proposal in an alternative voting system approved by DAO social consensus if Snapshot is being exploited or is otherwise unavailable.`;
+  return `I assert that this transaction proposal is valid according to the following rules: Proposals approved on Snapshot, as verified at ${params.spaceUrl}, are valid as long as there is a minimum quorum of ${params.quorum} and a minimum voting period of ${params.votingPeriodHours} hours and it does not appear that the Snapshot voting system is being exploited or is otherwise unavailable. The quorum and voting period are minimum requirements for a proposal to be valid. Quorum and voting period values set for a specific proposal in Snapshot should be used if they are more strict than the rules parameter. The explanation included with the on-chain proposal must be the unique IPFS identifier for the specific Snapshot proposal that was approved or a unique identifier for a proposal in an alternative voting system approved by DAO social consensus if Snapshot is being exploited or is otherwise unavailable.`;
 }
 
 // https://github.com/gnosis/zodiac-safe-app/blob/0dfeac33b8e95af566c7ff7b1d77017071219599/packages/app/src/services/index.ts#L477
@@ -63,7 +63,7 @@ export type OgDeploymentTxsParams = {
   liveness: string;
   spaceUrl: string;
   quorum: string;
-  challengePeriodText: string;
+  votingPeriodHours: string;
 };
 export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
   const {
@@ -76,7 +76,7 @@ export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
     liveness,
     spaceUrl,
     quorum,
-    challengePeriodText,
+    votingPeriodHours,
   } = params;
 
   // make sure we have the collateral defined in contracts
@@ -90,7 +90,7 @@ export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
   });
 
   const bondWei = parseUnits(bond, decimals).toString();
-  const rules = defaultRules({ spaceUrl, quorum, challengePeriodText });
+  const rules = defaultRules({ spaceUrl, quorum, votingPeriodHours });
 
   const {
     transaction: daoModuleDeploymentTx,

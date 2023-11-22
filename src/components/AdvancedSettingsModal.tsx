@@ -68,15 +68,29 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     placeholder: "5",
     required: true,
   });
+  const votingPeriodInputProps = useNumberInput({
+    label: "Voting Period hours",
+    initialValue: props.config.votingPeriodHours,
+    isWholeNumber: true,
+    min: 1,
+    placeholder: "24",
+    required: true,
+  });
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    if (!bondInputProps.valid || !quorumInputProps.valid) return;
+    if (
+      !bondInputProps.valid ||
+      !quorumInputProps.valid ||
+      !votingPeriodInputProps.valid
+    )
+      return;
     props.setConfig((draft) => {
       draft.challengePeriod = challengePeriod;
       draft.collateralCurrency = collateralCurrency.value;
       draft.bondAmount = bondInputProps.value;
       draft.quorum = quorumInputProps.value;
+      draft.votingPeriodHours = votingPeriodInputProps.value;
     });
     props.closeModal();
   };
@@ -104,6 +118,8 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
               disabled={disabled}
             />
             <NumberInput {...bondInputProps} disabled={disabled} />
+            <NumberInput {...quorumInputProps} disabled={disabled} />
+            <NumberInput {...votingPeriodInputProps} disabled={disabled} />
             <RadioDropdown
               label="Challenge period"
               items={challengePeriodOptions}
@@ -113,13 +129,16 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
               }}
               disabled={disabled}
             />
-            <NumberInput {...quorumInputProps} disabled={disabled} />
           </div>
           {!disabled && (
             <button
               type="submit"
               formMethod="dialog"
-              disabled={!bondInputProps.valid || !quorumInputProps.valid}
+              disabled={
+                !bondInputProps.valid ||
+                !quorumInputProps.valid ||
+                !votingPeriodInputProps.valid
+              }
               className="mt-6 grid w-full place-items-center rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:brightness-200 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:brightness-100"
             >
               Save
