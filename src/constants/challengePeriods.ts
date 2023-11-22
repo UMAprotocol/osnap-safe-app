@@ -1,10 +1,6 @@
 export const challengePeriods = [
   // first one is the default that will show up in dropdown
   {
-    text: "5 Days",
-    seconds: "432000",
-  },
-  {
     text: "72 hours",
     seconds: "259200",
   },
