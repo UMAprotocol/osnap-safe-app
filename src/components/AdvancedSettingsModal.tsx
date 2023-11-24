@@ -64,7 +64,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     label: "Voting Quorum",
     initialValue: props.config.quorum,
     isWholeNumber: true,
-    min: 1,
+    min: parseInt(props.config.quorum),
     placeholder: "5",
     required: true,
   });
@@ -72,7 +72,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     label: "Voting Period hours",
     initialValue: props.config.votingPeriodHours,
     isWholeNumber: true,
-    min: 1,
+    min: parseInt(props.config.votingPeriodHours),
     placeholder: "24",
     required: true,
   });
