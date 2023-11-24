@@ -13,6 +13,8 @@ import {
   AdvancedSettingsModal,
   useAdvancedSettingsModal,
 } from "./AdvancedSettingsModal";
+import { getSnapshotDefaultVotingParameters } from "@/libs/snapshot";
+import { useEffect } from "react";
 
 export function useOsnapCard() {
   const searchParams = useSearchParams();
@@ -31,6 +33,20 @@ export function useOsnapCard() {
         ? findChallengePeriod(liveness.data)
         : undefined,
   });
+
+  // only fetch defaults once on mount
+  useEffect(() => {
+    void (async () => {
+      const defaults = await getSnapshotDefaultVotingParameters(spaceUrl);
+      setConfig((draft) => {
+        draft.quorum = defaults.quorum.toString();
+        draft.votingPeriodHours = defaults.period.toString();
+      });
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  console.info("config", config);
   const { disable } = useOgDisabler();
   // if we can deploy or osnap is active, we should assume theres a space, otherwise show landing
   const hasSpace = !!spaceName && !!spaceUrl && (!!deploy || isActive);

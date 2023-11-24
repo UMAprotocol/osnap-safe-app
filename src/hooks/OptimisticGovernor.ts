@@ -1,7 +1,7 @@
 import assert from "assert";
 import useSwr from "swr";
 import { useAccount, useNetwork, usePublicClient } from "wagmi";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useImmer } from "use-immer";
 import { readContract } from "@wagmi/core";
 import { isAddress, OptimisticGovernorAbi } from "@/libs";
