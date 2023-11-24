@@ -46,7 +46,6 @@ export function useOsnapCard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.info("config", config);
   const { disable } = useOgDisabler();
   // if we can deploy or osnap is active, we should assume theres a space, otherwise show landing
   const hasSpace = !!spaceName && !!spaceUrl && (!!deploy || isActive);
