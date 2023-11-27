@@ -60,8 +60,6 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
     },
   );
 
-  console.info("config", config);
-
   const deploy = useMemo(() => {
     const {
       bondAmount,
