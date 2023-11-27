@@ -13,17 +13,16 @@ type VotingResponse = {
     voting: {
       period: number | null; // Int => seconds
       quorum: number | null; // Float
-      delay: number | null; // Int => seconds
     };
   };
 };
 
-type SpaceUrl = string | undefined;
+export type Defaults = {
+  period: number;
+  quorum: number;
+};
 
-export const getSnapshotDefaultVotingParameters = async (
-  spaceUrl: SpaceUrl,
-) => {
-  assert(spaceUrl, "No spaceUrl");
+export const getSnapshotDefaultVotingParameters = async (spaceUrl: string) => {
   // get full space name from url
   const spaceName = spaceUrl.split("/").at(-1);
   assert(spaceName?.length, "Empty space name not allowed");
@@ -33,8 +32,8 @@ export const getSnapshotDefaultVotingParameters = async (
     query defaultParameters {
         space (id: "${decodedString}") {
             voting {
-            period
-            quorum
+              period
+              quorum
             }
         }
     }`;

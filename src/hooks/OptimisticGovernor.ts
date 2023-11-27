@@ -19,6 +19,8 @@ import {
   ogDeploymentTxs,
   publicClientToProvider,
 } from "../libs";
+import { Defaults, getSnapshotDefaultVotingParameters } from "@/libs/snapshot";
+import useSWR from "swr";
 
 export function ogDeployerConfigDefaults(
   config?: Partial<OgDeployerConfig>,
@@ -39,6 +41,26 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
   const [config, setConfig] = useImmer(ogDeployerConfigDefaults(initialConfig));
   const { enabled } = useOgState();
   const isActive = enabled.data ?? false;
+
+  // fetch default space settings from snapshot space
+  useSWR<Defaults>(
+    initialConfig?.spaceUrl ?? null,
+    getSnapshotDefaultVotingParameters,
+    {
+      revalidateOnFocus: false,
+      refreshWhenOffline: false,
+      refreshWhenHidden: false,
+      refreshInterval: 0,
+      onSuccess(data) {
+        setConfig((draft) => {
+          draft.quorum = data.quorum.toString();
+          draft.votingPeriodHours = data.period.toString();
+        });
+      },
+    },
+  );
+
+  console.info("config", config);
 
   const deploy = useMemo(() => {
     const {
