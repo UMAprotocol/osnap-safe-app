@@ -65,7 +65,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     initialValue: props.config.quorum,
     isWholeNumber: true,
     min: parseInt(props.config.quorum),
-    placeholder: "5",
+    placeholder: parseInt(props.config.quorum).toString(),
     required: true,
   });
   const votingPeriodInputProps = useNumberInput({
@@ -73,7 +73,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     initialValue: props.config.votingPeriodHours,
     isWholeNumber: true,
     min: parseInt(props.config.votingPeriodHours),
-    placeholder: "24",
+    placeholder: parseInt(props.config.votingPeriodHours).toString(),
     required: true,
   });
 
