@@ -18,11 +18,14 @@ type VotingResponse = {
 };
 
 export type Defaults = {
+  spaceUrl: string;
   period: number;
   quorum: number;
 };
 
-export const getSnapshotDefaultVotingParameters = async (spaceUrl: string) => {
+export const getSnapshotDefaultVotingParameters = async (
+  spaceUrl: string,
+): Promise<Defaults> => {
   // get full space name from url
   const spaceName = spaceUrl.split("/").at(-1);
   assert(spaceName?.length, "Empty space name not allowed");
@@ -41,6 +44,7 @@ export const getSnapshotDefaultVotingParameters = async (spaceUrl: string) => {
   const response = await request<VotingResponse>(API_URI, query);
   const { period, quorum } = response.space.voting;
   return {
+    spaceUrl,
     period: period ? Math.ceil(period / 3600) : 0, // as string later
     quorum: quorum ? Math.ceil(quorum) : 0,
   };

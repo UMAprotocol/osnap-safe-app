@@ -66,8 +66,20 @@ export function useNumberInput(props: Props) {
       placeholder,
       min,
       disabled,
+      setValue,
     }),
-    [props, value, onChange, step, valid, id, placeholder, min, disabled],
+    [
+      props,
+      value,
+      onChange,
+      step,
+      valid,
+      id,
+      placeholder,
+      min,
+      disabled,
+      setValue,
+    ],
   );
 }
 
