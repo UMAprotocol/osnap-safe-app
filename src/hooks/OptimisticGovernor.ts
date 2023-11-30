@@ -1,7 +1,8 @@
 import assert from "assert";
 import useSwr from "swr";
+import { TransactionStatus } from "@gnosis.pm/safe-apps-sdk";
 import { useAccount, useNetwork, usePublicClient } from "wagmi";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useImmer } from "use-immer";
 import { readContract } from "@wagmi/core";
 import {
@@ -10,6 +11,7 @@ import {
   extractParamsFromRules,
   findContract,
   formatUnits,
+  sleep,
 } from "@/libs";
 
 import {
@@ -134,6 +136,7 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
   const publicClient = usePublicClient();
   const { enabled } = useOgState();
   const isActive = enabled.data ?? false;
+  const [isDeploying, setIsDeploying] = useState(false);
 
   const [config, setConfig] = useImmer(ogDeployerConfigDefaults(initialConfig));
 
@@ -181,12 +184,21 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
       // TODO: see if we can use wagmi instead, probably need to use multicall here
       safeSdk.txs
         .send({ txs })
-        .then(() => {
+        .then(async (result) => {
+          setIsDeploying(true);
+          let safeTx = await safeSdk.txs.getBySafeTxHash(result.safeTxHash);
+          while (safeTx.txStatus !== TransactionStatus.SUCCESS) {
+            await sleep(1000);
+            safeTx = await safeSdk.txs.getBySafeTxHash(result.safeTxHash);
+          }
           // show that osnap is now enabled once tx completes
           return enabled.mutate(true, { revalidate: false });
         })
         .catch((err) => {
           console.error("deployment error", err);
+        })
+        .finally(() => {
+          setIsDeploying(false);
         });
     };
   }, [config, address, chain?.id, publicClient, isActive, enabled]);
@@ -194,6 +206,7 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
     config,
     setConfig,
     deploy,
+    isDeploying,
   };
 }
 export function useOgState() {
@@ -328,6 +341,7 @@ export function useOgState() {
 
 export function useOgDisabler() {
   const { moduleAddress, safeAddress, enabled } = useOgState();
+  const [isDisabling, setIsDisabling] = useState(false);
   const ogAddress = moduleAddress.data;
 
   const disable = useMemo(() => {
@@ -340,16 +354,26 @@ export function useOgDisabler() {
       const txs = [disableModule(safeAddress, ogAddress)];
       safeSdk.txs
         .send({ txs })
-        .then(() => {
+        .then(async (result) => {
+          setIsDisabling(true);
+          let safeTx = await safeSdk.txs.getBySafeTxHash(result.safeTxHash);
+          while (safeTx.txStatus !== TransactionStatus.SUCCESS) {
+            await sleep(1000);
+            safeTx = await safeSdk.txs.getBySafeTxHash(result.safeTxHash);
+          }
           // show that osnap is now disabled once tx completes
           return enabled.mutate(false, { revalidate: false });
         })
         .catch((err) => {
           console.error("disabling error", err);
+        })
+        .finally(() => {
+          setIsDisabling(false);
         });
     };
   }, [safeAddress, ogAddress, enabled]);
   return {
     disable,
+    isDisabling,
   };
 }

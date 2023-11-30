@@ -20,9 +20,10 @@ export function useOsnapCard() {
   const { enabled } = useOgState();
   const isActive = enabled.data ?? false;
 
-  const { config, setConfig, deploy } = useOgDeployer({ spaceUrl });
-
-  const { disable } = useOgDisabler();
+  const { config, setConfig, deploy, isDeploying } = useOgDeployer({
+    spaceUrl,
+  });
+  const { disable, isDisabling } = useOgDisabler();
   // if we can deploy or osnap is active, we should assume theres a space, otherwise show landing
   const hasSpace = !!spaceName && !!spaceUrl && (!!deploy || isActive);
   const advancedSettingsModalProps = useAdvancedSettingsModal({
@@ -40,6 +41,8 @@ export function useOsnapCard() {
     hasSpace,
     // TODO: add some kind of error propogation
     errors: [],
+    isDisabling,
+    isDeploying,
   };
 }
 
@@ -53,6 +56,8 @@ export function OsnapCard() {
     errors,
     deploy,
     disable,
+    isDisabling,
+    isDeploying,
   } = useOsnapCard();
 
   const noSpaceCardContent = (
@@ -81,7 +86,11 @@ export function OsnapCard() {
     <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
       <p className="justify-self-start font-semibold">{spaceName}</p>
       <div className="flex gap-4">
-        <ActiveIndicator status={isActive} />{" "}
+        <ActiveIndicator
+          isActive={isActive}
+          isDisabling={isDisabling}
+          isDeploying={isDeploying}
+        />{" "}
         <button
           onClick={showAdvancedSettingsModal}
           aria-label="Show advanced settings"
@@ -114,6 +123,16 @@ export function OsnapCard() {
     disable?.();
   }
 
+  function getButtonLabel(): string {
+    if (isDeploying) {
+      return "Activating";
+    }
+    if (isDisabling) {
+      return "Deactivating";
+    }
+    return isActive ? "Deactivate" : "Activate";
+  }
+
   return (
     <div className="max-w-[560px] rounded-[32px] bg-white p-12">
       <Icon name="osnap-logo" className="mx-auto mb-5 h-[60px] w-[153px]" />
@@ -133,8 +152,9 @@ export function OsnapCard() {
         <button
           onClick={isActive ? deactivateOsnap : activateOsnap}
           className={`mb-3 mt-6 w-full  rounded-lg px-5 py-3 font-semibold shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] ${buttonStyles}`}
+          disabled={isDeploying || isDisabling}
         >
-          {isActive ? "Deactivate" : "Activate"} oSnap
+          {getButtonLabel()} oSnap
         </button>
       )}
       <div>
@@ -160,20 +180,45 @@ function CardLink(props: { href: string }) {
   );
 }
 
-function ActiveIndicator(props: { status: boolean }) {
-  const activeStyles = "bg-success-50 border-success-200 text-success-700";
-  const inactiveStyles = "bg-gray-50 border-gray-200 text-gray-700";
-  const styles = props.status ? activeStyles : inactiveStyles;
+function ActiveIndicator(props: {
+  isActive: boolean;
+  isDeploying: boolean;
+  isDisabling: boolean;
+}) {
+  const { isActive, isDeploying, isDisabling } = props;
+  const activeStyle = "bg-success-50 border-success-200 text-success-700";
+  const inactiveStyle = "bg-gray-50 border-gray-200 text-gray-700";
+  const loadingStyle = "bg-warning-50 border-warning-200 text-warning-700";
+
+  const ledActiveStyle = "bg-success-500";
+  const ledInactiveStyle = "bg-gray-500";
+  const ledLoadingStyle = "bg-warning-500";
+
+  const bgStyle =
+    isDeploying || isDisabling
+      ? loadingStyle
+      : isActive
+      ? activeStyle
+      : inactiveStyle;
+  const ledStyle =
+    isDeploying || isDisabling
+      ? ledLoadingStyle
+      : isActive
+      ? ledActiveStyle
+      : ledInactiveStyle;
+  const label = isDeploying
+    ? "deploying"
+    : isDisabling
+    ? "disabling"
+    : isActive
+    ? "active"
+    : "inactive";
   return (
     <div
-      className={`flex w-fit items-center justify-center gap-2 rounded-full border px-4 py-1 ${styles}`}
+      className={`flex w-fit items-center justify-center gap-2 rounded-full border px-4 py-1 ${bgStyle}`}
     >
-      <div
-        className={`h-2 w-2 rounded-full ${
-          props.status ? "bg-success-500" : "bg-gray-500"
-        }`}
-      />
-      oSnap {props.status ? "active" : "inactive"}
+      <div className={`h-2 w-2 rounded-full ${ledStyle}`} />
+      oSnap {label}
     </div>
   );
 }
