@@ -7,7 +7,14 @@ import {
 import { safeWallet } from "@rainbow-me/rainbowkit/wallets";
 import { useEffect, useState } from "react";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
-import { arbitrum, goerli, mainnet, optimism, polygon } from "wagmi/chains";
+import {
+  arbitrum,
+  goerli,
+  mainnet,
+  optimism,
+  polygon,
+  gnosis,
+} from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { SafeAutoConnect } from "../hooks/useSafeAutoConnect";
 
@@ -17,6 +24,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     polygon,
     optimism,
     arbitrum,
+    gnosis,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
   [publicProvider()],

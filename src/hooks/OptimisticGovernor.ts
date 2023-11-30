@@ -4,11 +4,21 @@ import { useAccount, useNetwork, usePublicClient } from "wagmi";
 import { useMemo } from "react";
 import { useImmer } from "use-immer";
 import { readContract } from "@wagmi/core";
-import { isAddress, OptimisticGovernorAbi } from "@/libs";
+import {
+  isAddress,
+  OptimisticGovernorAbi,
+  extractParamsFromRules,
+  findContract,
+  formatUnits,
+} from "@/libs";
 
-import { challengePeriods, currencies, isCurrency } from "@/constants";
+import {
+  challengePeriods,
+  currencies,
+  isCurrency,
+  findChallengePeriod,
+} from "@/constants";
 import type { OgDeployerConfig } from "@/types";
-import { findContract } from "@/libs";
 
 import { Client as SubgraphClient } from "../libs/ogSubgraph";
 import {
@@ -19,6 +29,8 @@ import {
   ogDeploymentTxs,
   publicClientToProvider,
 } from "../libs";
+import { Defaults, getSnapshotDefaultVotingParameters } from "@/libs/snapshot";
+import useSWR from "swr";
 
 export function ogDeployerConfigDefaults(
   config?: Partial<OgDeployerConfig>,
@@ -32,13 +44,98 @@ export function ogDeployerConfigDefaults(
     spaceUrl: config?.spaceUrl ?? undefined,
   };
 }
+export function useSpaceDefaultVotingParameters(spaceUrl?: string) {
+  // fetch default space settings from snapshot space
+  return useSWR<Defaults>(
+    spaceUrl ?? null,
+    getSnapshotDefaultVotingParameters,
+    {
+      revalidateOnFocus: false,
+      refreshWhenOffline: false,
+      refreshWhenHidden: false,
+      refreshInterval: 0,
+    },
+  );
+}
+
+type ConfigReturnType = {
+  isLoading: boolean;
+  data?: OgDeployerConfig;
+  error?: Error;
+};
+
+export function useLoadOgDeployerConfig(params: {
+  spaceUrl?: string;
+}): ConfigReturnType {
+  const spaceDefaults = useSpaceDefaultVotingParameters(params.spaceUrl);
+  const ogState = useOgState();
+  return useMemo(() => {
+    if (!params.spaceUrl) {
+      return {
+        isLoading: false,
+        error: new Error("Requires space url"),
+      };
+    }
+    // we need to load in defaults from async places
+    if (
+      spaceDefaults.isLoading ||
+      ogState.enabled.isLoading ||
+      ogState.bond.isLoading ||
+      ogState.collateralInfo.isLoading ||
+      ogState.liveness.isLoading
+    ) {
+      return {
+        isLoading: true,
+      };
+    }
+    if (
+      ogState.enabled.data &&
+      spaceDefaults.data &&
+      ogState.rules.data &&
+      ogState.bond.data &&
+      ogState.liveness.data &&
+      ogState.collateralInfo.data
+    ) {
+      const ruleParams = extractParamsFromRules(ogState.rules.data);
+      const bondAmount = formatUnits(
+        ogState.bond.data,
+        ogState.collateralInfo.data.decimals,
+      );
+      return {
+        isLoading: false,
+        data: ogDeployerConfigDefaults({
+          bondAmount,
+          collateralCurrency: ogState.collateralInfo.data.name,
+          quorum: ruleParams.quorum,
+          votingPeriodHours: ruleParams.votingPeriodHours,
+          challengePeriod: findChallengePeriod(ogState.liveness.data),
+          spaceUrl: params.spaceUrl,
+        }),
+      };
+    }
+    if (!ogState.enabled.data && spaceDefaults.data) {
+      return {
+        isLoading: false,
+        data: ogDeployerConfigDefaults({
+          quorum: spaceDefaults.data.quorum.toString(),
+          votingPeriodHours: spaceDefaults.data.period.toString(),
+          spaceUrl: params.spaceUrl,
+        }),
+      };
+    }
+    return {
+      isLoading: true,
+    };
+  }, [spaceDefaults, ogState, params.spaceUrl]);
+}
 export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
   const { chain } = useNetwork();
   const { address } = useAccount();
   const publicClient = usePublicClient();
-  const [config, setConfig] = useImmer(ogDeployerConfigDefaults(initialConfig));
   const { enabled } = useOgState();
   const isActive = enabled.data ?? false;
+
+  const [config, setConfig] = useImmer(ogDeployerConfigDefaults(initialConfig));
 
   const deploy = useMemo(() => {
     const {
@@ -112,7 +209,7 @@ export function useOgState() {
     assert(address, "Requires safe address");
     return SubgraphClient(chain.id).getModuleAddress(address);
   });
-  const collateral = useSwr(
+  const collateralInfo = useSwr(
     `/collateral/${moduleAddress.data}/${chain?.id}`,
     async () => {
       assert(chain?.id, "Requires chainid");
@@ -138,7 +235,14 @@ export function useOgState() {
         isCurrency(tokenInfo.name),
         "Unsupported currency: " + tokenInfo.name,
       );
-      return tokenInfo.name;
+      assert(tokenInfo.name, "Missing token name");
+      assert(tokenInfo.decimals, "Missing token decimals");
+
+      const result = {
+        name: tokenInfo.name,
+        decimals: tokenInfo.decimals,
+      };
+      return result;
     },
   );
   const liveness = useSwr(
@@ -172,7 +276,7 @@ export function useOgState() {
         abi: OptimisticGovernorAbi,
         functionName: "bondAmount",
       });
-      return bondAmount.toString();
+      return bondAmount;
     },
   );
   const rules = useSwr(
@@ -214,7 +318,7 @@ export function useOgState() {
     safeAddress: address,
     enabled,
     moduleAddress,
-    collateral,
+    collateralInfo,
     liveness,
     bond,
     rules,

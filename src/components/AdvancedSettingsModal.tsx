@@ -17,8 +17,9 @@ import {
   currencies,
 } from "@/constants";
 import { type OgDeployerConfig } from "@/types";
-import { useState, type FormEventHandler } from "react";
+import { useState, type FormEventHandler, useEffect } from "react";
 import { useImmer, type Updater } from "use-immer";
+import { useLoadOgDeployerConfig } from "@/hooks";
 
 type Props = {
   config: OgDeployerConfig;
@@ -48,6 +49,9 @@ const challengePeriodOptions = challengePeriods.map(
 );
 
 export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
+  const loadedConfig = useLoadOgDeployerConfig(props.config);
+  const [loaded, setLoaded] = useState(false);
+
   const { disabled = false } = props;
   const [challengePeriod, setChallengePeriod] = useImmer(
     props.config.challengePeriod,
@@ -64,18 +68,60 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     label: "Voting Quorum",
     initialValue: props.config.quorum,
     isWholeNumber: true,
-    min: 1,
-    placeholder: "5",
+    min: parseInt(loadedConfig.data?.quorum ?? props.config.quorum),
+    placeholder: parseInt(
+      loadedConfig.data?.quorum ?? props.config.quorum,
+    ).toString(),
     required: true,
   });
   const votingPeriodInputProps = useNumberInput({
     label: "Voting Period hours",
     initialValue: props.config.votingPeriodHours,
     isWholeNumber: true,
-    min: 1,
-    placeholder: "24",
+    min: parseInt(
+      loadedConfig.data?.votingPeriodHours ?? props.config.votingPeriodHours,
+    ),
+    placeholder: parseInt(props.config.votingPeriodHours).toString(),
     required: true,
   });
+
+  // we have data that loads from snapshot and on chain, so we need to update our inputs when this comes in.
+  // we only do it once we see everything is loaded, and never again.
+  useEffect(() => {
+    if (loaded) return;
+    if (loadedConfig.isLoading) return;
+    if (loadedConfig.error) {
+      console.error("Error loading snapshot settings:", loadedConfig.error);
+      return;
+    }
+    if (!loadedConfig.data) return;
+
+    setLoaded(true);
+
+    const votingPeriodHours = loadedConfig.data.votingPeriodHours;
+    const bondAmount = loadedConfig.data.bondAmount;
+    const quorum = loadedConfig.data.quorum;
+    const collateralCurrency = {
+      label: loadedConfig.data.collateralCurrency,
+      value: loadedConfig.data.collateralCurrency,
+    };
+    const challengePeriod = loadedConfig.data.challengePeriod;
+
+    votingPeriodInputProps.setValue(votingPeriodHours);
+    bondInputProps.setValue(bondAmount);
+    quorumInputProps.setValue(quorum);
+    setCollateralCurrency(collateralCurrency);
+    setChallengePeriod(challengePeriod);
+  }, [
+    props,
+    loadedConfig,
+    loaded,
+    setLoaded,
+    votingPeriodInputProps,
+    bondInputProps,
+    quorumInputProps,
+    setChallengePeriod,
+  ]);
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
