@@ -1,11 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Icon } from "@/components";
 import {
   useOgDeployer,
   useOgState,
   useOgDisabler,
+  useLoadOgDeployerConfig,
 } from "@/hooks/OptimisticGovernor";
 import Link from "next/link";
 import {
@@ -17,6 +19,7 @@ export function useOsnapCard() {
   const spaceName = searchParams.get("spaceName") ?? undefined;
   const spaceUrl = searchParams.get("spaceUrl") ?? undefined;
 
+  const [loaded, setLoaded] = useState(false);
   const { enabled } = useOgState();
   const isActive = enabled.data ?? false;
 
@@ -29,6 +32,34 @@ export function useOsnapCard() {
     config,
     setConfig,
   });
+
+  const loadedConfig = useLoadOgDeployerConfig({ spaceUrl });
+  // ensure we set the deployer config based on things we load from snapshot space
+  useEffect(() => {
+    if (loaded) return;
+    if (loadedConfig.isLoading) return;
+    if (loadedConfig.error) {
+      console.error("Error loading snapshot settings:", loadedConfig.error);
+      return;
+    }
+    if (!loadedConfig.data) return;
+
+    setLoaded(true);
+
+    const votingPeriodHours = loadedConfig.data.votingPeriodHours;
+    const bondAmount = loadedConfig.data.bondAmount;
+    const quorum = loadedConfig.data.quorum;
+    const collateralCurrency = loadedConfig.data.collateralCurrency;
+    const challengePeriod = loadedConfig.data.challengePeriod;
+
+    setConfig((draft) => {
+      draft.challengePeriod = challengePeriod;
+      draft.collateralCurrency = collateralCurrency;
+      draft.bondAmount = bondAmount;
+      draft.quorum = quorum;
+      draft.votingPeriodHours = votingPeriodHours;
+    });
+  }, [loaded, loadedConfig, setConfig]);
 
   return {
     deploy,
