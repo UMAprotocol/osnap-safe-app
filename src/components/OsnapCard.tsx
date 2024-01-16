@@ -104,7 +104,7 @@ export function OsnapCard() {
         Read more about the full setup process{" "}
         <Link
           target="_blank"
-          href="https://uma.xyz/osnap"
+          href="https://docs.uma.xyz/developers/osnap/osnap-deployment-tutorial"
           className="text-primary-500 hover:underline"
         >
           here.
