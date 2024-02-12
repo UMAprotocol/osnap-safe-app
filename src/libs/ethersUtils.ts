@@ -1,5 +1,5 @@
+import { ethers } from "ethers";
 import { type PublicClient, type WalletClient } from "wagmi";
-import { providers } from "ethers";
 
 export function publicClientToProvider(publicClient: PublicClient) {
   const { chain, transport } = publicClient;
@@ -8,8 +8,9 @@ export function publicClientToProvider(publicClient: PublicClient) {
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
-  return new providers.StaticJsonRpcProvider(transport.url as string, network);
+  return new ethers.JsonRpcProvider(transport.url as string, network);
 }
+
 export function walletClientToSigner(walletClient: WalletClient) {
   const { account, chain, transport } = walletClient;
   const network = {
@@ -17,7 +18,7 @@ export function walletClientToSigner(walletClient: WalletClient) {
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
-  const provider = new providers.Web3Provider(transport, network);
+  const provider = new ethers.BrowserProvider(transport, network);
   const signer = provider.getSigner(account.address);
   return signer;
 }

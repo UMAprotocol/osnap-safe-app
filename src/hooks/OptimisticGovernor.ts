@@ -10,7 +10,6 @@ import {
   OptimisticGovernorAbi,
   extractParamsFromRules,
   findContract,
-  formatUnits,
   sleep,
 } from "@/libs";
 
@@ -33,6 +32,7 @@ import {
 } from "../libs";
 import { Defaults, getSnapshotDefaultVotingParameters } from "@/libs/snapshot";
 import useSWR from "swr";
+import { ethers } from "ethers";
 
 export function ogDeployerConfigDefaults(
   config?: Partial<OgDeployerConfig>,
@@ -99,7 +99,7 @@ export function useLoadOgDeployerConfig(params: {
       ogState.collateralInfo.data
     ) {
       const ruleParams = extractParamsFromRules(ogState.rules.data);
-      const bondAmount = formatUnits(
+      const bondAmount = ethers.formatUnits(
         ogState.bond.data,
         ogState.collateralInfo.data.decimals,
       );
@@ -165,11 +165,11 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
       return undefined;
     }
 
-    return () => {
+    return async () => {
       const collateral = getTokenAddress(chain.id, collateralCurrency);
       const provider = publicClientToProvider(publicClient);
 
-      const txs = ogDeploymentTxs({
+      const txs = await ogDeploymentTxs({
         provider,
         chainId: chain.id,
         executor: address,

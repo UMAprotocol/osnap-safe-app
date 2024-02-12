@@ -1,5 +1,5 @@
 // this pulls code from zodiac https://github.com/gnosis/zodiac-safe-app/blob/master/packages/app/src/services/index.ts#L599
-import { ethers } from "ethers";
+import { JsonRpcProvider, ethers } from "ethers";
 import { Interface } from "@ethersproject/abi";
 import { BaseTransaction } from "@gnosis.pm/safe-apps-sdk";
 import { findContract, AddressOne, type Address } from "./contracts";
@@ -8,7 +8,6 @@ import { OptimisticGovernorAbi, SafeAbi } from "./abis";
 
 export const safeSdk = new SafeAppsSDK();
 
-type JsonRpcProvider = ethers.providers.JsonRpcProvider;
 import { deployAndSetUpCustomModule } from "@gnosis.pm/zodiac";
 
 export const buildTransaction = (
@@ -24,8 +23,6 @@ export const buildTransaction = (
     value: value ?? "0",
   };
 };
-export const parseUnits = ethers.utils.parseUnits;
-export const formatUnits = ethers.utils.formatUnits;
 
 export function defaultRules(params: {
   spaceUrl: string;
@@ -84,7 +81,7 @@ export type OgDeploymentTxsParams = {
   quorum: string;
   votingPeriodHours: string;
 };
-export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
+export async function ogDeploymentTxs(params: OgDeploymentTxsParams) {
   const {
     provider,
     chainId,
@@ -108,13 +105,13 @@ export function ogDeploymentTxs(params: OgDeploymentTxsParams) {
     chainId,
   });
 
-  const bondWei = parseUnits(bond, decimals).toString();
+  const bondWei = ethers.parseUnits(bond, decimals).toString();
   const rules = defaultRules({ spaceUrl, quorum, votingPeriodHours });
 
   const {
     transaction: daoModuleDeploymentTx,
     expectedModuleAddress: daoModuleExpectedAddress,
-  } = deployAndSetUpCustomModule(
+  } = await deployAndSetUpCustomModule(
     ogContract.address,
     OptimisticGovernorAbi,
     {
