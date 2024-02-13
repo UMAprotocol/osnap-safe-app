@@ -14,6 +14,7 @@ import {
   AdvancedSettingsModal,
   useAdvancedSettingsModal,
 } from "./AdvancedSettingsModal";
+
 export function useOsnapCard() {
   const searchParams = useSearchParams();
   const spaceName = searchParams.get("spaceName") ?? undefined;
@@ -146,8 +147,8 @@ export function OsnapCard() {
     advancedSettingsModalProps.showModal();
   }
 
-  function activateOsnap() {
-    deploy?.();
+  async function activateOsnap() {
+    await deploy?.();
   }
 
   function deactivateOsnap() {

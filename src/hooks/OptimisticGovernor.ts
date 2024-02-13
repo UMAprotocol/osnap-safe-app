@@ -1,7 +1,7 @@
 import assert from "assert";
 import useSwr from "swr";
 import { TransactionStatus } from "@gnosis.pm/safe-apps-sdk";
-import { useAccount, useNetwork, usePublicClient } from "wagmi";
+import { useAccount, useChainId, usePublicClient } from "wagmi";
 import { useMemo, useState } from "react";
 import { useImmer } from "use-immer";
 import { readContract } from "@wagmi/core";
@@ -10,7 +10,6 @@ import {
   OptimisticGovernorAbi,
   extractParamsFromRules,
   findContract,
-  formatUnits,
   sleep,
 } from "@/libs";
 
@@ -33,6 +32,8 @@ import {
 } from "../libs";
 import { Defaults, getSnapshotDefaultVotingParameters } from "@/libs/snapshot";
 import useSWR from "swr";
+import { ethers } from "ethers";
+import { config } from "@/app/providers";
 
 export function ogDeployerConfigDefaults(
   config?: Partial<OgDeployerConfig>,
@@ -99,7 +100,7 @@ export function useLoadOgDeployerConfig(params: {
       ogState.collateralInfo.data
     ) {
       const ruleParams = extractParamsFromRules(ogState.rules.data);
-      const bondAmount = formatUnits(
+      const bondAmount = ethers.formatUnits(
         ogState.bond.data,
         ogState.collateralInfo.data.decimals,
       );
@@ -131,7 +132,7 @@ export function useLoadOgDeployerConfig(params: {
   }, [spaceDefaults, ogState, params.spaceUrl]);
 }
 export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
-  const { chain } = useNetwork();
+  const chainId = useChainId();
   const { address } = useAccount();
   const publicClient = usePublicClient();
   const { enabled } = useOgState();
@@ -158,20 +159,24 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
       !votingPeriodHours.length ||
       !collateralCurrency.length ||
       isActive ||
-      address === undefined ||
-      chain?.id === undefined
+      address === undefined
     ) {
       // no deploy function if any of these are undefined
       return undefined;
     }
 
-    return () => {
-      const collateral = getTokenAddress(chain.id, collateralCurrency);
+    return async () => {
+      if(publicClient === undefined){
+        console.error('Unable to deploy OG: No provider')
+        return;
+      }
+
+      const collateral = getTokenAddress(chainId, collateralCurrency);
       const provider = publicClientToProvider(publicClient);
 
-      const txs = ogDeploymentTxs({
+      const txs = await ogDeploymentTxs({
         provider,
-        chainId: chain.id,
+        chainId,
         executor: address,
         collateral: collateral,
         bond: bondAmount,
@@ -201,7 +206,7 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
           setIsDeploying(false);
         });
     };
-  }, [config, address, chain?.id, publicClient, isActive, enabled]);
+  }, [config, address, chainId, publicClient, isActive, enabled]);
   return {
     config,
     setConfig,
@@ -210,28 +215,28 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
   };
 }
 export function useOgState() {
-  const { chain } = useNetwork();
+  const chainId = useChainId();
   const { address } = useAccount();
-  const enabled = useSwr(`/enabled/${address}/${chain?.id}`, () => {
-    assert(chain?.id, "Requires chainid");
+  const enabled = useSwr(`/enabled/${address}/${chainId}`, () => {
+    assert(chainId, "Requires chainid");
     assert(address, "Requires safe address");
-    return SubgraphClient(chain.id).isEnabled(address);
+    return SubgraphClient(chainId).isEnabled(address);
   });
-  const moduleAddress = useSwr(`/moduleAddress/${address}/${chain?.id}`, () => {
-    assert(chain?.id, "Requires chainid");
+  const moduleAddress = useSwr(`/moduleAddress/${address}/${chainId}`, () => {
+    assert(chainId, "Requires chainid");
     assert(address, "Requires safe address");
-    return SubgraphClient(chain.id).getModuleAddress(address);
+    return SubgraphClient(chainId).getModuleAddress(address);
   });
   const collateralInfo = useSwr(
-    `/collateral/${moduleAddress.data}/${chain?.id}`,
+    `/collateral/${moduleAddress.data}/${chainId}`,
     async () => {
-      assert(chain?.id, "Requires chainid");
+      assert(chainId, "Requires chainid");
       assert(moduleAddress.data, "Requires OG module address");
       assert(
         isAddress(moduleAddress.data),
         "Module Address is not an address: " + moduleAddress.data,
       );
-      const collateralAddress = await readContract({
+      const collateralAddress = await readContract(config, {
         address: moduleAddress.data,
         abi: OptimisticGovernorAbi,
         functionName: "collateral",
@@ -242,7 +247,7 @@ export function useOgState() {
       );
       const tokenInfo = findContract({
         address: collateralAddress,
-        chainId: chain.id,
+        chainId: chainId,
       });
       assert(
         isCurrency(tokenInfo.name),
@@ -259,15 +264,15 @@ export function useOgState() {
     },
   );
   const liveness = useSwr(
-    `/liveness/${moduleAddress.data}/${chain?.id}`,
+    `/liveness/${moduleAddress.data}/${chainId}`,
     async () => {
-      assert(chain?.id, "Requires chainid");
+      assert(chainId, "Requires chainid");
       assert(moduleAddress.data, "Requires OG module address");
       assert(
         isAddress(moduleAddress.data),
         "Module Address is not an address: " + moduleAddress.data,
       );
-      const liveness: bigint = await readContract({
+      const liveness: bigint = await readContract(config, {
         address: moduleAddress.data,
         abi: OptimisticGovernorAbi,
         functionName: "liveness",
@@ -276,15 +281,15 @@ export function useOgState() {
     },
   );
   const bond = useSwr(
-    `/bondAmount/${moduleAddress.data}/${chain?.id}`,
+    `/bondAmount/${moduleAddress.data}/${chainId}`,
     async () => {
-      assert(chain?.id, "Requires chainid");
+      assert(chainId, "Requires chainid");
       assert(moduleAddress.data, "Requires OG module address");
       assert(
         isAddress(moduleAddress.data),
         "Module Address is not an address: " + moduleAddress.data,
       );
-      const bondAmount = await readContract({
+      const bondAmount = await readContract(config, {
         address: moduleAddress.data,
         abi: OptimisticGovernorAbi,
         functionName: "bondAmount",
@@ -292,33 +297,30 @@ export function useOgState() {
       return bondAmount;
     },
   );
-  const rules = useSwr(
-    `/rules/${moduleAddress.data}/${chain?.id}`,
-    async () => {
-      assert(chain?.id, "Requires chainid");
-      assert(moduleAddress.data, "Requires OG module address");
-      assert(
-        isAddress(moduleAddress.data),
-        "Module Address is not an address: " + moduleAddress.data,
-      );
-      const rules = await readContract({
-        address: moduleAddress.data,
-        abi: OptimisticGovernorAbi,
-        functionName: "rules",
-      });
-      return rules;
-    },
-  );
+  const rules = useSwr(`/rules/${moduleAddress.data}/${chainId}`, async () => {
+    assert(chainId, "Requires chainid");
+    assert(moduleAddress.data, "Requires OG module address");
+    assert(
+      isAddress(moduleAddress.data),
+      "Module Address is not an address: " + moduleAddress.data,
+    );
+    const rules = await readContract(config, {
+      address: moduleAddress.data,
+      abi: OptimisticGovernorAbi,
+      functionName: "rules",
+    });
+    return rules;
+  });
   const optimisticOracleV3Address = useSwr(
-    `/optimisticOracleV3Address/${moduleAddress.data}/${chain?.id}`,
+    `/optimisticOracleV3Address/${moduleAddress.data}/${chainId}`,
     async () => {
-      assert(chain?.id, "Requires chainid");
+      assert(chainId, "Requires chainid");
       assert(moduleAddress.data, "Requires OG module address");
       assert(
         isAddress(moduleAddress.data),
         "Module Address is not an address: " + moduleAddress.data,
       );
-      const optimisticOracleV3 = await readContract({
+      const optimisticOracleV3 = await readContract(config, {
         address: moduleAddress.data,
         abi: OptimisticGovernorAbi,
         functionName: "optimisticOracleV3",
@@ -327,7 +329,7 @@ export function useOgState() {
     },
   );
   return {
-    chain,
+    chainId,
     safeAddress: address,
     enabled,
     moduleAddress,

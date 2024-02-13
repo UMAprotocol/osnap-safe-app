@@ -22,7 +22,7 @@ export function Client(chainId: number) {
       }
     `;
     const response = await request<Response>(subgraph, gqlQuery);
-    return ethers.utils.getAddress(response.safe.optimisticGovernor.id);
+    return ethers.getAddress(response.safe.optimisticGovernor.id);
   }
   async function isEnabled(safeAddress: string): Promise<boolean> {
     type Response = {
