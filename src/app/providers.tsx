@@ -56,11 +56,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
   return (
     <WagmiProvider config={config}>
-      <RainbowKitProvider>
-        <QueryClientProvider client={queryClient}>
-          <SafeAutoConnect>{mounted && children}</SafeAutoConnect>
-        </QueryClientProvider>
-      </RainbowKitProvider>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider>
+            <SafeAutoConnect>{mounted && children}</SafeAutoConnect>
+        </RainbowKitProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 }

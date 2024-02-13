@@ -166,6 +166,11 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
     }
 
     return async () => {
+      if(publicClient === undefined){
+        console.error('Unable to deploy OG: No provider')
+        return;
+      }
+
       const collateral = getTokenAddress(chainId, collateralCurrency);
       const provider = publicClientToProvider(publicClient);
 
