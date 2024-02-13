@@ -1,5 +1,8 @@
 import filter from "lodash/filter";
+import { Address } from "viem";
+
 import {
+  coreDao,
   mainnet,
   goerli,
   optimism,
@@ -7,10 +10,8 @@ import {
   polygon,
   arbitrum,
   avalanche,
-} from "@wagmi/chains";
-import { type Address } from "wagmi";
+} from "viem/chains";
 
-export { Address };
 export function isAddress(addr: unknown): addr is Address {
   return typeof addr === "string" && addr.startsWith("0x");
 }

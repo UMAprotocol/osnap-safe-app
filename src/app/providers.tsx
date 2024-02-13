@@ -1,12 +1,9 @@
 "use client";
 
-import {
-  RainbowKitProvider,
-  connectorsForWallets,
-} from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider, getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { safeWallet } from "@rainbow-me/rainbowkit/wallets";
 import { useEffect, useState } from "react";
-import { WagmiConfig, configureChains, createConfig } from "wagmi";
+import { WagmiProvider, http } from "wagmi";
 import {
   arbitrum,
   goerli,
@@ -14,41 +11,43 @@ import {
   optimism,
   polygon,
   gnosis,
+  coreDao,
 } from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
 import { SafeAutoConnect } from "../hooks/useSafeAutoConnect";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    gnosis,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
-  ],
-  [publicProvider()],
-);
+const chains = [
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  gnosis,
+  coreDao,
+  ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
+] as const;
 
-const connectors = connectorsForWallets([
-  {
-    groupName: "Gnosis Safe",
-    wallets: [
-      safeWallet({
-        chains,
-        allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
-        debug: false,
-      }),
-    ],
+export const config = getDefaultConfig({
+  appName: "oSnap Safe app",
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_APP_ID ?? "",
+  chains,
+  transports: {
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+    [optimism.id]: http(),
+    [arbitrum.id]: http(),
+    [gnosis.id]: http(),
+    [goerli.id]: http(),
+    [coreDao.id]: http(),
   },
-]);
-
-const wagmiConfig = createConfig({
-  autoConnect: false,
-  connectors,
-  publicClient,
-  webSocketPublicClient,
+  wallets: [
+    {
+      groupName: "Gnosis Safe",
+      wallets: [safeWallet],
+    },
+  ],
 });
+
+const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -56,10 +55,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
-        <SafeAutoConnect>{mounted && children}</SafeAutoConnect>
+    <WagmiProvider config={config}>
+      <RainbowKitProvider>
+        <QueryClientProvider client={queryClient}>
+          <SafeAutoConnect>{mounted && children}</SafeAutoConnect>
+        </QueryClientProvider>
       </RainbowKitProvider>
-    </WagmiConfig>
+    </WagmiProvider>
   );
 }

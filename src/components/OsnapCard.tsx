@@ -14,6 +14,7 @@ import {
   AdvancedSettingsModal,
   useAdvancedSettingsModal,
 } from "./AdvancedSettingsModal";
+
 export function useOsnapCard() {
   const searchParams = useSearchParams();
   const spaceName = searchParams.get("spaceName") ?? undefined;

@@ -1,5 +1,5 @@
 import { filterContracts, OptimisticOracleV3Abi } from "../libs";
-import { useContractRead } from "wagmi";
+import { useReadContract } from "wagmi";
 
 export function useGetMinimumBond(params: {
   chainId: number;
@@ -17,12 +17,14 @@ export function useGetMinimumBond(params: {
   const [oracleContract] = oracleContracts;
   const [tokenContract] = tokenContracts;
 
-  return useContractRead({
+  return useReadContract({
     address: oracleContract.address,
     abi: OptimisticOracleV3Abi,
     functionName: "getMinimumBond",
     args: [tokenContract.address],
     // ensure we only run this hook if exactly one of each contract was returned
-    enabled: oracleContracts.length === 1 && tokenContracts.length === 1,
+    query: {
+      enabled: oracleContracts.length === 1 && tokenContracts.length === 1,
+    },
   });
 }

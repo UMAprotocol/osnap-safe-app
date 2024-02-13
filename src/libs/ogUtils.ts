@@ -2,13 +2,14 @@
 import { JsonRpcProvider, ethers } from "ethers";
 import { Interface } from "@ethersproject/abi";
 import { BaseTransaction } from "@gnosis.pm/safe-apps-sdk";
-import { findContract, AddressOne, type Address } from "./contracts";
+import { findContract, AddressOne } from "./contracts";
 import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
 import { OptimisticGovernorAbi, SafeAbi } from "./abis";
 
 export const safeSdk = new SafeAppsSDK();
 
 import { deployAndSetUpCustomModule } from "@gnosis.pm/zodiac";
+import { Address } from "viem";
 
 export const buildTransaction = (
   iface: Interface,
