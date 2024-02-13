@@ -9,6 +9,7 @@ import {
   avalanche,
 } from "@wagmi/chains";
 import { type Address } from "wagmi";
+import { coreDao } from "../app/customChains";
 
 export { Address };
 export function isAddress(addr: unknown): addr is Address {
@@ -90,6 +91,14 @@ export const contractDataList: ContractData[] = [
     subgraph:
       "https://api.thegraph.com/subgraphs/name/umaprotocol/avalanche-optimistic-governor",
   },
+  {
+    // core
+    chainId: coreDao.id,
+    name: "OptimisticGovernor",
+    address: "0x596Fd6A5A185c67aBD1c845b39f593fBA9C233aa",
+    subgraph:
+      "https://thegraph.coredao.org/subgraphs/name/umaprotocol/core-optimistic-governor",
+  },
   // optimistic oracle v3
   {
     // mainnet https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/mainnet.json
@@ -141,6 +150,13 @@ export const contractDataList: ContractData[] = [
     deployBlockNumber: 27816737,
   },
   {
+    // core https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/core.json
+    chainId: coreDao.id,
+    name: "OptimisticOracleV3",
+    address: "0xD84ACa67d683aF7702705141b3C7E57e4e5e7726",
+    deployBlockNumber: 11341063,
+  },
+  {
     chainId: mainnet.id,
     name: "USDC",
     address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -183,6 +199,12 @@ export const contractDataList: ContractData[] = [
     decimals: 6,
   },
   {
+    chainId: coreDao.id,
+    name: "USDC",
+    address: "0xa4151B2B3e269645181dCcF2D426cE75fcbDeca9",
+    decimals: 6,
+  },
+  {
     chainId: mainnet.id,
     name: "WETH",
     address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -222,6 +244,12 @@ export const contractDataList: ContractData[] = [
     chainId: avalanche.id,
     name: "WETH",
     address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+    decimals: 18,
+  },
+  {
+    chainId: coreDao.id,
+    name: "WETH",
+    address: "0xeAB3aC417c4d6dF6b143346a46fEe1B847B50296",
     decimals: 18,
   },
 ];

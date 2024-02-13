@@ -16,6 +16,7 @@ import {
   gnosis,
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
+import { coreDao } from "./customChains";
 import { SafeAutoConnect } from "../hooks/useSafeAutoConnect";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -25,6 +26,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     optimism,
     arbitrum,
     gnosis,
+    coreDao,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
   [publicProvider()],
@@ -36,7 +38,11 @@ const connectors = connectorsForWallets([
     wallets: [
       safeWallet({
         chains,
-        allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
+        allowedDomains: [
+          /gnosis-safe.io$/,
+          /app.safe.global$/,
+          /safe.coredao.org$/,
+        ],
         debug: false,
       }),
     ],
