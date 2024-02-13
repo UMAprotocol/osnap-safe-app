@@ -146,8 +146,8 @@ export function OsnapCard() {
     advancedSettingsModalProps.showModal();
   }
 
-  function activateOsnap() {
-    deploy?.();
+  async function activateOsnap() {
+    await deploy?.();
   }
 
   function deactivateOsnap() {
