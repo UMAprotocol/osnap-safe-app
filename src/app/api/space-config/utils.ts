@@ -44,7 +44,7 @@ export function parseParams(params: URLSearchParams) {
   };
 }
 
-async function getModuleConfig(moduleAddress: Address, chainId: number) {
+export async function getModuleConfig(moduleAddress: Address, chainId: number) {
   const provider = getPublicClient(chainId);
 
   if (!provider) {
@@ -89,29 +89,27 @@ export type SpaceConfigResponse =
       bondAmount: boolean;
     };
 
-export async function isConfigStandard(
-  moduleAddress: Address,
-  chainId: number,
-): Promise<SpaceConfigResponse> {
-  const { rules, bondAmount, collateral } = await getModuleConfig(
-    moduleAddress,
-    chainId,
-  );
-
-  const rulesStandard = rulesMatch(rules);
+export function isConfigStandard(params: {
+  rules: string;
+  bondAmount: bigint;
+  collateral: Address;
+  chainId: number;
+}): SpaceConfigResponse {
+  const rulesStandard = rulesMatch(params.rules);
 
   // find weth for network
   const weth = findContract({
-    chainId: chainId,
+    chainId: params.chainId,
     name: BOND_TOKEN_NAME,
   });
   // check if address is correct
-  const isWeth = isAddressEqual(collateral, weth.address);
+  const isWeth = isAddressEqual(params.collateral, weth.address);
 
   // check if amount is correct
 
   const isCorrectAmount =
-    formatUnits(bondAmount, weth.decimals ?? 18) === BOND_AMOUNT.toString();
+    formatUnits(params.bondAmount, weth.decimals ?? 18) ===
+    BOND_AMOUNT.toString();
 
   if (rulesStandard && isWeth && isCorrectAmount) {
     return {

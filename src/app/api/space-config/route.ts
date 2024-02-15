@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Client as SubgraphClient } from "@/libs/ogSubgraph";
 import { isErrorWithMessage, isHttpError } from "@/types/guards";
-import { isConfigStandard, parseParams } from "./utils";
+import { getModuleConfig, isConfigStandard, parseParams } from "./utils";
 import { Address } from "viem";
 
 export async function GET(req: NextRequest) {
@@ -18,12 +18,14 @@ export async function GET(req: NextRequest) {
       throw new Error("No module deployed for this safe", { cause: 404 });
     }
 
-    const moduleConfig = await isConfigStandard(
+    const moduleConfig = await getModuleConfig(
       moduleAddress as Address,
       chainId,
     );
 
-    return NextResponse.json(moduleConfig, { status: 200 });
+    const isStandard = isConfigStandard({ ...moduleConfig, chainId });
+
+    return NextResponse.json(isStandard, { status: 200 });
   } catch (error) {
     // catch and rethrow with specific error codes, eg. in validation
     if (isHttpError(error)) {
