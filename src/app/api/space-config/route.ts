@@ -23,22 +23,27 @@ export async function GET(req: NextRequest) {
       chainId,
     );
 
-    return NextResponse.json({
-      moduleConfig,
-      status: 200,
-    });
+    return NextResponse.json(moduleConfig, { status: 200 });
   } catch (error) {
     // catch and rethrow with specific error codes, eg. in validation
     if (isHttpError(error)) {
-      return NextResponse.json({
-        error: error.message,
-        status: error.cause,
-      });
+      return NextResponse.json(
+        {
+          error: error.message,
+        },
+        {
+          status: error.cause,
+        },
+      );
     }
 
-    return NextResponse.json({
-      error: isErrorWithMessage(error) ? error.message : "Unknown error",
-      status: 500,
-    });
+    return NextResponse.json(
+      {
+        error: isErrorWithMessage(error) ? error.message : "Unknown error",
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }

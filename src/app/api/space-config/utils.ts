@@ -9,7 +9,7 @@ import { Address, formatUnits, isAddress, isAddressEqual } from "viem";
 const BOND_TOKEN_NAME = "WETH";
 const BOND_AMOUNT = 2;
 
-export function rulesMatch(rules: string): boolean {
+function rulesMatch(rules: string): boolean {
   // This is based on the template from Zodiac app at
   // https://github.com/gnosis/zodiac-safe-app/blob/79dbb72af506f60fcc16599516ce48f893393b29/packages/app/src/views/AddModule/wizards/OptimisticGovernorModule/OptimisticGovernorModuleModal.tsx#L136
 
@@ -44,7 +44,7 @@ export function parseParams(params: URLSearchParams) {
   };
 }
 
-export async function getModuleConfig(moduleAddress: Address, chainId: number) {
+async function getModuleConfig(moduleAddress: Address, chainId: number) {
   const provider = getPublicClient(chainId);
 
   if (!provider) {
@@ -78,7 +78,7 @@ export async function getModuleConfig(moduleAddress: Address, chainId: number) {
   };
 }
 
-type Response =
+export type SpaceConfigResponse =
   | {
       automaticExecution: true;
     }
@@ -92,7 +92,7 @@ type Response =
 export async function isConfigStandard(
   moduleAddress: Address,
   chainId: number,
-): Promise<Response> {
+): Promise<SpaceConfigResponse> {
   const { rules, bondAmount, collateral } = await getModuleConfig(
     moduleAddress,
     chainId,
