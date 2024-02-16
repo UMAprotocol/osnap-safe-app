@@ -1,5 +1,5 @@
 import assert from "assert";
-import useSWR from "swr";
+import useSwr from "swr";
 import { TransactionStatus } from "@gnosis.pm/safe-apps-sdk";
 import { Address, useAccount, useNetwork, usePublicClient } from "wagmi";
 import { useMemo, useState } from "react";
@@ -48,7 +48,7 @@ export function ogDeployerConfigDefaults(
 }
 export function useSpaceDefaultVotingParameters(spaceUrl?: string) {
   // fetch default space settings from snapshot space
-  return useSWR<Defaults>(
+  return useSwr<Defaults>(
     spaceUrl ?? null,
     getSnapshotDefaultVotingParameters,
     {
@@ -68,7 +68,7 @@ export function useSpaceConfig(
     chainId && safeAddress
       ? `/api/space-config?chainId=${chainId}&address=${safeAddress}`
       : null;
-  return useSWR<SpaceConfigResponse, unknown>(url, (url: string) =>
+  return useSwr<SpaceConfigResponse, unknown>(url, (url: string) =>
     fetch(url).then(async (res) => (await res.json()) as SpaceConfigResponse),
   );
 }
@@ -227,17 +227,17 @@ export function useOgState() {
   const { chain } = useNetwork();
   const { address } = useAccount();
 
-  const enabled = useSWR(`/enabled/${address}/${chain?.id}`, () => {
+  const enabled = useSwr(`/enabled/${address}/${chain?.id}`, () => {
     assert(chain?.id, "Requires chainid");
     assert(address, "Requires safe address");
     return SubgraphClient(chain.id).isEnabled(address);
   });
-  const moduleAddress = useSWR(`/moduleAddress/${address}/${chain?.id}`, () => {
+  const moduleAddress = useSwr(`/moduleAddress/${address}/${chain?.id}`, () => {
     assert(chain?.id, "Requires chainid");
     assert(address, "Requires safe address");
     return SubgraphClient(chain.id).getModuleAddress(address);
   });
-  const collateralInfo = useSWR(
+  const collateralInfo = useSwr(
     `/collateral/${moduleAddress.data}/${chain?.id}`,
     async () => {
       assert(chain?.id, "Requires chainid");
@@ -274,7 +274,7 @@ export function useOgState() {
       return result;
     },
   );
-  const liveness = useSWR(
+  const liveness = useSwr(
     `/liveness/${moduleAddress.data}/${chain?.id}`,
     async () => {
       assert(chain?.id, "Requires chainid");
@@ -291,7 +291,7 @@ export function useOgState() {
       return liveness.toString();
     },
   );
-  const bond = useSWR(
+  const bond = useSwr(
     `/bondAmount/${moduleAddress.data}/${chain?.id}`,
     async () => {
       assert(chain?.id, "Requires chainid");
@@ -308,7 +308,7 @@ export function useOgState() {
       return bondAmount;
     },
   );
-  const rules = useSWR(
+  const rules = useSwr(
     `/rules/${moduleAddress.data}/${chain?.id}`,
     async () => {
       assert(chain?.id, "Requires chainid");
@@ -325,7 +325,7 @@ export function useOgState() {
       return rules;
     },
   );
-  const optimisticOracleV3Address = useSWR(
+  const optimisticOracleV3Address = useSwr(
     `/optimisticOracleV3Address/${moduleAddress.data}/${chain?.id}`,
     async () => {
       assert(chain?.id, "Requires chainid");

@@ -1,6 +1,6 @@
 import { type PublicClient, type WalletClient } from "wagmi";
 import { providers } from "ethers";
-import { createPublicClient, getContract, http } from "viem";
+import { createPublicClient, http } from "viem";
 import { contractDataList } from ".";
 
 export function publicClientToProvider(publicClient: PublicClient) {
@@ -33,9 +33,9 @@ export function getPublicClient(chainId: number) {
     return;
   }
   return createPublicClient({
-    // batch: {
-    //   multicall: true,
-    // },
+    batch: {
+      multicall: true,
+    },
     chain: networkConfig.network,
     transport: http(),
   });
