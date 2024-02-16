@@ -158,12 +158,6 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
       <div className="max-w-[520px] p-6">
         <h1 className="mb-4 text-lg font-semibold">Advanced settings</h1>
         <StandardConfigWarning isStandard={configIsStandard} />
-        {/* {!disabled && (
-          <p className="mb-6 rounded-lg  border bg-warning-50 px-3 py-2 text-sm text-warning-700">
-            Defaults are set to allow automatic proposal execution therefore
-            these settings should be adjusted with caution!
-          </p>
-        )} */}
         <Heading>Snapshot Space URL</Heading>
         <p className="mb-6 rounded-lg border border-gray-300 bg-white px-3 py-2 opacity-50 shadow-xs">
           {props.config.spaceUrl}
