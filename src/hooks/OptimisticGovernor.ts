@@ -32,10 +32,7 @@ import {
   publicClientToProvider,
 } from "../libs";
 import { Defaults, getSnapshotDefaultVotingParameters } from "@/libs/snapshot";
-import {
-  SpaceConfigResponse,
-  isConfigStandard,
-} from "@/app/api/space-config/utils";
+import { SpaceConfigResponse } from "@/app/api/space-config/utils";
 
 export function ogDeployerConfigDefaults(
   config?: Partial<OgDeployerConfig>,
@@ -82,30 +79,11 @@ type ConfigReturnType = {
   error?: Error;
 };
 
-const useIsStandardConfig = (
-  ogState: ReturnType<typeof useOgState>,
-): SpaceConfigResponse | undefined => {
-  const { rules, bond, collateralInfo, chain } = ogState;
-  const isStandard = useMemo(() => {
-    if (rules.data && bond.data && collateralInfo.data && chain) {
-      return isConfigStandard({
-        rules: rules.data,
-        bondAmount: bond.data,
-        collateral: collateralInfo.data.address,
-        chainId: chain.id,
-      });
-    }
-  }, [bond.data, chain, collateralInfo.data, rules.data]);
-
-  return isStandard;
-};
-
 export function useLoadOgDeployerConfig(params: {
   spaceUrl?: string;
 }): ConfigReturnType {
   const spaceDefaults = useSpaceDefaultVotingParameters(params.spaceUrl);
   const ogState = useOgState();
-  const isStandard = useIsStandardConfig(ogState);
 
   return useMemo(() => {
     if (!params.spaceUrl) {
@@ -141,17 +119,14 @@ export function useLoadOgDeployerConfig(params: {
       );
       return {
         isLoading: false,
-        data: {
-          ...ogDeployerConfigDefaults({
-            bondAmount,
-            collateralCurrency: ogState.collateralInfo.data.name,
-            quorum: ruleParams.quorum,
-            votingPeriodHours: ruleParams.votingPeriodHours,
-            challengePeriod: findChallengePeriod(ogState.liveness.data),
-            spaceUrl: params.spaceUrl,
-          }),
-          isStandard,
-        },
+        data: ogDeployerConfigDefaults({
+          bondAmount,
+          collateralCurrency: ogState.collateralInfo.data.name,
+          quorum: ruleParams.quorum,
+          votingPeriodHours: ruleParams.votingPeriodHours,
+          challengePeriod: findChallengePeriod(ogState.liveness.data),
+          spaceUrl: params.spaceUrl,
+        }),
       };
     }
     if (!ogState.enabled.data && spaceDefaults.data) {
@@ -167,7 +142,7 @@ export function useLoadOgDeployerConfig(params: {
     return {
       isLoading: true,
     };
-  }, [spaceDefaults, ogState, params.spaceUrl, isStandard]);
+  }, [spaceDefaults, ogState, params.spaceUrl]);
 }
 export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
   const { chain } = useNetwork();

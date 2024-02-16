@@ -20,8 +20,8 @@ export function useOsnapCard() {
   const spaceUrl = searchParams.get("spaceUrl") ?? undefined;
 
   const [loaded, setLoaded] = useState(false);
-  const { enabled } = useOgState();
-  const isActive = enabled.data ?? false;
+  const ogState = useOgState();
+  const isActive = ogState.enabled.data ?? false;
 
   const { config, setConfig, deploy, isDeploying } = useOgDeployer({
     spaceUrl,
