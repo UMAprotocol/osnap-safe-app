@@ -1,7 +1,7 @@
 import assert from "assert";
 import useSwr from "swr";
 import { TransactionStatus } from "@gnosis.pm/safe-apps-sdk";
-import { Address, useAccount, useNetwork, usePublicClient } from "wagmi";
+import { useAccount, useNetwork, usePublicClient } from "wagmi";
 import { useMemo, useState } from "react";
 import { useImmer } from "use-immer";
 import { readContract } from "@wagmi/core";
@@ -32,7 +32,10 @@ import {
   publicClientToProvider,
 } from "../libs";
 import { Defaults, getSnapshotDefaultVotingParameters } from "@/libs/snapshot";
-import { SpaceConfigResponse } from "@/app/api/space-config/utils";
+import {
+  SpaceConfigResponse,
+  isConfigStandard,
+} from "@/app/api/space-config/utils";
 
 export function ogDeployerConfigDefaults(
   config?: Partial<OgDeployerConfig>,
@@ -60,18 +63,24 @@ export function useSpaceDefaultVotingParameters(spaceUrl?: string) {
   );
 }
 
-export function useSpaceConfig(
-  chainId: number | undefined,
-  safeAddress: Address | undefined,
-) {
-  const url =
-    chainId && safeAddress
-      ? `/api/space-config?chainId=${chainId}&address=${safeAddress}`
-      : null;
-  return useSwr<SpaceConfigResponse, unknown>(url, (url: string) =>
-    fetch(url).then(async (res) => (await res.json()) as SpaceConfigResponse),
-  );
-}
+export const useIsStandardConfig = (
+  ogState: ReturnType<typeof useOgState>,
+): SpaceConfigResponse | undefined => {
+  const { rules, bond, collateralInfo, chain } = ogState;
+
+  const isStandard = useMemo(() => {
+    if (rules.data && bond.data && collateralInfo.data && chain) {
+      return isConfigStandard({
+        rules: rules.data,
+        bondAmount: bond.data,
+        collateral: collateralInfo.data.address,
+        chainId: chain.id,
+      });
+    }
+  }, [bond.data, chain, collateralInfo.data, rules.data]);
+
+  return isStandard;
+};
 
 type ConfigReturnType = {
   isLoading: boolean;

@@ -20,7 +20,7 @@ import { type OgDeployerConfig } from "@/types";
 import { useState, type FormEventHandler, useEffect } from "react";
 import { useImmer, type Updater } from "use-immer";
 import { useLoadOgDeployerConfig } from "@/hooks";
-import { StandardConfigWarning } from "./StandardConfigWarning";
+import { StandardConfigFormWarning } from "./StandardConfigWarning";
 
 type Props = {
   config: OgDeployerConfig;
@@ -157,7 +157,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     <Modal {...props}>
       <div className="max-w-[520px] p-6">
         <h1 className="mb-4 text-lg font-semibold">Advanced settings</h1>
-        <StandardConfigWarning isStandard={configIsStandard} />
+        <StandardConfigFormWarning isStandard={configIsStandard} />
         <Heading>Snapshot Space URL</Heading>
         <p className="mb-6 rounded-lg border border-gray-300 bg-white px-3 py-2 opacity-50 shadow-xs">
           {props.config.spaceUrl}
