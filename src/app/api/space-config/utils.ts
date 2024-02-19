@@ -10,8 +10,8 @@ const BOND_TOKEN_NAME = "WETH";
 const BOND_AMOUNT = 2;
 
 function rulesMatch(rules: string): boolean {
-  // This is based on the template from Zodiac app at
-  // https://github.com/gnosis/zodiac-safe-app/blob/79dbb72af506f60fcc16599516ce48f893393b29/packages/app/src/views/AddModule/wizards/OptimisticGovernorModule/OptimisticGovernorModuleModal.tsx#L136
+  // This is based on the rules regex from protocol
+  // https://github.com/UMAprotocol/protocol/blob/bc7aef9dc60190909036e1418647f429f3702096/packages/monitor-v2/src/monitor-og/SnapshotVerification.ts#L274
 
   const regex =
     /^I assert that this transaction proposal is valid according to the following rules: Proposals approved on Snapshot, as verified at https:\/\/snapshot\.org\/#\/([a-zA-Z0-9-.]+)\/?, are valid as long as there is a minimum quorum of (\d+) and a minimum voting period of (\d+) hours and it does not appear that the Snapshot voting system is being exploited or is otherwise unavailable\. The quorum and voting period are minimum requirements for a proposal to be valid\. Quorum and voting period values set for a specific proposal in Snapshot should be used if they are more strict than the rules parameter\. The explanation included with the on-chain proposal must be the unique IPFS identifier for the specific Snapshot proposal that was approved or a unique identifier for a proposal in an alternative voting system approved by DAO social consensus if Snapshot is being exploited or is otherwise unavailable.$/;

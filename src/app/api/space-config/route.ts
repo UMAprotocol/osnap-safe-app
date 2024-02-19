@@ -4,6 +4,9 @@ import { isErrorWithMessage, isHttpError } from "@/types/guards";
 import { getModuleConfig, isConfigStandard, parseParams } from "./utils";
 import { Address } from "viem";
 
+/**
+ * Check if a space's deployed (on-chain) settings are supported by our bots.
+ */
 export async function GET(req: NextRequest) {
   try {
     const { chainId, address } = parseParams(req.nextUrl.searchParams);
