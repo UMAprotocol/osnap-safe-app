@@ -6,6 +6,13 @@ import { Address } from "viem";
 
 /**
  * Check if a space's deployed (on-chain) settings are supported by our bots.
+ *
+ * ### Query Params:
+ * 1. address - the safe address.
+ * 2. chainId - network for the safe.
+ *
+ * example url:
+ *  https://osnap.uma.xyz/api/space-config?address=0xa690212421298fa7431c64f4b5ff8aa4e4a7e74e&chainId=137
  */
 export async function GET(req: NextRequest) {
   try {
