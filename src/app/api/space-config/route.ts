@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Client as SubgraphClient } from "@/libs/ogSubgraph";
 import { isErrorWithMessage, isHttpError } from "@/types/guards";
-import { getModuleConfig, isConfigStandard, parseParams } from "./utils";
+import {
+  getModuleConfig,
+  isConfigStandard,
+  isOriginAllowed,
+  parseParams,
+} from "./utils";
 import { Address } from "viem";
 
 /**
@@ -16,6 +21,7 @@ import { Address } from "viem";
  */
 export async function GET(req: NextRequest) {
   try {
+    const requester = req.headers.get("origin") ?? "";
     const { chainId, address } = parseParams(req.nextUrl.searchParams);
 
     // get subgraph client for network
@@ -35,7 +41,16 @@ export async function GET(req: NextRequest) {
 
     const isStandard = isConfigStandard({ ...moduleConfig, chainId });
 
-    return NextResponse.json(isStandard, { status: 200 });
+    return NextResponse.json(isStandard, {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": isOriginAllowed(requester)
+          ? requester
+          : "",
+        "Access-Control-Allow-Methods": "GET",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    });
   } catch (error) {
     // catch and rethrow with specific error codes, eg. in validation
     if (isHttpError(error)) {

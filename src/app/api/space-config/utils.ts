@@ -124,3 +124,15 @@ export function isConfigStandard(params: {
     bondAmount: isCorrectAmount,
   };
 }
+
+export function isOriginAllowed(origin: string) {
+  // allow all origins in dev & preview
+  if (process.env.VERCEL_ENV !== "production") {
+    return true;
+  }
+  return (
+    origin.endsWith("snapshot.org") ||
+    origin.endsWith("snapshot.vercel.app") ||
+    origin.endsWith("uma.vercel.app")
+  );
+}
