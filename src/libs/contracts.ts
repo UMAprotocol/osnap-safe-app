@@ -7,7 +7,8 @@ import {
   polygon,
   arbitrum,
   avalanche,
-} from "@wagmi/chains";
+  Chain,
+} from "viem/chains";
 import { type Address } from "wagmi";
 
 export { Address };
@@ -19,6 +20,7 @@ export function isAddress(addr: unknown): addr is Address {
 export type ContractData = {
   name: string;
   chainId: number;
+  network: Chain;
   address: Address;
   deployBlockNumber?: number;
   subgraph?: string;
@@ -35,6 +37,7 @@ export const contractDataList: ContractData[] = [
   {
     // mainnet
     chainId: mainnet.id,
+    network: mainnet,
     name: "OptimisticGovernor",
     address: "0x28CeBFE94a03DbCA9d17143e9d2Bd1155DC26D5d",
     subgraph:
@@ -44,6 +47,7 @@ export const contractDataList: ContractData[] = [
   {
     //goerli
     chainId: goerli.id,
+    network: goerli,
     name: "OptimisticGovernor",
     address: "0x07a7Be7AA4AaD42696A17e974486cb64A4daC47b",
     deployBlockNumber: 8700589,
@@ -53,6 +57,7 @@ export const contractDataList: ContractData[] = [
   {
     // optimism
     chainId: optimism.id,
+    network: optimism,
     name: "OptimisticGovernor",
     address: "0x357fe84E438B3150d2F68AB9167bdb8f881f3b9A",
     subgraph:
@@ -61,6 +66,7 @@ export const contractDataList: ContractData[] = [
   {
     // gnosis
     chainId: gnosis.id,
+    network: gnosis,
     name: "OptimisticGovernor",
     subgraph:
       "https://api.thegraph.com/subgraphs/name/umaprotocol/gnosis-optimistic-governor",
@@ -69,6 +75,7 @@ export const contractDataList: ContractData[] = [
   {
     // polygon
     chainId: polygon.id,
+    network: polygon,
     name: "OptimisticGovernor",
     address: "0x3Cc4b597E9c3f51288c6Cd0c087DC14c3FfdD966",
     subgraph:
@@ -77,6 +84,7 @@ export const contractDataList: ContractData[] = [
   {
     // arbitrum
     chainId: arbitrum.id,
+    network: arbitrum,
     name: "OptimisticGovernor",
     address: "0x30679ca4ea452d3df8a6c255a806e08810321763",
     subgraph:
@@ -85,6 +93,7 @@ export const contractDataList: ContractData[] = [
   {
     // avalanche
     chainId: avalanche.id,
+    network: avalanche,
     name: "OptimisticGovernor",
     address: "0xEF8b46765ae805537053C59f826C3aD61924Db45",
     subgraph:
@@ -94,6 +103,7 @@ export const contractDataList: ContractData[] = [
   {
     // mainnet https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/mainnet.json
     chainId: mainnet.id,
+    network: mainnet,
     name: "OptimisticOracleV3",
     address: "0xfb55F43fB9F48F63f9269DB7Dde3BbBe1ebDC0dE",
     deployBlockNumber: 16636058,
@@ -101,6 +111,7 @@ export const contractDataList: ContractData[] = [
   {
     //goerli https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/goerli.json
     chainId: goerli.id,
+    network: goerli,
     name: "OptimisticOracleV3",
     address: "0x9923D42eF695B5dd9911D05Ac944d4cAca3c4EAB",
     deployBlockNumber: 8497481,
@@ -108,6 +119,7 @@ export const contractDataList: ContractData[] = [
   {
     // optimism https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/optimism.json
     chainId: optimism.id,
+    network: optimism,
     name: "OptimisticOracleV3",
     address: "0x072819Bb43B50E7A251c64411e7aA362ce82803B",
     deployBlockNumber: 74537234,
@@ -115,6 +127,7 @@ export const contractDataList: ContractData[] = [
   {
     // gnosis https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/gnosis.json
     chainId: gnosis.id,
+    network: gnosis,
     name: "OptimisticOracleV3",
     address: "0x22A9AaAC9c3184f68C7B7C95b1300C4B1D2fB95C",
     deployBlockNumber: 27087150,
@@ -122,6 +135,7 @@ export const contractDataList: ContractData[] = [
   {
     // polygon https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/polygon.json
     chainId: polygon.id,
+    network: polygon,
     name: "OptimisticOracleV3",
     address: "0x5953f2538F613E05bAED8A5AeFa8e6622467AD3D",
     deployBlockNumber: 39331673,
@@ -129,6 +143,7 @@ export const contractDataList: ContractData[] = [
   {
     // arbitrum https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/arbitrum.json
     chainId: arbitrum.id,
+    network: arbitrum,
     name: "OptimisticOracleV3",
     address: "0xa6147867264374F324524E30C02C331cF28aa879",
     deployBlockNumber: 61236565,
@@ -136,90 +151,105 @@ export const contractDataList: ContractData[] = [
   {
     // avalanche https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/avalanche.json
     chainId: avalanche.id,
+    network: avalanche,
     name: "OptimisticOracleV3",
     address: "0xa4199d73ae206d49c966cF16c58436851f87d47F",
     deployBlockNumber: 27816737,
   },
   {
     chainId: mainnet.id,
+    network: mainnet,
     name: "USDC",
     address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     decimals: 6,
   },
   {
     chainId: polygon.id,
+    network: polygon,
     name: "USDC",
     address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
     decimals: 6,
   },
   {
     chainId: goerli.id,
+    network: goerli,
     name: "USDC",
     address: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F",
     decimals: 6,
   },
   {
     chainId: gnosis.id,
+    network: gnosis,
     name: "USDC",
     address: "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
     decimals: 6,
   },
   {
     chainId: optimism.id,
+    network: optimism,
     name: "USDC",
     address: "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
     decimals: 6,
   },
   {
     chainId: arbitrum.id,
+    network: arbitrum,
     name: "USDC",
     address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
     decimals: 6,
   },
   {
     chainId: avalanche.id,
+    network: avalanche,
     name: "USDC",
     address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
     decimals: 6,
   },
   {
     chainId: mainnet.id,
+    network: mainnet,
     name: "WETH",
     address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     decimals: 18,
   },
   {
     chainId: polygon.id,
+    network: polygon,
     name: "WETH",
     address: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
     decimals: 18,
   },
   {
     chainId: goerli.id,
+    network: goerli,
     name: "WETH",
     address: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
     decimals: 18,
   },
   {
     chainId: gnosis.id,
+    network: gnosis,
     name: "WETH",
     address: "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1",
     decimals: 18,
   },
   {
     chainId: optimism.id,
+    network: optimism,
     name: "WETH",
     address: "0x4200000000000000000000000000000000000006",
     decimals: 18,
   },
   {
     chainId: arbitrum.id,
+    network: arbitrum,
     name: "WETH",
     address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     decimals: 18,
   },
   {
     chainId: avalanche.id,
+    network: avalanche,
     name: "WETH",
     address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
     decimals: 18,

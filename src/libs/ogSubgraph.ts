@@ -8,9 +8,11 @@ export function Client(chainId: number) {
   assert(ogInfo.subgraph, `No subgraph defined for OG on chainId ${chainId}`);
   const subgraph = ogInfo.subgraph;
 
-  async function getModuleAddress(safeAddress: string): Promise<string> {
+  async function getModuleAddress(
+    safeAddress: string,
+  ): Promise<string | undefined> {
     type Response = {
-      safe: { optimisticGovernor: { id: string } };
+      safe: { optimisticGovernor: { id: string } } | null;
     };
     const gqlQuery = gql`
       query getModuleAddress {
@@ -22,11 +24,15 @@ export function Client(chainId: number) {
       }
     `;
     const response = await request<Response>(subgraph, gqlQuery);
+    // TODO: might be better to throw with descriptive message here
+    if (!response.safe) {
+      throw new Error("No module deployed on this safe", { cause: 404 });
+    }
     return ethers.utils.getAddress(response.safe.optimisticGovernor.id);
   }
-  async function isEnabled(safeAddress: string): Promise<boolean> {
+  async function isEnabled(safeAddress: string): Promise<boolean | undefined> {
     type Response = {
-      safe: { isOptimisticGovernorEnabled: boolean };
+      safe: { isOptimisticGovernorEnabled: boolean } | null;
     };
     const gqlQuery = gql`
       query isOSnapEnabled {
@@ -36,6 +42,9 @@ export function Client(chainId: number) {
       }
     `;
     const response = await request<Response>(subgraph, gqlQuery);
+    if (!response.safe) {
+      return undefined;
+    }
     return response.safe.isOptimisticGovernorEnabled;
   }
 
