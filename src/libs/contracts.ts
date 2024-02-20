@@ -103,6 +103,7 @@ export const contractDataList: ContractData[] = [
   {
     // core
     chainId: coreDao.id,
+    network: coreDao,
     name: "OptimisticGovernor",
     address: "0x596Fd6A5A185c67aBD1c845b39f593fBA9C233aa",
     subgraph:
@@ -168,6 +169,7 @@ export const contractDataList: ContractData[] = [
   {
     // core https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/core.json
     chainId: coreDao.id,
+    network: coreDao,
     name: "OptimisticOracleV3",
     address: "0xD84ACa67d683aF7702705141b3C7E57e4e5e7726",
     deployBlockNumber: 11341063,
@@ -223,6 +225,7 @@ export const contractDataList: ContractData[] = [
   },
   {
     chainId: coreDao.id,
+    network: coreDao,
     name: "USDC",
     address: "0xa4151B2B3e269645181dCcF2D426cE75fcbDeca9",
     decimals: 6,
@@ -278,6 +281,7 @@ export const contractDataList: ContractData[] = [
   },
   {
     chainId: coreDao.id,
+    network: coreDao,
     name: "WETH",
     address: "0xeAB3aC417c4d6dF6b143346a46fEe1B847B50296",
     decimals: 18,
