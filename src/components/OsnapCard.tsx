@@ -19,9 +19,8 @@ import { StandardConfigCardWarning } from "./StandardConfigWarning";
 
 export function useOsnapCard() {
   const searchParams = useSearchParams();
-  const spaceName = searchParams.get("spaceName") ?? "uma dev";
-  const spaceUrl =
-    searchParams.get("spaceUrl") ?? "https://snapshot.org/#/umadev.eth";
+  const spaceName = searchParams.get("spaceName") ?? undefined;
+  const spaceUrl = searchParams.get("spaceUrl") ?? undefined;
 
   const [loaded, setLoaded] = useState(false);
   const ogState = useOgState();
