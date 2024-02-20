@@ -9,8 +9,8 @@ export const StandardConfigFormWarning = ({ isStandard }: Props) => {
     return (
       <div className="mb-6 rounded-lg  border bg-success-50 px-3 py-2 text-sm text-success-700">
         <p>
-          Warning! You are using the default settings. If your proposal passes,
-          your transaction will be <strong>automatically executed</strong> and
+          You are using the default settings. If your proposal passes, your
+          transaction will be <strong>automatically executed</strong> and
           verified by the UMA Optimistic Oracle.
         </p>
       </div>

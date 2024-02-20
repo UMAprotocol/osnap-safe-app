@@ -148,7 +148,13 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
    */
   const configIsStandard = (() => {
     const isWeth = collateralCurrency.value === "WETH";
-    const isCorrectAmount = bondInputProps.value === "2";
+    let isCorrectAmount = false;
+    try {
+      isCorrectAmount = Number(bondInputProps.value) === 2;
+    } catch (err) {
+      console.warn("Error parsing bondInputProps as a number:", err);
+      isCorrectAmount = false;
+    }
 
     return isWeth && isCorrectAmount;
   })();
