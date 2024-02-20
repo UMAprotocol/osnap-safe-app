@@ -1,3 +1,4 @@
+import { SpaceConfigResponse } from "@/app/api/space-config/utils";
 import { ChallengePeriod } from "@/constants/challengePeriods";
 import { Currency } from "@/constants/currencies";
 
@@ -9,4 +10,5 @@ export type OgDeployerConfig = {
   quorum: string; // voting quorum
   votingPeriodHours: string; // minimum voting period in integer hours
   rules?: string | undefined;
+  isStandard?: SpaceConfigResponse;
 };

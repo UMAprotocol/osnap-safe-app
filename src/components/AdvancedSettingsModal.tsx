@@ -20,6 +20,7 @@ import { type OgDeployerConfig } from "@/types";
 import { useState, type FormEventHandler, useEffect } from "react";
 import { useImmer, type Updater } from "use-immer";
 import { useLoadOgDeployerConfig } from "@/hooks";
+import { StandardConfigFormWarning } from "./StandardConfigWarning";
 
 type Props = {
   config: OgDeployerConfig;
@@ -64,6 +65,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     initialValue: props.config.bondAmount,
     required: true,
   });
+
   const quorumInputProps = useNumberInput({
     label: "Voting Quorum",
     initialValue: props.config.quorum,
@@ -140,16 +142,22 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     });
     props.closeModal();
   };
+
+  /**
+   * Use this to check the form for auto execution
+   */
+  const configIsStandard = (() => {
+    const isWeth = collateralCurrency.value === "WETH";
+    const isCorrectAmount = bondInputProps.value === "2";
+
+    return isWeth && isCorrectAmount;
+  })();
+
   return (
     <Modal {...props}>
       <div className="max-w-[520px] p-6">
         <h1 className="mb-4 text-lg font-semibold">Advanced settings</h1>
-        {!disabled && (
-          <p className="mb-6 rounded-lg  border bg-warning-50 px-3 py-2 text-sm text-warning-700">
-            Defaults are set to allow automatic proposal execution therefore
-            these settings should be adjusted with caution!
-          </p>
-        )}
+        <StandardConfigFormWarning isStandard={configIsStandard} />
         <Heading>Snapshot Space URL</Heading>
         <p className="mb-6 rounded-lg border border-gray-300 bg-white px-3 py-2 opacity-50 shadow-xs">
           {props.config.spaceUrl}

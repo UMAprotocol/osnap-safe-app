@@ -1,4 +1,5 @@
 import assert from "assert";
+import { ethers } from "ethers";
 import useSwr from "swr";
 import { TransactionStatus } from "@gnosis.pm/safe-apps-sdk";
 import { useAccount, useNetwork, usePublicClient } from "wagmi";
@@ -31,8 +32,10 @@ import {
   publicClientToProvider,
 } from "../libs";
 import { Defaults, getSnapshotDefaultVotingParameters } from "@/libs/snapshot";
-import useSWR from "swr";
-import { ethers } from "ethers";
+import {
+  SpaceConfigResponse,
+  isConfigStandard,
+} from "@/app/api/space-config/utils";
 
 export function ogDeployerConfigDefaults(
   config?: Partial<OgDeployerConfig>,
@@ -48,7 +51,7 @@ export function ogDeployerConfigDefaults(
 }
 export function useSpaceDefaultVotingParameters(spaceUrl?: string) {
   // fetch default space settings from snapshot space
-  return useSWR<Defaults>(
+  return useSwr<Defaults>(
     spaceUrl ?? null,
     getSnapshotDefaultVotingParameters,
     {
@@ -59,6 +62,25 @@ export function useSpaceDefaultVotingParameters(spaceUrl?: string) {
     },
   );
 }
+
+export const useIsStandardConfig = (
+  ogState: ReturnType<typeof useOgState>,
+): SpaceConfigResponse | undefined => {
+  const { rules, bond, collateralInfo, chain } = ogState;
+
+  const isStandard = useMemo(() => {
+    if (rules.data && bond.data && collateralInfo.data && chain) {
+      return isConfigStandard({
+        rules: rules.data,
+        bondAmount: bond.data,
+        collateral: collateralInfo.data.address,
+        chainId: chain.id,
+      });
+    }
+  }, [bond.data, chain, collateralInfo.data, rules.data]);
+
+  return isStandard;
+};
 
 type ConfigReturnType = {
   isLoading: boolean;
@@ -71,6 +93,7 @@ export function useLoadOgDeployerConfig(params: {
 }): ConfigReturnType {
   const spaceDefaults = useSpaceDefaultVotingParameters(params.spaceUrl);
   const ogState = useOgState();
+
   return useMemo(() => {
     if (!params.spaceUrl) {
       return {
@@ -212,6 +235,7 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
 export function useOgState() {
   const { chain } = useNetwork();
   const { address } = useAccount();
+
   const enabled = useSwr(`/enabled/${address}/${chain?.id}`, () => {
     assert(chain?.id, "Requires chainid");
     assert(address, "Requires safe address");
@@ -254,6 +278,7 @@ export function useOgState() {
       const result = {
         name: tokenInfo.name,
         decimals: tokenInfo.decimals,
+        address: collateralAddress,
       };
       return result;
     },
@@ -326,6 +351,7 @@ export function useOgState() {
       return optimisticOracleV3;
     },
   );
+
   return {
     chain,
     safeAddress: address,

@@ -8,12 +8,15 @@ import {
   useOgState,
   useOgDisabler,
   useLoadOgDeployerConfig,
+  useIsStandardConfig,
 } from "@/hooks/OptimisticGovernor";
 import Link from "next/link";
 import {
   AdvancedSettingsModal,
   useAdvancedSettingsModal,
 } from "./AdvancedSettingsModal";
+import { StandardConfigCardWarning } from "./StandardConfigWarning";
+
 export function useOsnapCard() {
   const searchParams = useSearchParams();
   const spaceName = searchParams.get("spaceName") ?? "uma dev";
@@ -21,8 +24,9 @@ export function useOsnapCard() {
     searchParams.get("spaceUrl") ?? "https://snapshot.org/#/umadev.eth";
 
   const [loaded, setLoaded] = useState(false);
-  const { enabled } = useOgState();
-  const isActive = enabled.data ?? false;
+  const ogState = useOgState();
+  const configState = useIsStandardConfig(ogState);
+  const isActive = ogState.enabled.data ?? false;
 
   const { config, setConfig, deploy, isDeploying } = useOgDeployer({
     spaceUrl,
@@ -75,6 +79,7 @@ export function useOsnapCard() {
     errors: [],
     isDisabling,
     isDeploying,
+    configState,
   };
 }
 
@@ -90,6 +95,7 @@ export function OsnapCard() {
     disable,
     isDisabling,
     isDeploying,
+    configState,
   } = useOsnapCard();
 
   const noSpaceCardContent = (
@@ -172,6 +178,7 @@ export function OsnapCard() {
         Propel your DAO into the future with instant, secure and trustless
         execution.
       </h1>
+      <StandardConfigCardWarning configState={configState} />
       <div className="rounded-xl border border-gray-200">
         {cardContent}
         <div className="rounded-b-xl bg-gray-50 px-6 py-4">
