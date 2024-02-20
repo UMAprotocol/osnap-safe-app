@@ -153,7 +153,13 @@ export function OsnapCard() {
   }
 
   async function activateOsnap() {
-    await deploy?.();
+    if (deploy) {
+      try {
+        await deploy();
+      } catch (err) {
+        console.error("Error Deploying:", err);
+      }
+    }
   }
 
   function deactivateOsnap() {
