@@ -1,4 +1,5 @@
 import assert from "assert";
+import { ethers } from "ethers";
 import useSwr from "swr";
 import { TransactionStatus } from "@gnosis.pm/safe-apps-sdk";
 import { useAccount, useNetwork, usePublicClient } from "wagmi";
@@ -10,7 +11,6 @@ import {
   OptimisticGovernorAbi,
   extractParamsFromRules,
   findContract,
-  formatUnits,
   sleep,
 } from "@/libs";
 
@@ -122,7 +122,7 @@ export function useLoadOgDeployerConfig(params: {
       ogState.collateralInfo.data
     ) {
       const ruleParams = extractParamsFromRules(ogState.rules.data);
-      const bondAmount = formatUnits(
+      const bondAmount = ethers.formatUnits(
         ogState.bond.data,
         ogState.collateralInfo.data.decimals,
       );
@@ -188,11 +188,11 @@ export function useOgDeployer(initialConfig?: Partial<OgDeployerConfig>) {
       return undefined;
     }
 
-    return () => {
+    return async () => {
       const collateral = getTokenAddress(chain.id, collateralCurrency);
       const provider = publicClientToProvider(publicClient);
 
-      const txs = ogDeploymentTxs({
+      const txs = await ogDeploymentTxs({
         provider,
         chainId: chain.id,
         executor: address,

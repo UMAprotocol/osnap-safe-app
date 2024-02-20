@@ -152,8 +152,14 @@ export function OsnapCard() {
     advancedSettingsModalProps.showModal();
   }
 
-  function activateOsnap() {
-    deploy?.();
+  async function activateOsnap() {
+    if (deploy) {
+      try {
+        await deploy();
+      } catch (err) {
+        console.error("Error Deploying:", err);
+      }
+    }
   }
 
   function deactivateOsnap() {

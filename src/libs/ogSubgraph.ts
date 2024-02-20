@@ -28,7 +28,7 @@ export function Client(chainId: number) {
     if (!response.safe) {
       throw new Error("No module deployed on this safe", { cause: 404 });
     }
-    return ethers.utils.getAddress(response.safe.optimisticGovernor.id);
+    return ethers.getAddress(response.safe.optimisticGovernor.id);
   }
   async function isEnabled(safeAddress: string): Promise<boolean | undefined> {
     type Response = {
