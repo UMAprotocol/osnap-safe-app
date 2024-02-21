@@ -183,7 +183,7 @@ export function OsnapCard() {
         Propel your DAO into the future with instant, secure and trustless
         execution.
       </h1>
-      <StandardConfigCardWarning configState={configState} />
+      {isActive && <StandardConfigCardWarning configState={configState} />}
       <div className="rounded-xl border border-gray-200">
         {cardContent}
         <div className="rounded-b-xl bg-gray-50 px-6 py-4">
