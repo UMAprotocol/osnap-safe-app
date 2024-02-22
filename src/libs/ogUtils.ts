@@ -8,7 +8,7 @@ import { OptimisticGovernorAbi, SafeAbi } from "./abis";
 
 export const safeSdk = new SafeAppsSDK();
 
-import { deployAndSetUpCustomModule } from "@reinis_frp/zodiac";
+import { deployAndSetUpCustomModule } from "@uma/zodiac";
 
 export const buildTransaction = (
   iface: Interface,
