@@ -2520,17 +2520,6 @@
     qrcode "1.5.0"
     react-remove-scroll "2.5.4"
 
-"@reinis_frp/zodiac@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@reinis_frp/zodiac/-/zodiac-4.0.2.tgz#4b0d95e217af29b9c1dfd70f5b0d32777555f671"
-  integrity sha512-fNI3o7qzMS8WD8pqDvUbzbPiFvGlek0jmQrukgnfdQXuUfWshG6gZwZ3f28uIxViH5P39HzGfNNoyJkgsDnEeQ==
-  dependencies:
-    "@gnosis.pm/mock-contract" "^4.0.0"
-    "@gnosis.pm/safe-contracts" "1.3.0"
-    "@openzeppelin/contracts" "^5.0.0"
-    "@openzeppelin/contracts-upgradeable" "^5.0.0"
-    ethers "^6.9.2"
-
 "@rushstack/eslint-patch@^1.1.3":
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.3.2.tgz#31b9c510d8cada9683549e1dbb4284cca5001faf"
@@ -4278,6 +4267,17 @@
   dependencies:
     "@typescript-eslint/types" "6.2.1"
     eslint-visitor-keys "^3.4.1"
+
+"@uma/zodiac@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@uma/zodiac/-/zodiac-4.0.2.tgz#278e216aa28c5e50f8e341dfa5d9bc81c7d0fd55"
+  integrity sha512-bypg0TtzQSJQbSX7YhMu0rCc7cfAts/vFQfkgquB06HIG0DLakd9m1Udb9+1D3Ja9cpMaX38TtZz5SwgbNsmjQ==
+  dependencies:
+    "@gnosis.pm/mock-contract" "^4.0.0"
+    "@gnosis.pm/safe-contracts" "1.3.0"
+    "@openzeppelin/contracts" "^5.0.0"
+    "@openzeppelin/contracts-upgradeable" "^5.0.0"
+    ethers "^6.9.2"
 
 "@vanilla-extract/css@1.9.1":
   version "1.9.1"
