@@ -7,6 +7,7 @@ import {
   polygon,
   arbitrum,
   avalanche,
+  sepolia,
   Chain,
 } from "viem/chains";
 import { type Address } from "wagmi";
@@ -109,6 +110,16 @@ export const contractDataList: ContractData[] = [
     subgraph:
       "https://thegraph.coredao.org/subgraphs/name/umaprotocol/core-optimistic-governor",
   },
+  {
+    // sepolia
+    chainId: sepolia.id,
+    network: sepolia,
+    name: "OptimisticGovernor",
+    address: "0x40153DdFAd90C49dbE3F5c9F96f2a5B25ec67461",
+    deployBlockNumber: 5421242,
+    subgraph:
+      "https://api.thegraph.com/subgraphs/name/reinis-frp/sepolia-optimistic-governor",
+  },
   // optimistic oracle v3
   {
     // mainnet https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/mainnet.json
@@ -175,6 +186,14 @@ export const contractDataList: ContractData[] = [
     deployBlockNumber: 11341063,
   },
   {
+    // sepolia https://github.com/UMAprotocol/subgraphs/blob/master/packages/optimistic-oracle-v3/manifest/data/sepolia.json
+    chainId: sepolia.id,
+    network: sepolia,
+    name: "OptimisticOracleV3",
+    address: "0xFd9e2642a170aDD10F53Ee14a93FcF2F31924944",
+    deployBlockNumber: 5421195,
+  },
+  {
     chainId: mainnet.id,
     network: mainnet,
     name: "USDC",
@@ -231,6 +250,13 @@ export const contractDataList: ContractData[] = [
     decimals: 6,
   },
   {
+    chainId: sepolia.id,
+    network: sepolia,
+    name: "USDC",
+    address: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    decimals: 6,
+  },
+  {
     chainId: mainnet.id,
     network: mainnet,
     name: "WETH",
@@ -284,6 +310,13 @@ export const contractDataList: ContractData[] = [
     network: coreDao,
     name: "WETH",
     address: "0xeAB3aC417c4d6dF6b143346a46fEe1B847B50296",
+    decimals: 18,
+  },
+  {
+    chainId: sepolia.id,
+    network: sepolia,
+    name: "WETH",
+    address: "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9",
     decimals: 18,
   },
 ];

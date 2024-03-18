@@ -4268,10 +4268,10 @@
     "@typescript-eslint/types" "6.2.1"
     eslint-visitor-keys "^3.4.1"
 
-"@uma/zodiac@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@uma/zodiac/-/zodiac-4.0.2.tgz#278e216aa28c5e50f8e341dfa5d9bc81c7d0fd55"
-  integrity sha512-bypg0TtzQSJQbSX7YhMu0rCc7cfAts/vFQfkgquB06HIG0DLakd9m1Udb9+1D3Ja9cpMaX38TtZz5SwgbNsmjQ==
+"@uma/zodiac@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@uma/zodiac/-/zodiac-4.0.3.tgz#e669dcdb3057e63aad7b0da89c70d1d472cb48e3"
+  integrity sha512-hY9RxNqakuLOOVhdYzoowFds+FcOdbpHCZ8wXZPgl/eEcnve1DoHIy4u/kQ5wj9Y547x2XtiyTl7v/SYx1ErPQ==
   dependencies:
     "@gnosis.pm/mock-contract" "^4.0.0"
     "@gnosis.pm/safe-contracts" "1.3.0"
