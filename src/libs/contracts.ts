@@ -8,6 +8,7 @@ import {
   arbitrum,
   avalanche,
   sepolia,
+  base,
   Chain,
 } from "viem/chains";
 import { type Address } from "wagmi";
@@ -317,6 +318,35 @@ export const contractDataList: ContractData[] = [
     network: sepolia,
     name: "WETH",
     address: "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9",
+    decimals: 18,
+  },
+  // base https://github.com/UMAprotocol/protocol/blob/master/packages/core/networks/8453.json
+  {
+    chainId: base.id,
+    network: base,
+    name: "OptimisticGovernor",
+    address: "0x80bCA2E1c272239AdFDCdc87779BC8Af6E12e633",
+    subgraph:
+      "https://api.studio.thegraph.com/query/1057/base-optimistic-governor/version/latest",
+  },
+  {
+    chainId: base.id,
+    network: base,
+    name: "OptimisticOracleV3",
+    address: "0x2aBf1Bd76655de80eDB3086114315Eec75AF500c",
+  },
+  {
+    chainId: base.id,
+    network: base,
+    name: "USDC",
+    address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    decimals: 6,
+  },
+  {
+    chainId: base.id,
+    network: base,
+    name: "WETH",
+    address: "0x4200000000000000000000000000000000000006",
     decimals: 18,
   },
 ];
