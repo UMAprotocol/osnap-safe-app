@@ -15,6 +15,7 @@ import {
   polygon,
   gnosis,
   sepolia,
+  base,
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { coreDao } from "./customChains";
@@ -28,6 +29,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     arbitrum,
     gnosis,
     coreDao,
+    base,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true"
       ? [goerli, sepolia]
       : []),
