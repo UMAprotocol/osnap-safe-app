@@ -14,6 +14,8 @@ import {
 import { type Address } from "wagmi";
 import { coreDao } from "../app/customChains";
 
+import { studioApiKey } from ".";
+
 export { Address };
 export function isAddress(addr: unknown): addr is Address {
   return typeof addr === "string" && addr.startsWith("0x");
@@ -43,8 +45,7 @@ export const contractDataList: ContractData[] = [
     network: mainnet,
     name: "OptimisticGovernor",
     address: "0x28CeBFE94a03DbCA9d17143e9d2Bd1155DC26D5d",
-    subgraph:
-      "https://api.thegraph.com/subgraphs/name/umaprotocol/mainnet-optimistic-governor",
+    subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${studioApiKey}/subgraphs/id/DQpwhiRSPQJEuc8y6ZBGsFfNpfwFQ8NjmjLmfv8kBkLu`,
     deployBlockNumber: 16890621,
   },
   {
