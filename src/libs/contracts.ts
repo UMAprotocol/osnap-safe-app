@@ -14,9 +14,10 @@ import {
 import { type Address } from "wagmi";
 import { coreDao } from "../app/customChains";
 
-import { studioApiKey } from ".";
+import { studioApiKey } from "./env";
 
 export { Address };
+
 export function isAddress(addr: unknown): addr is Address {
   return typeof addr === "string" && addr.startsWith("0x");
 }
