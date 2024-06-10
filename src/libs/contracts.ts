@@ -65,16 +65,14 @@ export const contractDataList: ContractData[] = [
     network: optimism,
     name: "OptimisticGovernor",
     address: "0x357fe84E438B3150d2F68AB9167bdb8f881f3b9A",
-    subgraph:
-      "https://api.thegraph.com/subgraphs/name/umaprotocol/optimism-optimistic-governor",
+    subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${studioApiKey}/subgraphs/id/Fd5RvSfkajAJ8Mi9sPxFSMVPFf56SDivDQW3ocqTAW5`,
   },
   {
     // gnosis
     chainId: gnosis.id,
     network: gnosis,
     name: "OptimisticGovernor",
-    subgraph:
-      "https://api.thegraph.com/subgraphs/name/umaprotocol/gnosis-optimistic-governor",
+    subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${studioApiKey}/subgraphs/id/RrkjZ6wTgLJkcjX68auzrEZHMRYwDx8kR5sFQQy4Phz`,
     address: "0x972396Ab668cd11dc1F6321A5ae30c6A8d3759F0",
   },
   {
@@ -83,8 +81,7 @@ export const contractDataList: ContractData[] = [
     network: polygon,
     name: "OptimisticGovernor",
     address: "0x3Cc4b597E9c3f51288c6Cd0c087DC14c3FfdD966",
-    subgraph:
-      "https://api.thegraph.com/subgraphs/name/umaprotocol/polygon-optimistic-governor",
+    subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${studioApiKey}/subgraphs/id/7L2JM14PnZgxGnRX7xaz54zWS6KVK6ZqVRCxEKJrJTDG`,
   },
   {
     // arbitrum
@@ -92,8 +89,7 @@ export const contractDataList: ContractData[] = [
     network: arbitrum,
     name: "OptimisticGovernor",
     address: "0x30679ca4ea452d3df8a6c255a806e08810321763",
-    subgraph:
-      "https://api.thegraph.com/subgraphs/name/umaprotocol/arbitrum-optimistic-governor",
+    subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${studioApiKey}/subgraphs/id/BfK867bnkQhnx1LspA99ypqiqxbAReQ92aZz66Ubv4tz`,
   },
   {
     // avalanche
@@ -101,8 +97,7 @@ export const contractDataList: ContractData[] = [
     network: avalanche,
     name: "OptimisticGovernor",
     address: "0xEF8b46765ae805537053C59f826C3aD61924Db45",
-    subgraph:
-      "https://api.thegraph.com/subgraphs/name/umaprotocol/avalanche-optimistic-governor",
+    subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${studioApiKey}/subgraphs/id/5F8875fmvtnv8Vv4aeedUcwNWjuxUg54aTHdapFuMJi3`,
   },
   {
     // core
@@ -120,8 +115,7 @@ export const contractDataList: ContractData[] = [
     name: "OptimisticGovernor",
     address: "0x40153DdFAd90C49dbE3F5c9F96f2a5B25ec67461",
     deployBlockNumber: 5421242,
-    subgraph:
-      "https://api.thegraph.com/subgraphs/name/reinis-frp/sepolia-optimistic-governor",
+    subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${studioApiKey}/subgraphs/id/5pwrjCkpcpCd79k9MBS5yVgnsHQiw6afvXUfzqHjdRFw`,
   },
   // optimistic oracle v3
   {
