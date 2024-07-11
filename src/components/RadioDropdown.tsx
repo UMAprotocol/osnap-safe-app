@@ -51,7 +51,7 @@ export function RadioDropdown<
           align="start"
           side="bottom"
           sideOffset={4}
-          className="mt-1 w-[--radix-dropdown-menu-trigger-width] rounded-lg border border-gray-300 bg-white text-gray-900 shadow-xs"
+          className="z-[2] mt-1 w-[--radix-dropdown-menu-trigger-width] rounded-lg border border-gray-300 bg-white text-gray-900 shadow-xs"
         >
           {props.items.map((item) => (
             <DropdownMenu.RadioItem

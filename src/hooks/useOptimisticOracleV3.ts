@@ -1,23 +1,26 @@
 import { filterContracts, OptimisticOracleV3Abi } from "../libs";
-import { useContractRead } from "wagmi";
+import { useContractRead, useNetwork } from "wagmi";
 
-export function useGetMinimumBond(params: {
-  chainId: number;
-  tokenSymbol: string;
-}) {
-  const { chainId, tokenSymbol } = params;
+export function useGetMinimumBond(params: { tokenSymbol: string }) {
+  const { chain } = useNetwork();
+  const { tokenSymbol } = params;
 
   // we use filter since this wont throw error in hooks, but it may return any number of contracts
   const oracleContracts = filterContracts({
-    chainId,
+    chainId: chain?.id,
     name: "OptimisticOracleV3",
   });
-  const tokenContracts = filterContracts({ chainId, name: tokenSymbol });
+
+  const tokenContracts = filterContracts({
+    chainId: chain?.id,
+    name: tokenSymbol,
+  });
   // just take the first contract
   const [oracleContract] = oracleContracts;
   const [tokenContract] = tokenContracts;
 
   return useContractRead({
+    chainId: chain?.id,
     address: oracleContract.address,
     abi: OptimisticOracleV3Abi,
     functionName: "getMinimumBond",

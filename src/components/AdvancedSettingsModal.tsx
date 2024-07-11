@@ -19,8 +19,9 @@ import {
 import { type OgDeployerConfig } from "@/types";
 import { useState, type FormEventHandler, useEffect } from "react";
 import { useImmer, type Updater } from "use-immer";
-import { useLoadOgDeployerConfig } from "@/hooks";
+import { useGetMinimumBond, useLoadOgDeployerConfig } from "@/hooks";
 import { StandardConfigFormWarning } from "./StandardConfigWarning";
+import { formatUnits } from "viem";
 
 type Props = {
   config: OgDeployerConfig;
@@ -51,6 +52,7 @@ const challengePeriodOptions = challengePeriods.map(
 
 export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
   const loadedConfig = useLoadOgDeployerConfig(props.config);
+
   const [loaded, setLoaded] = useState(false);
 
   const { disabled = false } = props;
@@ -60,10 +62,27 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
   const [collateralCurrency, setCollateralCurrency] = useState(
     currencyOptions[0],
   );
+
+  const { data: minBondWeth } = useGetMinimumBond({
+    tokenSymbol: "WETH",
+  });
+  const { data: minBondUsdc } = useGetMinimumBond({
+    tokenSymbol: "USDC",
+  });
+
+  // as bigint
+  const minimumBondAmount = (() => {
+    if (collateralCurrency.value === "USDC") {
+      return minBondUsdc ? Number(formatUnits(minBondUsdc, 6)) : 0;
+    }
+    return minBondWeth ? Number(formatUnits(minBondWeth, 18)) : 0;
+  })();
+
   const bondInputProps = useNumberInput({
     label: "Bond amount",
     initialValue: props.config.bondAmount,
     required: true,
+    min: minimumBondAmount,
   });
 
   const quorumInputProps = useNumberInput({
