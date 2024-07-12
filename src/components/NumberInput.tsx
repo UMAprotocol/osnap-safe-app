@@ -20,6 +20,7 @@ type Props = {
   isWholeNumber?: boolean;
   min?: number;
   disabled?: boolean | undefined;
+  positiveOnly?: boolean;
 };
 
 export function useNumberInput(props: Props) {
@@ -45,11 +46,32 @@ export function useNumberInput(props: Props) {
     [onChangeProp],
   );
 
+  const error = (() => {
+    if (props.validate && !props.validate(value)) {
+      return "Invalid input"; // generic error message
+    }
+    if (props.positiveOnly && Number(value) < 0) {
+      return "Positive values only";
+    }
+    if (props.required && !value) {
+      return "Required";
+    }
+    if (props.min && Number(value) < props.min) {
+      return `Minimum value: ${props.min}`;
+    }
+  })();
+
   function isValid() {
     if (props.required && dirty && value === "") {
       return false;
     }
+    if (props.positiveOnly && Number(value) < 0) {
+      return false;
+    }
     if (props.validate && !props.validate(value)) {
+      return false;
+    }
+    if (props.min && Number(value) < props.min) {
       return false;
     }
     return true;
@@ -67,6 +89,7 @@ export function useNumberInput(props: Props) {
       min,
       disabled,
       setValue,
+      error,
     }),
     [
       props,
@@ -79,6 +102,7 @@ export function useNumberInput(props: Props) {
       min,
       disabled,
       setValue,
+      error,
     ],
   );
 }
@@ -95,7 +119,7 @@ export function NumberInput(props: NumberInputProps) {
     "border-error-200 bg-error-50 text-error-700 placeholder:text-error-500";
   const inputStyle = props.valid ? validStyleInputStyle : invalidInputStyle;
   return (
-    <div>
+    <div className="relative">
       <label
         htmlFor={props.id}
         className={`mb-1 block font-semibold ${labelStyle}`}
@@ -113,6 +137,11 @@ export function NumberInput(props: NumberInputProps) {
         className={`h-11 w-full rounded-lg border px-3 py-2 shadow-xs ${inputStyle} disabled:cursor-not-allowed disabled:opacity-50`}
         disabled={props.disabled}
       />
+      {props.error && (
+        <div className="absolute -bottom-4 left-0 text-xs text-primary-500">
+          {props.error}
+        </div>
+      )}
     </div>
   );
 }
