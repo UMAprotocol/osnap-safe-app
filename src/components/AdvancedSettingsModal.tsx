@@ -70,7 +70,6 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     tokenSymbol: "USDC",
   });
 
-  // as bigint
   const minimumBondAmount = (() => {
     if (collateralCurrency.value === "USDC") {
       return minBondUsdc ? Number(formatUnits(minBondUsdc, 6)) : 0;
@@ -95,6 +94,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     ).toString(),
     required: true,
   });
+
   const votingPeriodInputProps = useNumberInput({
     label: "Voting Period hours",
     initialValue: props.config.votingPeriodHours,
@@ -104,6 +104,7 @@ export function AdvancedSettingsModal(props: AdvancedSettingsModalProps) {
     ),
     placeholder: parseInt(props.config.votingPeriodHours).toString(),
     required: true,
+    positiveOnly: true,
   });
 
   // we have data that loads from snapshot and on chain, so we need to update our inputs when this comes in.

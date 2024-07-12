@@ -20,6 +20,7 @@ type Props = {
   isWholeNumber?: boolean;
   min?: number;
   disabled?: boolean | undefined;
+  positiveOnly?: boolean;
 };
 
 export function useNumberInput(props: Props) {
@@ -49,6 +50,9 @@ export function useNumberInput(props: Props) {
     if (props.validate && !props.validate(value)) {
       return "Invalid input"; // generic error message
     }
+    if (props.positiveOnly && Number(value) < 0) {
+      return "Positive values only";
+    }
     if (props.required && !value) {
       return "Required";
     }
@@ -59,6 +63,9 @@ export function useNumberInput(props: Props) {
 
   function isValid() {
     if (props.required && dirty && value === "") {
+      return false;
+    }
+    if (props.positiveOnly && Number(value) < 0) {
       return false;
     }
     if (props.validate && !props.validate(value)) {
