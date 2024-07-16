@@ -347,6 +347,14 @@ export const contractDataList: ContractData[] = [
   },
 ];
 
+export function isNetworkSupported(chainId: number): boolean {
+  const oracleContracts = filterContracts({
+    chainId,
+  });
+
+  return oracleContracts.length > 0;
+}
+
 // find all that match query
 export const filterContracts = (query: Partial<ContractData>): ContractData[] =>
   filter(contractDataList, query);

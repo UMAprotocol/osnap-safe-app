@@ -16,11 +16,14 @@ import {
   useAdvancedSettingsModal,
 } from "./AdvancedSettingsModal";
 import { StandardConfigCardWarning } from "./StandardConfigWarning";
+import { useIsNetworkSupported } from "@/hooks/useIsNetworkSupported";
 
 export function useOsnapCard() {
   const searchParams = useSearchParams();
   const spaceName = searchParams.get("spaceName") ?? undefined;
   const spaceUrl = searchParams.get("spaceUrl") ?? undefined;
+
+  const networkSupported = useIsNetworkSupported();
 
   const [loaded, setLoaded] = useState(false);
   const ogState = useOgState();
@@ -79,6 +82,7 @@ export function useOsnapCard() {
     isDisabling,
     isDeploying,
     configState,
+    networkSupported,
   };
 }
 
@@ -95,6 +99,7 @@ export function OsnapCard() {
     isDisabling,
     isDeploying,
     configState,
+    networkSupported,
   } = useOsnapCard();
 
   const noSpaceCardContent = (
@@ -142,7 +147,17 @@ export function OsnapCard() {
     </div>
   );
 
-  const cardContent = hasSpace ? hasSpaceCardContent : noSpaceCardContent;
+  const unsupportedNetworkContent = (
+    <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
+      <p className="text-primary-500">Unsupported Network</p>
+    </div>
+  );
+
+  const cardContent = !networkSupported
+    ? unsupportedNetworkContent
+    : hasSpace
+    ? hasSpaceCardContent
+    : noSpaceCardContent;
 
   const inactiveButtonStyles = "bg-gray-950 text-white";
   const activeButtonStyles = "bg-gray-200 text-gray-700 border border-gray-200";
@@ -195,8 +210,8 @@ export function OsnapCard() {
       {hasSpace && (
         <button
           onClick={isActive ? deactivateOsnap : activateOsnap}
-          className={`mb-3 mt-6 w-full  rounded-lg px-5 py-3 font-semibold shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] ${buttonStyles}`}
-          disabled={isDeploying || isDisabling}
+          className={`mb-3 mt-6 w-full rounded-lg  px-5 py-3 font-semibold shadow-[0px_1px_2px_0px_rgba(50,50,50,0.05)] disabled:cursor-not-allowed disabled:opacity-25 ${buttonStyles}`}
+          disabled={isDeploying || isDisabling || !networkSupported}
         >
           {getButtonLabel()} oSnap
         </button>
