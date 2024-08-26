@@ -24,6 +24,22 @@ export async function GET(req: NextRequest) {
     const requester = req.headers.get("origin") ?? "";
     const { chainId, address } = parseParams(req.nextUrl.searchParams);
 
+    // Check if the origin is allowed early to prevent unnecessary async code execution
+    if (!isOriginAllowed(requester)) {
+      return NextResponse.json(
+        { error: "Origin not allowed" },
+        {
+          status: 403,
+          headers: {
+            "Access-Control-Allow-Origin": "",
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Max-Age": "86400",
+          },
+        },
+      );
+    }
+
     // get subgraph client for network
     const { getModuleAddress } = SubgraphClient(chainId);
 
@@ -44,11 +60,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(isStandard, {
       status: 200,
       headers: {
-        "Access-Control-Allow-Origin": isOriginAllowed(requester)
-          ? requester
-          : "",
-        "Access-Control-Allow-Methods": "GET",
+        "Access-Control-Allow-Origin": requester,
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Max-Age": "86400", // Cache the preflight response
       },
     });
   } catch (error) {
