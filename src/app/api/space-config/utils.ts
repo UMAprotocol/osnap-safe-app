@@ -133,6 +133,7 @@ export function isOriginAllowed(origin: string) {
   return (
     origin.endsWith("snapshot.org") ||
     origin.endsWith("snapshot.vercel.app") ||
-    origin.endsWith("uma.vercel.app")
+    origin.endsWith("uma.vercel.app") ||
+    origin.endsWith("snapshot.box")
   );
 }
