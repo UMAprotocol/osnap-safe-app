@@ -3,6 +3,7 @@ import { type PublicClient, type WalletClient } from "wagmi";
 import { createPublicClient, http } from "viem";
 import { contractDataList } from ".";
 
+
 export function publicClientToProvider(publicClient: PublicClient) {
   const { chain, transport } = publicClient;
   const network = {
@@ -25,7 +26,7 @@ export function walletClientToSigner(walletClient: WalletClient) {
   return signer;
 }
 
-export function getPublicClient(chainId: number) {
+export function getPublicClient(chainId: number, providerUrl?:string) {
   const networkConfig = contractDataList.find(
     (chain) => chain.chainId === chainId,
   );
@@ -38,6 +39,6 @@ export function getPublicClient(chainId: number) {
       multicall: true,
     },
     chain: networkConfig.network,
-    transport: http(),
+    transport: http(providerUrl),
   });
 }

@@ -34,6 +34,7 @@ export type ContractData = {
   decimals?: number;
 };
 
+
 export const oSnapIdentifier =
   "0x4153534552545f54525554480000000000000000000000000000000000000000";
 // contract addresses pulled from https://github.com/UMAprotocol/protocol/tree/master/packages/core/networks
@@ -377,5 +378,23 @@ export function getTokenAddress(
   return findContract({ chainId, name }).address;
 }
 
+
 // https://github.com/gnosis/zodiac-safe-app/blob/0dfeac33b8e95af566c7ff7b1d77017071219599/packages/app/src/services/helpers.ts#L4C1-L4C71
 export const AddressOne = "0x0000000000000000000000000000000000000001";
+
+export const infuraUrls: Record<number, string> = {
+  1: "https://mainnet.infura.io/v3/",
+  11155111: "https://sepolia.infura.io/v3/",
+  137: "https://polygon-mainnet.infura.io/v3/",
+  10: "https://optimism-mainnet.infura.io/v3/",
+  42161: "https://arbitrum-mainnet.infura.io/v3/",
+  8453: "https://base-mainnet.infura.io/v3/",
+  43114: "https://avalanche-mainnet.infura.io/v3/",
+};
+
+export function getInfuraUrl(chainId: number, apiKey?: string): string | undefined {
+  if(!apiKey) return undefined;
+  const infuraUrl = infuraUrls[chainId];
+  if (!infuraUrl) return undefined;
+  return `${infuraUrl}${apiKey}`;
+}
