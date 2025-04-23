@@ -8,6 +8,7 @@ import {
   parseParams,
 } from "./utils";
 import { Address } from "viem";
+import { getInfuraUrl } from '@/libs/contracts'
 
 /**
  * Check if a space's deployed (on-chain) settings are supported by our bots.
@@ -53,6 +54,7 @@ export async function GET(req: NextRequest) {
     const moduleConfig = await getModuleConfig(
       moduleAddress as Address,
       chainId,
+      getInfuraUrl(chainId,process.env.INFURA_KEY)
     );
 
     const isStandard = isConfigStandard({ ...moduleConfig, chainId });
@@ -67,6 +69,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
+    console.error('Error getting space deployment',error)
     // catch and rethrow with specific error codes, eg. in validation
     if (isHttpError(error)) {
       return NextResponse.json(

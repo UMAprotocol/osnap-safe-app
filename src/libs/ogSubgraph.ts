@@ -23,7 +23,7 @@ export function Client(chainId: number) {
         }
       }
     `;
-    const response = await request<Response>(subgraph, gqlQuery);
+    const response = await request<Response>(subgraph, gqlQuery, {});
     // TODO: might be better to throw with descriptive message here
     if (!response.safe) {
       throw new Error("No module deployed on this safe", { cause: 404 });

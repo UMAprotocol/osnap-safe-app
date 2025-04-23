@@ -44,8 +44,8 @@ export function parseParams(params: URLSearchParams) {
   };
 }
 
-export async function getModuleConfig(moduleAddress: Address, chainId: number) {
-  const provider = getPublicClient(chainId);
+export async function getModuleConfig(moduleAddress: Address, chainId: number, providerUrl?:string) {
+  const provider = getPublicClient(chainId,providerUrl);
 
   if (!provider) {
     throw new Error("Network not supported");
