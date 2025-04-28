@@ -203,7 +203,7 @@ export function OsnapCard() {
         {cardContent}
         <div className="rounded-b-xl bg-gray-50 px-6 py-4">
           <CardLink
-            href={spaceUrl ? spaceUrl : "https://snapshot.org/spaces"}
+            href={spaceUrl ? spaceUrl : "https://snapshot.box"}
           />
         </div>
       </div>

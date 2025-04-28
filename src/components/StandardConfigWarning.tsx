@@ -58,7 +58,7 @@ export const StandardConfigCardWarning = ({
         {!configState.bondToken && <li>Bond Token (Should be WETH)</li>}
         {!configState.rules && (
           <li>
-            Space URL (only snapshot.org <strong>production</strong> spaces are
+            Space URL (only snapshot.box <strong>production</strong> spaces are
             supported with automated execution. There is no bot support for
             testnets.)
           </li>
