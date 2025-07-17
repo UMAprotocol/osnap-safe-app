@@ -87,7 +87,7 @@ function mapOsnapSafeToTenderlySim(
   return {
     chainId: Number(safe.network),
     to: safe.moduleAddress,
-    input: ogInterface.encodeFunctionData("executeProposal", [transactions]),
+    input: new AbiCoder().encode(executeProposalFn.inputs, [transactions]),
     stateOverrides: [
       {
         address: safe.moduleAddress,
