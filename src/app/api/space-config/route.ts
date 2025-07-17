@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Client as SubgraphClient } from "@/libs/ogSubgraph";
-import { isErrorWithMessage, isHttpError } from "@/types/guards";
 import {
   getModuleConfig,
   isConfigStandard,
@@ -8,7 +7,8 @@ import {
   parseParams,
 } from "./utils";
 import { Address } from "viem";
-import { getInfuraUrl } from '@/libs/contracts'
+import { getInfuraUrl } from "@/libs/contracts";
+import { HttpError, handleApiError } from "../_utils";
 
 /**
  * Check if a space's deployed (on-chain) settings are supported by our bots.
@@ -27,18 +27,7 @@ export async function GET(req: NextRequest) {
 
     // Check if the origin is allowed early to prevent unnecessary async code execution
     if (!isOriginAllowed(requester)) {
-      return NextResponse.json(
-        { error: "Origin not allowed" },
-        {
-          status: 403,
-          headers: {
-            "Access-Control-Allow-Origin": "",
-            "Access-Control-Allow-Methods": "GET, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization",
-            "Access-Control-Max-Age": "86400",
-          },
-        },
-      );
+      throw new HttpError({ statusCode: 403, msg: "Origin not allowed" });
     }
 
     // get subgraph client for network
@@ -48,13 +37,16 @@ export async function GET(req: NextRequest) {
     const moduleAddress = await getModuleAddress(address);
 
     if (!moduleAddress) {
-      throw new Error("No module deployed for this safe", { cause: 404 });
+      throw new HttpError({
+        statusCode: 404,
+        msg: "No module deployed for this safe",
+      });
     }
 
     const moduleConfig = await getModuleConfig(
       moduleAddress as Address,
       chainId,
-      getInfuraUrl(chainId,process.env.INFURA_KEY)
+      getInfuraUrl(chainId, process.env.INFURA_KEY),
     );
 
     const isStandard = isConfigStandard({ ...moduleConfig, chainId });
@@ -65,30 +57,11 @@ export async function GET(req: NextRequest) {
         "Access-Control-Allow-Origin": requester,
         "Access-Control-Allow-Methods": "GET, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Max-Age": "86400", // Cache the preflight response
+        "Access-Control-Max-Age": "604800", // Cache the preflight response for 1 week
       },
     });
   } catch (error) {
-    console.error('Error getting space deployment',error)
-    // catch and rethrow with specific error codes, eg. in validation
-    if (isHttpError(error)) {
-      return NextResponse.json(
-        {
-          error: error.message,
-        },
-        {
-          status: error.cause,
-        },
-      );
-    }
-
-    return NextResponse.json(
-      {
-        error: isErrorWithMessage(error) ? error.message : "Unknown error",
-      },
-      {
-        status: 500,
-      },
-    );
+    console.error("Error getting space deployment", error);
+    return handleApiError(error);
   }
 }
