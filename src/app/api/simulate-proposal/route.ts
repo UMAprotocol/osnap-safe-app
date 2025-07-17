@@ -66,7 +66,7 @@ function mapOsnapSafeToTenderlySim(
           new AbiCoder().encode(
             ["bytes32", "uint256"],
             [
-              padHex(toHex(assertionId), {
+              padHex(assertionId, {
                 size: 32,
               }),
               4,
