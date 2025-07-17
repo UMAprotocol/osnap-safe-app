@@ -10,6 +10,12 @@ export const ethereumAddress = z
     "Invalid Ethereum address. Must be a 0x-prefixed 20 byte hex string",
   );
 export const snapshotSupportedNetwork = z.keyof(z.object(networks));
+export const osnapTransactionType = z.union([
+  z.literal("raw"),
+  z.literal("transferNFT"),
+  z.literal("contractInteraction"),
+  z.literal("transferFunds"),
+]);
 export const asset = z.object({
   name: z.string(),
   address: z.union([z.literal("main"), ethereumAddress]),
@@ -17,8 +23,7 @@ export const asset = z.object({
   imageUri: z.optional(z.url()),
 });
 
-export const token = z.object({
-  ...asset.shape,
+export const token = asset.extend({
   symbol: z.string(),
   decimals: z.int(),
   balance: z.optional(z.string()),
@@ -26,8 +31,7 @@ export const token = z.object({
   chainId: z.optional(snapshotSupportedNetwork),
 });
 
-export const nft = z.object({
-  ...asset.shape,
+export const nft = asset.extend({
   id: z.string(),
   tokenName: z.optional(z.string()),
 });
@@ -45,37 +49,28 @@ export const baseTransaction = z.object({
   formatted: ogTransaction,
 });
 
-export const rawTransaction = z.object({
-  ...baseTransaction.shape,
-  type: z.literal("raw", { message: "Raw transaction type must be 'raw'" }),
+export const rawTransaction = baseTransaction.extend({
+  type: osnapTransactionType,
 });
-export const contractInteractionTransaction = z.object({
-  ...baseTransaction.shape,
-  type: z.literal("contractInteraction", {
-    message: "Contract interaction type must be 'contractInteraction'",
-  }),
+export const contractInteractionTransaction = baseTransaction.extend({
+  type: osnapTransactionType,
   abi: z.optional(z.string()),
   methodName: z.optional(z.string()),
   parameters: z.optional(z.array(z.string())),
 });
-export const transferNftTransaction = z.object({
-  ...baseTransaction.shape,
-  type: z.literal("transferNFT", {
-    message: "NFT transfer type must be 'transferNFT'",
-  }),
+export const transferNftTransaction = baseTransaction.extend({
+  type: osnapTransactionType,
   recipient: z.optional(z.string()),
   collectable: z.optional(nft),
 });
 
-export const transferFundsTransaction = z.object({
-  ...baseTransaction.shape,
-  type: z.literal("transferFunds", {
-    message: "Funds transfer type must be 'transferFunds'",
-  }),
+export const transferFundsTransaction = baseTransaction.extend({
+  type: osnapTransactionType,
   amount: z.optional(z.string()),
   recipient: z.optional(z.string()),
   token: z.optional(token),
 });
+
 export const supportedOsnapTransaction = z.union([
   rawTransaction,
   contractInteractionTransaction,
@@ -94,19 +89,23 @@ export const gnosisSafe = z.object({
 // HELPERS
 export function validateApiRequest<T extends z.ZodSchema>(
   schema: T,
-  value: unknown, // req.nextUrl.searchParams || req.body
+  value: unknown,
 ): z.infer<T> {
   try {
     return schema.parse(value);
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.warn(z.prettifyError(error));
       const issues = error.issues
-        .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-        .join(", ");
+        .map((issue) => {
+          const path = issue.path.length > 0 ? issue.path.join(".") : "root";
+          return `${path}: ${issue.message}`;
+        })
+        .join("; ");
 
       throw new HttpError({
         statusCode: 400,
-        msg: `Invalid query parameters: ${issues}`,
+        msg: `Invalid Request: ${issues}`,
       });
     }
 
