@@ -41,19 +41,12 @@ export class HttpError extends Error {
 
 export function handleApiError(error: unknown): Response {
   if (error instanceof HttpError) {
-    return NextResponse.json(error.toJSON(), {
-      status: error.statusCode,
-    });
+    return NextResponse.json(error.toJSON());
   }
 
-  return NextResponse.json(
-    {
-      error: error instanceof Error ? error.message : "Internal Server Error",
-      status: 500,
-      statusText: STATUS_CODES[500],
-    },
-    {
-      status: 500,
-    },
-  );
+  return NextResponse.json({
+    error: error instanceof Error ? error.message : "Internal Server Error",
+    status: 500,
+    statusText: STATUS_CODES[500],
+  });
 }
