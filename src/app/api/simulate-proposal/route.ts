@@ -4,8 +4,9 @@ import { handleApiError, gnosisSafe, validateApiRequest } from "../_utils";
 import z from "zod";
 import { simulateTenderlyTx, TenderlySimulationParams } from "./tenderly";
 import { AbiCoder, keccak256, Interface } from "ethers";
-import { padHex, toHex } from "viem";
+import { padHex } from "viem";
 import { OptimisticGovernorAbi } from "../../../libs/abis";
+import assert from "assert";
 
 const osnapPluginData = z.object({
   safe: gnosisSafe,
@@ -44,8 +45,13 @@ function mapOsnapSafeToTenderlySim(
 
   // Calculate proposalHash from proposed transaction contents.
   const ogInterface = new Interface(OptimisticGovernorAbi);
+  const executeProposalFn = ogInterface.getFunction("executeProposal");
+  assert(
+    executeProposalFn,
+    "function executeProposal does not exist on this interface",
+  );
   const proposalHash = keccak256(
-    ogInterface.encodeFunctionData("executeProposal", [transactions]),
+    new AbiCoder().encode(executeProposalFn.inputs, [transactions]),
   );
 
   // assertionIds mapping pointer is at slot 110 in the OptimisticGovernor contract.
