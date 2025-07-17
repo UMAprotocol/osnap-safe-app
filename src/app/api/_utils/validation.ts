@@ -83,7 +83,7 @@ export const gnosisSafe = z.object({
   safeAddress: ethereumAddress,
   network: snapshotSupportedNetwork,
   moduleAddress: ethereumAddress,
-  transactions: z.array(supportedOsnapTransaction),
+  transactions: z.array(supportedOsnapTransaction).min(1),
 });
 
 // HELPERS
