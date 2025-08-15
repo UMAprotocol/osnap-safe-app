@@ -61,6 +61,7 @@ export async function GET(req: NextRequest) {
         "Access-Control-Allow-Methods": "GET, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Max-Age": "604800", // Cache the preflight response for 1 week
+        "Cache-Control": "public, max-age=0, s-maxage=600", // 10 min
       },
     });
   } catch (error) {
