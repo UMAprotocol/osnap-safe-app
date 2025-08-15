@@ -10,6 +10,9 @@ import { Address } from "viem";
 import { getInfuraUrl } from "@/libs/contracts";
 import { HttpError, handleApiError } from "../_utils";
 
+// Mark this route as dynamic since it accesses headers
+export const dynamic = "force-dynamic";
+
 /**
  * Check if a space's deployed (on-chain) settings are supported by our bots.
  *
